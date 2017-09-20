@@ -1,0 +1,65 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "0.0.1",
+  "parameters": {
+    "prefix": {
+      "type": "string",
+      "defaultValue": "bam-ha-ilb"
+    }
+  },
+  "variables": {
+    "apiVersionDeployments": "2017-05-01",
+    "apiNetwork": "2017-06-01"
+  },
+  "resources": [
+    {
+      "apiVersion": "[variables('apiVersionDeployments')]",
+      "type": "Microsoft.Resources/deployments",
+      "name": "Network",
+      "properties": {
+        "templateLink": {
+          "uri": "vnet.json"
+        },
+        "parameters": {
+          "ilbAddr": "172.16.25.254",
+          "netAddr-gw": "172.16.25.0/24",
+          "netAddr-FE": "172.16.26.0/24",
+          "netAddr-BE": "172.16.27.0/24",
+          "prefix": "[parameters('prefix')]"
+        },
+        "mode": "Incremental"
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersionDeployments')]",
+      "type": "Microsoft.Resources/deployments",
+      "name": "Firewalls",
+      "properties": {
+        "templateLink": {
+          "uri": "ngf.json"
+        },
+        "parameters": {
+
+        },
+        "mode": "Incremental"
+      }
+    },
+    {
+      "apiVersion": "[variables('apiVersionDeployments')]",
+      "type": "Microsoft.Resources/deployments",
+      "name": "ILB",
+      "properties": {
+        "templateLink": {
+          "uri": "ilb.json"
+        },
+        "parameters": {
+          "ilbAddr": "172.16.25.254",
+          "prefix": "[parameters('prefix')]",
+          "netId-gw": "[concat( resourceId( 'Microsoft.Network/virtualNetworks', parameters('prefix'), '-vnet' ), '/subnets/gw' ]"
+        },
+        "mode": "Incremental"
+      }
+    }
+  ],
+  "output": {}
+}

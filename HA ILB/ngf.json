@@ -1,0 +1,158 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "0.0.1",
+  "parameters": {
+    "prefix": {},
+    "sizeNGF": {},
+    "ngfPassword": {},
+    "ngfIpAddr1": {},
+    "ngfIpMask1": {},
+    "ngfIpGw1": {},
+    "ngfIpAddr2": {},
+    "ngfIpMask2": {},
+    "ngfIpGw2": {},
+    "netId-gw": {}
+
+  },
+  "variables": {
+    "apiVersionAS": "2017-03-30",
+    "apiVersionVM": "2017-03-30",
+    "apiVersionNetwork": "2017-06-01",
+    "ngfName1": "[concat( parameters('prefix'), '-NGF1')]",
+    "ngfName2": "[concat( parameters('prefix'), '-NGF2')]",
+    "ngfAsName": "[concat( parameters( 'prefix', '-AvalSet'))]",
+    "ngfOsDiskName1": "[concat(variables('ngfName1'),'_OsDisk_', uniqueString( resourceGroup().id ))]",
+    "ngfNicName1": "[concat(variables('ngfName1'), '_nic0_', uniqueString( resourceGroup().id ))]"
+  },
+  "resources": [
+    {
+        "type": "Microsoft.Compute/availabilitySets",
+        "name": "[variables('ngfAsName')]",
+        "apiVersion": "[variables('apiVersionAS')]",
+        "sku": {
+            "name": "Aligned"
+        },
+        "location": "[resourceGroup().location]",
+        "properties": {
+            "platformUpdateDomainCount": 5,
+            "platformFaultDomainCount": 2,
+            "virtualMachines": [
+                {
+                    "id": "[resourceId('Microsoft.Compute/virtualMachines', variables('ngfName1'))]"
+                }
+            ]
+        },
+        "dependsOn": [
+            "[resourceId('Microsoft.Compute/virtualMachines', variables('ngfName1'))]"
+        ]
+    },
+    {
+        "type": "Microsoft.Compute/disks",
+        "name": "[variables('ngfOsDiskName1')]",
+        "apiVersion": "[apiVersionVM]",
+        "location": "[resourceGroup().location]",
+        "properties": {
+            "accountType": "Premium_LRS",
+            "osType": "Linux",
+            "creationData": {
+                "createOption": "FromImage",
+                "imageReference": {
+                    "id": "[concat( '/Subscriptions/', subscription().subscriptionId, '/Providers/Microsoft.Compute/Locations/', resourceGroup().location, '/Publishers/barracudanetworks/ArtifactTypes/VMImage/Offers/barracuda-ng-firewall/Skus/byol/Versions/latest' )]"
+                }
+            },
+            "diskSizeGB": 80
+        },
+        "dependsOn": []
+    },
+    {
+        "type": "Microsoft.Network/networkInterfaces",
+        "name": "[variables('ngfNicName1')]",
+        "apiVersion": "[variables('apiVersionNetwork')]",
+        "location": "[resourceGroup().location]",
+        "properties": {
+            "ipConfigurations": [
+                {
+                    "name": "ipconfig1",
+                    "properties": {
+                        "privateIPAddress": "[variables('ngfIpAddr1')]",
+                        "privateIPAllocationMethod": "Static",
+                        "subnet": {
+                            "id": "[parameters('netId-gw')]"
+                        },
+                        "privateIPAddressVersion": "IPv4",
+                        "loadBalancerBackendAddressPools": [
+                            {
+                                "id": "[concat(resourceId('Microsoft.Network/loadBalancers', parameters('loadBalancers_bam_ha_ilb_name')), '/backendAddressPools/NGFPool')]"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "enableAcceleratedNetworking": false,
+            "enableIPForwarding": true
+        }
+    },
+
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "[variables('apiVersionVM')]",
+      "name": "[variables('ngfName1')]",
+      "location": "[resourceGroup().location]",
+      "plan": {
+        "name": "byol",
+        "product": "barracuda-ng-firewall",
+        "publisher": "barracudanetworks"
+      },
+      "properties": {
+        "availabilitySet": {
+          "id": "[resourceId('Microsoft.Compute/availabilitySets', variables('ngfAsName'))]"
+        },
+        "hardwareProfile": {
+          "vmSize": "[parameters('sizeNGF')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "barracudanetworks",
+            "offer": "barracuda-ng-firewall",
+            "sku": "byol",
+            "version": "latest"
+          },
+          "osDisk": {
+            "osType": "Linux",
+            "name": "[variables( 'ngfOsDiskName1' )]",
+            "createOption": "FromImage",
+            "caching": "ReadWrite",
+            "managedDisk": {
+              "id": "[resourceId('Microsoft.Compute/disks', variables( 'ngfOsDiskName1' ))]",
+              "storageAccountType": "Premium_LRS"
+            }
+          },
+          "dataDisks": []
+        },
+        "osProfile": {
+          "computerName": "[variables('ngfName1')]",
+          "adminPassword": "[parameters('ngfPassword')]",
+          "customData": "[Base64(concat( '/opb/cloud-setmip ', parameters( 'ngfIpAddr1' ), ' ', parameters( 'ngfIpMask1' ), ' ', parameters( 'ngfIpGw1' ), '
+echo ', parameters( 'ngfPassword' ), ' | /opb/create-dha -s S1 -c -o ', parameters( 'ngfIpAddr2' ), ' -n ', parameters( 'ngfIpMask2' ),
+' -g ', parameters( 'ngfIpGw2' ), '
+'))]"
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('ngf1NicName'))]"
+              }
+            ]
+          }
+        },
+        "dependsOn": [
+          "[resourceId('Microsoft.Compute/availabilitySets', variables('ngfAsName'))]",
+          "[resourceId('Microsoft.Compute/disks', variables('ngfOsDiskName1'))]",
+          "[resourceId('Microsoft.Network/networkInterfaces', variables('ngfNicName1'))]"
+        ]
+      },
+
+
+    ],
+    "output": {}
+  }
