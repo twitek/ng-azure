@@ -5,11 +5,49 @@
     "prefix": {
       "type": "string",
       "defaultValue": "bam-ha-ilb"
+    },
+    "sizeNGF": {
+      "type": "string",
+      "defaultValue": "Standard_F1s"
+    },
+    "ngfPassword": {
+      "type": "secureString"
+    },
+    "ilbProbePort": {
+      "type": "int",
+      "defaultValue": 65500
+    },
+    "ilbAddr": {
+      "type": "string",
+      "defaultValue": "172.16.25.254"
+    },
+    "ngfIpAddr1": {
+      "type": "string",
+      "defaultValue": "172.16.25.4"
+    },
+    "ngfIpAddr2": {
+      "type": "string",
+      "defaultValue": "172.16.25.5"
+    },
+    "ngfIpMask": {
+      "type": "string",
+      "defaultValue": "24"
+    },
+    "ngfIpGw": {
+      "type": "string",
+      "defaultValue": "172.16.25.1"
+    },
+    "pipAllocationMethod": {
+      "type": "string",
+      "defaultValue": "Dynamic"
     }
   },
   "variables": {
     "apiVersionDeployments": "2017-05-01",
-    "apiNetwork": "2017-06-01"
+    "apiNetwork": "2017-06-01",
+    "urlBase": "https://raw.githubusercontent.com/bartekmo/ng-azure/ha-ilb/HA%20ILB/",
+    "netId-gw": "[concat( resourceId( 'Microsoft.Network/virtualNetworks', concat( parameters('prefix'), '-vnet' )), '/subnets/gw' )]"
+
   },
   "resources": [
     {
@@ -18,10 +56,10 @@
       "name": "Network",
       "properties": {
         "templateLink": {
-          "uri": "vnet.json"
+          "uri": "[concat( variables( 'urlBase' ), 'vnet.json' )]"
         },
         "parameters": {
-          "ilbAddr": "172.16.25.254",
+          "ilbAddr": "[parameters('ilbAddr')]",
           "netAddr-gw": "172.16.25.0/24",
           "netAddr-FE": "172.16.26.0/24",
           "netAddr-BE": "172.16.27.0/24",
@@ -36,10 +74,19 @@
       "name": "Firewalls",
       "properties": {
         "templateLink": {
-          "uri": "ngf.json"
+          "uri": "[concat( variables( 'urlBase' ), 'ngf.json' )]"
         },
         "parameters": {
-
+          "prefix": "[parameters( 'prefix' )]",
+          "sizeNGF": "[parameters( 'sizeNGF' )]",
+          "ngfPassword": "[parameters( 'ngfPassword' )]",
+          "ngfIpAddr1": "[parameters( 'ngfIpAddr1' )]",
+          "ngfIpAddr2": "[parameters( 'ngfIpAddr2' )]",
+          "ngfIpMask": "24",
+          "ngfIpGw": "[parameters( 'ngfIpGw' )]",
+          "netId-gw": "[variables( 'netId-gw' )]",
+          "ilbName": "[concat( parameters('prefix'), '-ilb' )]",
+          "pipAllocationMethod": "[parameters( 'pipAllocationMethod' )]"
         },
         "mode": "Incremental"
       }
@@ -50,16 +97,17 @@
       "name": "ILB",
       "properties": {
         "templateLink": {
-          "uri": "ilb.json"
+          "uri": "[concat( variables( 'urlBase' ), 'ilb.json' )]"
         },
         "parameters": {
-          "ilbAddr": "172.16.25.254",
+          "ilbAddr": "[parameters( 'ilbAddr' )]",
+          "ilbProbePort": "[parameters( 'ilbProbePort' )]",
           "prefix": "[parameters('prefix')]",
-          "netId-gw": "[concat( resourceId( 'Microsoft.Network/virtualNetworks', parameters('prefix'), '-vnet' ), '/subnets/gw' ]"
+          "netId-gw": "[variables( 'netId-gw' )]"
         },
         "mode": "Incremental"
       }
     }
   ],
-  "output": {}
+  "outputs": {}
 }

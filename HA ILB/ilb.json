@@ -8,26 +8,30 @@
     },
     "prefix": {
       "type": "string",
-      "defaultValue": "bam-ha-ilb"
+      "defaultValue": "ngf-hailb"
     },
     "netId-gw": {
       "type": "string",
       "defaultValue": "/subscriptions/bde58b49-9951-466e-90e2-592c0920ce77/resourceGroups/bam-ilb2/providers/Microsoft.Network/virtualNetworks/bam-ilb2-vnet/subnets/gw"
+    },
+    "ilbProbePort": {
+      "type": "int",
+      "defaultValue": 65500
     }
 
   },
   "variables": {
-    "ApiVersionNetwork": "2017-06-01",
-    "ilbName": "[concat( parameters('prefix'))]",
+    "apiVersionNetwork": "2017-06-01",
+    "apiVersionLB": "2016-03-30",
+    "ilbName": "[concat( parameters('prefix'), '-ilb' )]",
     "ilbPoolName": "NGFPool",
-    "ilbProbeName": "ngprobe",
-    "ilbProbePort": 65500
+    "ilbProbeName": "ngprobe"
   },
   "resources": [
     {
         "type": "Microsoft.Network/loadBalancers",
         "name": "[variables('ilbName')]",
-        "apiVersion": "[variables('apiVersionNetwork')]",
+        "apiVersion": "[variables('apiVersionLB')]",
         "location": "[resourceGroup().location]",
         "properties": {
             "frontendIPConfigurations": [
@@ -75,7 +79,7 @@
                     "properties": {
                         "provisioningState": "Succeeded",
                         "protocol": "Tcp",
-                        "port": "[variables('ilbProbePort')]",
+                        "port": "[parameters('ilbProbePort')]",
                         "intervalInSeconds": 5,
                         "numberOfProbes": 2
                     }

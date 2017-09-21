@@ -20,7 +20,7 @@
     },
     "prefix": {
       "type": "string",
-      "defaultValue": "bam-ha-ilb"
+      "defaultValue": "ngf-hailb"
     }
   },
   "variables": {
