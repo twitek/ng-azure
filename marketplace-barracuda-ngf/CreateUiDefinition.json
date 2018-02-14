@@ -247,10 +247,23 @@
               "visible": true
             },
             {
+              "name": "fwAcl",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Management ACL",
+              "defaultValue": "0.0.0.0/0",
+              "toolTip": "Restrict management connections to the firewall to this subnet.",
+              "constraints": {
+                "required": true,
+                "regex": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$",
+                "validationMessage": "Please provide subnet address in CIDR notation"
+              },
+              "visible": true
+            },
+            {
               "name": "fwMgmtType",
               "type": "Microsoft.Common.DropDown",
               "label": "Firewall management tool",
-              "defaultValue": "ngadmin",
+              "defaultValue": "Firewall Admin app",
               "toolTip": "Choose the way to manage your firewall",
               "constraints": {
                 "allowedValues": [
@@ -279,7 +292,7 @@
             },
             "toolTip": "",
             "constraints": {
-              "required": true,
+              "required": "[and(empty( steps( 'ngfManagement' ).fwParFile), not( equals( steps( 'ngfManagement' ).fwMgmtType, 'ngcc' )))]",
               "regex": "",
               "validationMessage": ""
             },
@@ -291,7 +304,7 @@
           {
             "name": "ngcc",
             "type": "Microsoft.Common.Section",
-            "label": "Barracuda Firewal Control Center binding",
+            "label": "Control Center binding",
             "elements": [
               {
                 "name": "ccIpAddress",
@@ -340,20 +353,8 @@
               }
             ],
             "visible": "[equals( 'ngcc', steps( 'ngfManagement' ).fwMgmtType )]"
-          },
-          {
-            "name": "fwAcl",
-            "type": "Microsoft.Common.TextBox",
-            "label": "Management ACL",
-            "defaultValue": "foobar",
-            "toolTip": "Management connections to the firewall will be allowed only from this subnet.",
-            "constraints": {
-              "required": true,
-              "regex": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$",
-              "validationMessage": "Please provide subnet address in CIDR notation"
-            },
-            "visible": true
           }
+
         ]
         },
         {
@@ -368,7 +369,7 @@
             {
               "name": "fwVmAddress",
               "type": "Microsoft.Common.TextBox",
-              "label": "Barracuda NextGen Firewall Private IP Address",
+              "label": "Barracuda CloudGen Firewall private IP address",
               "toolTip": "Provide static IP address from Firewall Subnet defined above",
               "defaultValue": "[steps( 'networking' ).virtualNetwork.subnets.fwSubnet.startAddress]",
               "constraints": {
@@ -399,13 +400,24 @@
                   "Standard_F2s_v2",
                   "Standard_F4s_v2",
                   "Standard_F8s_v2",
+                  "Standard_DS2_v2_Promo",
+                  "Standard_DS3_v2_Promo",
+                  "Standard_DS4_v2_Promo"
                   "Standard_DS2_v2",
                   "Standard_DS3_v2",
                   "Standard_DS4_v2",
                   "Standard_DS2_v3",
-                  "Standard_DS3_v3",
-                  "Standard_DS4_v3"
+                  "Standard_DS4_v3",
+                  "Standard_DS8_v3",
+                  "Standard_B1ms",
+                  "Standard_B2s",
+                  "Standard_B2ms",
+                  "Standard_B4ms",
+                  "Standard_B8ms",
                 ],
+                "options": {
+                  "hideDiskTypeFilter": true
+                },
                 "required": true
               },
               "osPlatform": "Linux",
@@ -422,7 +434,27 @@
       "outputs": {
         "fwVmName": "[basics( 'fwVmName' )]",
         "fwVmVersion": "[basics( 'fwVmVersion' )]",
-        "fwVmSku": "[basics( 'fwVmSku' )]"
+        "fwVmSku": "[basics( 'fwVmSku' )]",
+        "fwVmSize": "[steps( 'advanced' ).fwVmSize]",
+        "fwVmAddress": "[steps( 'network' ).fwVmAddress]",
+        "fwSubnetName": "[steps( 'network' ).virtualNetwork.subnets.fwSubnet.name]",
+        "fwSubnetAddress": "[steps( 'network' ).virtualNetwork.subnets.fwSubnet.addressPrefix]",
+        "publicIpName": "[steps( 'network' ).publicIp.name]",
+        "publicIpDnsName": "[steps( 'network' ).publicIp.domainNameLabel]",
+        "publicIpAddressType": "Dynamic",
+        "publicIpNewOrNone": "[steps( 'network' ).publicIp.newOrExistingOrNone]",
+        "publicIp": "[steps('network').publicIp]",
+        "publicIpRG": "[steps( 'network' ).publicIp.resourceGroup ]",
+        "newStorageAccountName": "[steps( 'storage' ).storageAccount.name]",
+        "newStorageAccountType": "[steps( 'storage' ).storageAccount.type]",
+        "vnetName": "[steps( 'network' ).virtualNetwork.name]",
+        "vnetAddressSpace": "[steps( 'network').virtualNetwork.addressPrefix]",
+        "vnetRG": "[steps( 'network' ).virtualNetwork.resourceGroup]",
+        "ccIpAddress": "[steps( 'ngfManagement' ).ngcc.ccIpAddress]",
+        "ccClusterName": "[steps( 'ngfManagement' ).ngcc.ccClusterName]",
+        "ccRangeId": "[steps( 'ngfManagement' ).ngcc.ccRangeId]",
+        "ccSecret": "[steps( 'ngfManagement' ).ngcc.ccSecret]",
+        "fwParFileUrl": "[steps( 'ngfManagement' ).fwParFile.url]"
       }
    }
 }
