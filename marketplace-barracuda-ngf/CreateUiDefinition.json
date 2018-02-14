@@ -148,7 +148,7 @@
           ]
         },
         {
-          "name": "networking",
+          "name": "network",
           "label": "Networking",
           "subLabel": {
             "preValidation": "",
@@ -371,7 +371,7 @@
               "type": "Microsoft.Common.TextBox",
               "label": "Barracuda CloudGen Firewall private IP address",
               "toolTip": "Provide static IP address from Firewall Subnet defined above",
-              "defaultValue": "[steps( 'networking' ).virtualNetwork.subnets.fwSubnet.startAddress]",
+              "defaultValue": "[steps( 'network' ).virtualNetwork.subnets.fwSubnet.startAddress]",
               "constraints": {
                 "required": false,
                 "regex": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$",
