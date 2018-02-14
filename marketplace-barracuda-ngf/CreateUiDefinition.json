@@ -1,0 +1,158 @@
+{
+   "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json",
+   "handler": "Microsoft.Compute.MultiVm",
+   "version": "0.1.2-preview",
+   "parameters": {
+      "basics": [
+        {
+          "name": "fwVmName",
+          "type": "Microsoft.Common.TextBox",
+          "label": "Firewall Instance Host Name",
+          "toolTip": "Provide host name for newly created instance of Barracuda NextGen Firewall F",
+          "defaultValue": "BarracudaNGFW",
+          "constraints": {
+            "required": true,
+            "regex": "^[A-Za-z0-9-_]{1,15}$",
+            "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1 to 15 characters."
+          }
+        },
+        {
+          "name": "fwVmSku",
+          "type": "Microsoft.Common.OptionsGroup",
+          "label": "",
+          "toolTip": "",
+          "defaultValue": "PAYG",
+          "constraints": {
+            "required": true,
+            "allowedValues": [
+              {
+                "label": "PAYG",
+                "value": "hourly"
+              },
+              {
+                "label": "BYOL",
+                "value": "byol"
+              }
+            ]
+          }
+        },
+        {
+          "name": "fwVmVersion",
+          "type": "Microsoft.Common.DropDown",
+          "label": "Firmware release version",
+          "toolTip": "",
+          "defaultValue": "7.2.0 (EA1)",
+          "constraints": {
+            "required": true,
+            "allowedValues": [
+              {
+                "label": "7.2.0 (EA1)",
+                "value": "7.2.015802"
+              },
+              {
+                "label": "7.1.1 (LTS)",
+                "value": "7.1.105602"
+              },
+              {
+                "label": "7.0.4",
+                "value": "7.0.308701"
+              },
+              {
+                "label": "6.2.3",
+                "value": "6.2.310801"
+              }
+            ]
+          }
+        }
+       ],
+      "steps": [
+        {
+          "name": "SizeAndStorage",
+          "label": "Size and Storage",
+          "subLabel": {
+            "preValidation": "Define where to deploy your firewall",
+            "postValidation": "Done"
+          },
+          "bladeTitle": "Size and Storage",
+          "elements": [
+            {
+              "name": "fwVmSizeBasic",
+              "type": "Microsoft.Common.DropDown",
+              "label": "Firewall Instance Size",
+              "toolTip": "Choose instance size corresponding to your license",
+              "defaultValue": "Standard_D2_v2",
+              "constraints": {
+                "required": true,
+                "allowedValues": [
+                  {
+                    "label": "Small (Level 2)",
+                    "value": "Standard_A1"
+                  },
+                  {
+                    "label": "Medium (Level 4)",
+                    "value": "Standard_D2_v2"
+                  },
+                  {
+                    "label": "Large (Level 6)",
+                    "value": "Standard_D3_v2"
+                  },
+                  {
+                    "label": "X-Large (Level 8)",
+                    "value": "Standard_DS4_v2"
+                  }
+                ]
+              },
+              "visible": true
+            },
+            {
+              "name": "storageIsManaged",
+              "type": "Microsoft.Common.OptionsGroup",
+              "label": "Use managed disks",
+              "toolTip": "Enable this feature to have Azure automatically manage the availability of disks to provide data redundancy and fault tolerance, without creating and managing storage accounts on your own. Managed disks may not be available in all regions.",
+              "defaultValue": "Yes",
+              "constraints": {
+                "required": true,
+                "allowedValues": [
+                  {
+                    "label": "Yes",
+                    "value": "1"
+                  },
+                  {
+                    "label": "No",
+                    "value": "0"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "storageAccount",
+              "type": "Microsoft.Storage.StorageAccountSelector",
+              "label": "Storage Account",
+              "toolTip": "Storage Account for the disk drive of the Barracuda NextGen Firewall",
+              "defaultValue": {
+                "type": "Standard_LRS"
+              },
+              "constraints": {
+                "allowedTypes": [
+                  "Standard_LRS",
+                  "Premium_LRS"
+                ],
+                "required": true
+              },
+              "options": {
+                "hideExisting": false
+              },
+              "visible": "[equals( steps['SizeAndStorage'].storageIsManaged, '0' )]"
+            }
+
+
+          ]
+        }
+      ],
+      "outputs": {
+        "fwVmName": "[basics( 'fwVmName' )]",
+        "fwVmVersion": "[basics( 'fwVmVersion' )]",
+        "fwVmSku": "[basics( 'fwVmSku' )]"
+      }
+   }
+}
