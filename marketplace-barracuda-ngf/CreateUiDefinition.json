@@ -164,8 +164,8 @@
                 "subnets": "Subnets"
               },
               "toolTip": {
-                "virtualNetwork": "Virtual Network Name",
-                "subnets": "Create a separate subnet for Barracuda NGFW"
+                "virtualNetwork": "Select existing or create a new VNet for your firewall deployment",
+                "subnets": "If you plan to protect outgoing or internal traffic with this firewall, it must be placed in a subnet separated from protected instances. [Read more about user-defined routes](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview#user-defined)"
               },
               "defaultValue": {
                 "name": "newVirtualNetwork",
@@ -286,7 +286,7 @@
             "options": {
               "hideConfirmation": false
             },
-            "visible": "[and(empty( steps( 'ngfManagement' ).fwParFile, not( equals( steps( 'ngfManagement' ).fwMgmtType, 'ngcc' )))]"
+            "visible": "[and(empty( steps( 'ngfManagement' ).fwParFile), not( equals( steps( 'ngfManagement' ).fwMgmtType, 'ngcc' )))]"
           },
           {
             "name": "ngcc",
