@@ -70,7 +70,7 @@
           "name": "storage",
           "label": "Size and Storage",
           "subLabel": {
-            "preValidation": "Define where to deploy your firewall",
+            "preValidation": "Size your firewall",
             "postValidation": "Done"
           },
           "bladeTitle": "Size and Storage",
@@ -79,7 +79,7 @@
               "name": "fwVmSizeBasic",
               "type": "Microsoft.Common.DropDown",
               "label": "Firewall Instance Size",
-              "toolTip": "Choose instance size corresponding to your license. ",
+              "toolTip": "Choose instance size corresponding to your license. Recommended instance type will be automatically selected, but you can override this recommendation in Advanced Settings step.",
               "defaultValue": "Small (Level 2)",
               "constraints": {
                 "required": true,
@@ -130,11 +130,10 @@
               "label": "Storage Account",
               "toolTip": "Storage Account for the disk image of the Barracuda NextGen Firewall",
               "defaultValue": {
-                "type": "Standard_LRS"
+                "type": "Premium_LRS"
               },
               "constraints": {
                 "allowedTypes": [
-                  "Standard_LRS",
                   "Premium_LRS"
                 ],
                 "required": true
@@ -230,23 +229,147 @@
           },
           "bladeTitle": "Firewall Management",
           "elements": [
-
-          ]
+            {
+              "name": "fwParFile",
+              "type": "Microsoft.Common.FileUpload",
+              "label": "Restore from PAR file",
+              "toolTip": "",
+              "constraints": {
+                "required": false,
+                "accept": ".par"
+              },
+              "options": {
+                "multiple": false,
+                "uploadMode": "url",
+                "openMode": "binary",
+                "encoding": "UTF-8"
+              },
+              "visible": true
+            },
+            {
+              "name": "fwMgmtType",
+              "type": "Microsoft.Common.DropDown",
+              "label": "Firewall management tool",
+              "defaultValue": "ngadmin",
+              "toolTip": "Choose the way to manage your firewall",
+              "constraints": {
+                "allowedValues": [
+                  {
+                    "label": "Web UI",
+                    "value": "webui"
+                  },
+                  {
+                    "label": "Firewall Admin app",
+                    "value": "ngadmin"
+                  },
+                  {
+                    "label": "Centrally managed via Control Center",
+                    "value": "ngcc"
+                  }
+                ]
+              },
+            "visible": "[empty( steps( 'ngfManagement' ).fwParFile )]"
+          },
+          {
+            "name": "fwPassword",
+            "type": "Microsoft.Common.PasswordBox",
+            "label": {
+              "password": "Root Password",
+              "confirmPassword": "Confirm password"
+            },
+            "toolTip": "",
+            "constraints": {
+              "required": true,
+              "regex": "",
+              "validationMessage": ""
+            },
+            "options": {
+              "hideConfirmation": false
+            },
+            "visible": "[and(empty( steps( 'ngfManagement' ).fwParFile, not( equals( steps( 'ngfManagement' ).fwMgmtType, 'ngcc' )))]"
+          },
+          {
+            "name": "ngcc",
+            "type": "Microsoft.Common.Section",
+            "label": "Barracuda Firewal Control Center binding",
+            "elements": [
+              {
+                "name": "ccIpAddress",
+                "type": "Microsoft.Common.TextBox",
+                "label": "IP Address of Control Center",
+                "toolTip": "Publicly reachable IP address of Control Center",
+                "constraints": {
+                  "required": true,
+                  "regex": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$",
+                  "validationMessage": "Must be a valid IPv4 address of NGCC"
+                }
+              },
+              {
+                "name": "ccRangeId",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Range ID for firewall box",
+                "toolTip": "ID number of NGCC range hosting deployed NGFW instance configuration",
+                "constraints": {
+                  "required": true,
+                  "regex": "^[0-9]{1,2}$",
+                  "validationMessage": "Must be a range ID number"
+                }
+              },
+              {
+                "name": "ccClusterName",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Cluster name for firewall box",
+                "toolTip": "Name of cluster hosting deployed NGFW instance configuration",
+                "constraints": {
+                  "required": true,
+                  "regex": "^[a-zA-Z0-9-]{1,16}$",
+                  "validationMessage": "Must be a valid NGCC cluster name"
+                }
+              },
+              {
+                "name": "ccSecret",
+                "type": "Microsoft.Common.TextBox",
+                "label": "PAR file retrieval key",
+                "toolTip": "PAR file retrieval shared key from Box Properties > Operational settings",
+                "constraints": {
+                  "required": true
+                },
+                "options": {
+                  "hideConfirmation": true
+                }
+              }
+            ],
+            "visible": "[equals( 'ngcc', steps( 'ngfManagement' ).fwMgmtType )]"
+          },
+          {
+            "name": "fwAcl",
+            "type": "Microsoft.Common.TextBox",
+            "label": "Management ACL",
+            "defaultValue": "foobar",
+            "toolTip": "Management connections to the firewall will be allowed only from this subnet.",
+            "constraints": {
+              "required": true,
+              "regex": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$",
+              "validationMessage": "Please provide subnet address in CIDR notation"
+            },
+            "visible": true
+          }
+        ]
         },
         {
           "name": "advanced",
-          "label": "",
+          "label": "Advanced",
           "subLabel": {
             "preValidation": "",
             "postValidation": "Done"
           },
-          "bladeTitle": "",
+          "bladeTitle": "Advanced Settings",
           "elements": [
             {
               "name": "fwVmAddress",
               "type": "Microsoft.Common.TextBox",
               "label": "Barracuda NextGen Firewall Private IP Address",
-              "toolTip": "Provide IP address from Firewall Subnet defined above",
+              "toolTip": "Provide static IP address from Firewall Subnet defined above",
               "defaultValue": "[steps( 'networking' ).virtualNetwork.subnets.fwSubnet.startAddress]",
               "constraints": {
                 "required": false,
