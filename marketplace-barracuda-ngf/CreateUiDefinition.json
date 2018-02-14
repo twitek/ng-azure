@@ -205,7 +205,7 @@
               },
               "defaultValue": {
                 "publicIpAddress": "[concat( basics( 'fwVmName' ), '-pip' )]",
-                "domainNameLabel": "[basics( 'fwVmName' )]"
+                "domainNameLabel": ""
               },
               "options": {
                 "hideNone": false,
@@ -436,7 +436,7 @@
         "fwVmVersion": "[basics( 'fwVmVersion' )]",
         "fwVmSku": "[basics( 'fwVmSku' )]",
         "fwVmSize": "[steps( 'advanced' ).fwVmSize]",
-        "fwVmAddress": "[steps( 'network' ).fwVmAddress]",
+        "fwVmAddress": "[steps( 'advanced' ).fwVmAddress]",
         "fwSubnetName": "[steps( 'network' ).virtualNetwork.subnets.fwSubnet.name]",
         "fwSubnetAddress": "[steps( 'network' ).virtualNetwork.subnets.fwSubnet.addressPrefix]",
         "publicIpName": "[steps( 'network' ).publicIp.name]",
