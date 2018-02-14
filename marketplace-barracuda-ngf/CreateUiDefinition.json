@@ -67,7 +67,7 @@
        ],
       "steps": [
         {
-          "name": "SizeAndStorage",
+          "name": "storage",
           "label": "Size and Storage",
           "subLabel": {
             "preValidation": "Define where to deploy your firewall",
@@ -142,9 +142,33 @@
               "options": {
                 "hideExisting": false
               },
-              "visible": "[equals( steps['SizeAndStorage'].storageIsManaged, '0' )]"
+              "visible": "[equals( steps['storage'].storageIsManaged.value, '0' )]"
             }
 
+
+          ]
+        },
+        {
+          "name": "networking",
+          "label": "Networking",
+          "subLabel": {
+            "preValidation": "",
+            "postValidation": "Done"
+          },
+          "bladeTitle": "Network",
+          "elements": [
+
+          ]
+        },
+        {
+          "name": "ngfManagement",
+          "label": "Firewall Management",
+          "subLabel": {
+            "preValidation": "",
+            "postValidation": "Done"
+          },
+          "bladeTitle": "Firewall Management",
+          "elements": [
 
           ]
         }
