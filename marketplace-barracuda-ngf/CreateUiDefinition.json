@@ -142,7 +142,7 @@
               "options": {
                 "hideExisting": false
               },
-              "visible": "[equals( steps['storage'].storageIsManaged, '0' )]"
+              "visible": "[equals( steps('storage').storageIsManaged, '0' )]"
             }
 
 
