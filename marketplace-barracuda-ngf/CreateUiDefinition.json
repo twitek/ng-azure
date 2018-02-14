@@ -8,7 +8,7 @@
           "name": "fwVmName",
           "type": "Microsoft.Common.TextBox",
           "label": "Firewall Instance Host Name",
-          "toolTip": "Provide host name for newly created instance of Barracuda NextGen Firewall F",
+          "toolTip": "Provide host name for newly created instance of Barracuda CloudGen Firewall",
           "defaultValue": "BarracudaNGFW",
           "constraints": {
             "required": true,
@@ -19,8 +19,8 @@
         {
           "name": "fwVmSku",
           "type": "Microsoft.Common.OptionsGroup",
-          "label": "",
-          "toolTip": "",
+          "label": "License scheme",
+          "toolTip": "Choose between hourly billing via Azure Marketplace (PAYG) and Bring-Your-Own-License.",
           "defaultValue": "PAYG",
           "constraints": {
             "required": true,
@@ -79,22 +79,22 @@
               "name": "fwVmSizeBasic",
               "type": "Microsoft.Common.DropDown",
               "label": "Firewall Instance Size",
-              "toolTip": "Choose instance size corresponding to your license",
-              "defaultValue": "Standard_D2_v2",
+              "toolTip": "Choose instance size corresponding to your license. ",
+              "defaultValue": "Small (Level 2)",
               "constraints": {
                 "required": true,
                 "allowedValues": [
                   {
                     "label": "Small (Level 2)",
-                    "value": "Standard_A1"
+                    "value": "Standard_F1s"
                   },
                   {
                     "label": "Medium (Level 4)",
-                    "value": "Standard_D2_v2"
+                    "value": "Standard_DS2_v2"
                   },
                   {
                     "label": "Large (Level 6)",
-                    "value": "Standard_D3_v2"
+                    "value": "Standard_DS3_v2"
                   },
                   {
                     "label": "X-Large (Level 8)",
@@ -109,7 +109,7 @@
               "type": "Microsoft.Common.OptionsGroup",
               "label": "Use managed disks",
               "toolTip": "Enable this feature to have Azure automatically manage the availability of disks to provide data redundancy and fault tolerance, without creating and managing storage accounts on your own. Managed disks may not be available in all regions.",
-              "defaultValue": "1",
+              "defaultValue": "Yes",
               "constraints": {
                 "required": true,
                 "allowedValues": [
@@ -128,7 +128,7 @@
               "name": "storageAccount",
               "type": "Microsoft.Storage.StorageAccountSelector",
               "label": "Storage Account",
-              "toolTip": "Storage Account for the disk drive of the Barracuda NextGen Firewall",
+              "toolTip": "Storage Account for the disk image of the Barracuda NextGen Firewall",
               "defaultValue": {
                 "type": "Standard_LRS"
               },
@@ -157,6 +157,67 @@
           },
           "bladeTitle": "Network",
           "elements": [
+            {
+              "name": "virtualNetwork",
+              "type": "Microsoft.Network.VirtualNetworkCombo",
+              "label": {
+                "virtualNetwork": "Virtual network",
+                "subnets": "Subnets"
+              },
+              "toolTip": {
+                "virtualNetwork": "Virtual Network Name",
+                "subnets": "Create a separate subnet for Barracuda NGFW"
+              },
+              "defaultValue": {
+                "name": "newVirtualNetwork",
+                "addressPrefixSize": "/16"
+              },
+              "constraints": {
+                "minAddressPrefixSize": "/24"
+              },
+              "options": {
+                "hideExisting": false
+              },
+              "subnets": {
+                "fwSubnet": {
+                  "label": "Firewall Subnet",
+                  "defaultValue": {
+                    "name": "FirewallSubnet",
+                    "addressPrefixSize": "/29"
+                  },
+                  "constraints": {
+                    "minAddressPrefixSize": "/30",
+                    "minAddressCount": 2,
+                    "requireContiguousAddresses": false
+                  }
+                }
+              }
+            },
+            {
+              "name": "publicIp",
+              "type": "Microsoft.Network.PublicIpAddressCombo",
+              "label": {
+                "publicIpAddress": "Public IP Address Name",
+                "domainNameLabel": "Domain Name Label"
+              },
+              "toolTip": {
+                "publicIpAddress": "Name of public IP address ARM resource",
+                "domainNameLabel": "Prefix to use for public IP address DNS name (e.g. [prefix].region.cloudapp.azure.com)"
+              },
+              "defaultValue": {
+                "publicIpAddress": "[concat( basics( 'fwVmName' ), '-pip' )]",
+                "domainNameLabel": "[basics( 'fwVmName' )]"
+              },
+              "options": {
+                "hideNone": false,
+                "hideDomainNameLabel": false,
+                "hideExisting": false
+              },
+              "constraints": {
+                "required": false
+              },
+              "visible": true
+            }
 
           ]
         },
@@ -170,6 +231,68 @@
           "bladeTitle": "Firewall Management",
           "elements": [
 
+          ]
+        },
+        {
+          "name": "advanced",
+          "label": "",
+          "subLabel": {
+            "preValidation": "",
+            "postValidation": "Done"
+          },
+          "bladeTitle": "",
+          "elements": [
+            {
+              "name": "fwVmAddress",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Barracuda NextGen Firewall Private IP Address",
+              "toolTip": "Provide IP address from Firewall Subnet defined above",
+              "defaultValue": "[steps( 'networking' ).virtualNetwork.subnets.fwSubnet.startAddress]",
+              "constraints": {
+                "required": false,
+                "regex": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$",
+                "validationMessage": "Must be a valid IPv4 address from Firewall Subnet"
+              }
+            },
+            {
+              "name": "fwVmSize",
+              "type": "Microsoft.Compute.SizeSelector",
+              "label": "Virtual firewall instance size",
+              "toolTip": "The size of virtual machine to provision.",
+              "recommendedSizes": [
+                "[steps( 'storage' ).fwVmSizeBasic]",
+                "Standard_F1s",
+                "Standard_D2s_v2",
+                "Standard_D3s_v2",
+                "Standard_D4s_v2"
+              ],
+              "constraints": {
+                "allowedSizes": [
+                  "Standard_F1s",
+                  "Standard_F2s",
+                  "Standard_F4s",
+                  "Standard_F8s",
+                  "Standard_F1s_v2",
+                  "Standard_F2s_v2",
+                  "Standard_F4s_v2",
+                  "Standard_F8s_v2"
+                  "Standard_DS2_v2",
+                  "Standard_DS3_v2",
+                  "Standard_DS4_v2",
+                  "Standard_DS2_v3",
+                  "Standard_DS3_v3",
+                  "Standard_DS4_v3"
+                ],
+                "required": true
+              },
+              "osPlatform": "Linux",
+              "imageReference": {
+                "publisher": "barracudanetworks",
+                "offer": "barracuda-ng-firewall",
+                "sku": "[basics( 'fwVmSku' )]"
+              },
+              "count": "1"
+            }
           ]
         }
       ],
