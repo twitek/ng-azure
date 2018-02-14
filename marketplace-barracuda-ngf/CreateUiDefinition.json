@@ -413,7 +413,7 @@
                   "Standard_B2s",
                   "Standard_B2ms",
                   "Standard_B4ms",
-                  "Standard_B8ms",
+                  "Standard_B8ms"
                 ],
                 "options": {
                   "hideDiskTypeFilter": true
