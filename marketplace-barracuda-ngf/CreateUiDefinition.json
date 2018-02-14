@@ -109,7 +109,7 @@
               "type": "Microsoft.Common.OptionsGroup",
               "label": "Use managed disks",
               "toolTip": "Enable this feature to have Azure automatically manage the availability of disks to provide data redundancy and fault tolerance, without creating and managing storage accounts on your own. Managed disks may not be available in all regions.",
-              "defaultValue": "Yes",
+              "defaultValue": "1",
               "constraints": {
                 "required": true,
                 "allowedValues": [
@@ -142,7 +142,7 @@
               "options": {
                 "hideExisting": false
               },
-              "visible": "[equals( steps['storage'].storageIsManaged.value, '0' )]"
+              "visible": "[equals( steps['storage'].storageIsManaged, '0' )]"
             }
 
 
