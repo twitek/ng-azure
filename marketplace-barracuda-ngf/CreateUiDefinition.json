@@ -159,7 +159,7 @@
             {
               "name": "netPrivate",
               "type": "Microsoft.Common.Section",
-              "label": "Private vNet",
+              "label": "Private networking configuration",
               "elements": [
                 {
                   "name": "virtualNetwork",
@@ -202,7 +202,7 @@
             {
               "name": "netPublic",
               "type": "Microsoft.Common.Section",
-              "label": "Public IP",
+              "label": "Public networking configuration",
               "elements": [
                 {
                   "name": "publicIp",
