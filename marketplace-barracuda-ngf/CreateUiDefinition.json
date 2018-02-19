@@ -76,7 +76,7 @@
           "bladeTitle": "Size and Storage",
           "elements": [
             {
-              "name": "fwVmSizeBasic",
+              "name": "fwVmCores",
               "type": "Microsoft.Common.DropDown",
               "label": "Firewall Instance Size",
               "toolTip": "Choose instance size corresponding to your license. Recommended instance type will be automatically selected, but you can override this recommendation in Advanced Settings step.",
@@ -86,19 +86,19 @@
                 "allowedValues": [
                   {
                     "label": "Small (Level 2)",
-                    "value": "Standard_F1s"
+                    "value": "1"
                   },
                   {
                     "label": "Medium (Level 4)",
-                    "value": "Standard_DS2_v2"
+                    "value": "2"
                   },
                   {
                     "label": "Large (Level 6)",
-                    "value": "Standard_DS3_v2"
+                    "value": "4"
                   },
                   {
                     "label": "X-Large (Level 8)",
-                    "value": "Standard_DS4_v2"
+                    "value": "8"
                   }
                 ]
               },
@@ -384,11 +384,10 @@
               "label": "Virtual firewall instance size",
               "toolTip": "The size of virtual machine to provision.",
               "recommendedSizes": [
-                "[steps( 'storage' ).fwVmSizeBasic]",
-                "Standard_F1s",
-                "Standard_D2s_v2",
-                "Standard_D3s_v2",
-                "Standard_D4s_v2"
+                "[concat( 'Standard_F', steps( 'storage' ).fwVmCores, 's' )]",
+                "[concat( 'Standard_DS', div( steps( 'storage' ).fwVmCores, 2 ), '_v2' )]",
+                "[concat( 'Standard_F', steps( 'storage' ).fwVmCores, 's_v2' )]",
+                "[concat( 'Standard_DS', steps( 'storage' ).fwVmCores, '_v3' )]"
               ],
               "constraints": {
                 "allowedSizes": [
