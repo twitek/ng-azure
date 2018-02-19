@@ -159,31 +159,30 @@
             {
               "name": "netPrivate",
               "type": "Microsoft.Common.Section",
-              "label": "Private vNet configuration",
+              "label": "Private vNet",
               "elements": [
                 {
-
-              "name": "virtualNetwork",
-              "type": "Microsoft.Network.VirtualNetworkCombo",
-              "label": {
+                  "name": "virtualNetwork",
+                  "type": "Microsoft.Network.VirtualNetworkCombo",
+                  "label": {
                 "virtualNetwork": "Virtual network",
                 "subnets": "Subnets"
               },
-              "toolTip": {
+                  "toolTip": {
                 "virtualNetwork": "Select existing or create a new VNet for your firewall deployment",
                 "subnets": "If you plan to protect outgoing or internal traffic with this firewall, it must be placed in a subnet separated from protected instances. [Read more about user-defined routes](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview#user-defined)"
               },
-              "defaultValue": {
+                  "defaultValue": {
                 "name": "newVirtualNetwork",
                 "addressPrefixSize": "/16"
               },
-              "constraints": {
+                  "constraints": {
                 "minAddressPrefixSize": "/24"
               },
-              "options": {
+                  "options": {
                 "hideExisting": false
               },
-              "subnets": {
+                  "subnets": {
                 "fwSubnet": {
                   "label": "Firewall Subnet",
                   "defaultValue": {
@@ -197,41 +196,41 @@
                   }
                 }
               }
-            }
-          ]
-        },
-        {
-        "name": "netPrivate",
-        "type": "Microsoft.Common.Section",
-        "label": "Private vNet configuration",
-        "elements": [
+                }
+              ]
+            },
             {
-              "name": "publicIp",
-              "type": "Microsoft.Network.PublicIpAddressCombo",
-              "label": {
+              "name": "netPublic",
+              "type": "Microsoft.Common.Section",
+              "label": "Public IP",
+              "elements": [
+                {
+                  "name": "publicIp",
+                  "type": "Microsoft.Network.PublicIpAddressCombo",
+                  "label": {
                 "publicIpAddress": "Public IP Address Name",
                 "domainNameLabel": "Domain Name Label"
               },
-              "toolTip": {
+                  "toolTip": {
                 "publicIpAddress": "Name of public IP address ARM resource",
                 "domainNameLabel": "Prefix to use for public IP address DNS name (e.g. [prefix].region.cloudapp.azure.com)"
               },
-              "defaultValue": {
+                  "defaultValue": {
                 "publicIpAddress": "[concat( basics( 'fwVmName' ), '-pip' )]",
                 "domainNameLabel": ""
               },
-              "options": {
+                  "options": {
                 "hideNone": false,
                 "hideDomainNameLabel": false,
                 "hideExisting": false
               },
-              "constraints": {
+                  "constraints": {
                 "required": false
               },
-              "visible": true
+                  "visible": true
+                }
+              ]
             }
-          ]
-        }
 
           ]
         },
