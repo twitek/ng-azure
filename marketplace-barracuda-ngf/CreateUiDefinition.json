@@ -40,7 +40,7 @@
           "name": "fwVmVersion",
           "type": "Microsoft.Common.DropDown",
           "label": "Firmware release version",
-          "toolTip": "",
+          "toolTip": "Select your preferred firmware version. 'EA' stands for Early Availability - this release is not recommended for critical deployments, 'LTS' stands for Long Term Support. Check [Barracuda EoS plan](https://campus.barracuda.com/doc/71860849/) and [Release Notes](https://campus.barracuda.com/doc/73723948/) for more details.",
           "defaultValue": "7.2.0 (EA1)",
           "constraints": {
             "required": true,
@@ -232,11 +232,11 @@
             {
               "name": "fwParFile",
               "type": "Microsoft.Common.FileUpload",
-              "label": "Restore from PAR file",
+              "label": "Restore from PAR file. This will restore configuration from provided PAR (Barracuda CloudGen Firewall configuration backup) file. Make sure your IP configuration for this instance matches the one in PAR file.",
               "toolTip": "",
               "constraints": {
                 "required": false,
-                "accept": ".par"
+                "accept": ".par,.pgz"
               },
               "options": {
                 "multiple": false,
@@ -251,7 +251,7 @@
               "type": "Microsoft.Common.TextBox",
               "label": "Management ACL",
               "defaultValue": "0.0.0.0/0",
-              "toolTip": "Restrict management connections to the firewall to this subnet.",
+              "toolTip": "Restrict management connections to the firewall to this subnet. If not 0.0.0.0/0, this setting will introduce a Network Security Group restricting access to management ports of the firewall.",
               "constraints": {
                 "required": true,
                 "regex": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$",
@@ -427,6 +427,26 @@
                 "sku": "[basics( 'fwVmSku' )]"
               },
               "count": "1"
+            },
+            {
+              "name": "fwSShEnable",
+              "type": "Microsoft.Common.OptionsGroup",
+              "label": "SSH Management Access",
+              "defaultValue": "Disabled",
+              "toolTip": "Enabling SSH access will configure firewall SSH settings to allow root login via SSH with key-based authentication. SSH connections are subject for Management ACL settings",
+              "constraints": {
+                "allowedValues": [
+                  {
+                    "label": "Disabled",
+                    "value": "0"
+                  },
+                  {
+                    "label": "Enabled",
+                    "value": "1"
+                  }
+                ]
+              },
+              "visible": true
             }
           ]
         }
@@ -443,7 +463,7 @@
         "publicIpDnsName": "[steps( 'network' ).publicIp.domainNameLabel]",
         "publicIpAddressType": "Dynamic",
         "publicIpNewOrNone": "[steps( 'network' ).publicIp.newOrExistingOrNone]",
-        "publicIp": "[steps('network').publicIp]",
+        "publicIp": "[steps( 'network' ).publicIp]",
         "publicIpRG": "[steps( 'network' ).publicIp.resourceGroup ]",
         "newStorageAccountName": "[steps( 'storage' ).storageAccount.name]",
         "newStorageAccountType": "[steps( 'storage' ).storageAccount.type]",
@@ -454,7 +474,8 @@
         "ccClusterName": "[steps( 'ngfManagement' ).ngcc.ccClusterName]",
         "ccRangeId": "[steps( 'ngfManagement' ).ngcc.ccRangeId]",
         "ccSecret": "[steps( 'ngfManagement' ).ngcc.ccSecret]",
-        "fwParFileUrl": "[steps( 'ngfManagement' ).fwParFile.url]"
+        "fwParFileUrl": "[steps( 'ngfManagement' ).fwParFile.url]",
+        "fwSShEnable": "[steps( 'advanced' ).fwSShEnable]"
       }
    }
 }
