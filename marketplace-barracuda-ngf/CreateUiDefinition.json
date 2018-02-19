@@ -393,6 +393,12 @@
               }
             },
             {
+              "name": "dummy",
+              "type": "Microsoft.Compute.TextBox",
+              "label": "debug ds_v2",
+              "defaultValue": "[concat( 'Standard_DS', string( div( int( steps( 'storage' ).fwVmCores), 2 )), '_v2' )]"
+            },
+            {
               "name": "fwVmSize",
               "type": "Microsoft.Compute.SizeSelector",
               "label": "Virtual firewall instance size",
@@ -496,8 +502,8 @@
         "fwVmSku": "[basics( 'fwVmSku' )]",
         "fwVmSize": "[steps( 'advanced' ).fwVmSize ]",
         "fwVmAddress": "[steps( 'advanced' ).fwVmAddress ]",
-        "fwSubnetName": "[steps( 'network' ).virtualNetwork.netPrivate.subnets.fwSubnet.name ]",
-        "fwSubnetAddress": "[steps( 'network' ).virtualNetwork.netPrivate.subnets.fwSubnet.addressPrefix ]",
+        "fwSubnetName": "[steps( 'network' ).netPrivate.virtualNetwork.subnets.fwSubnet.name ]",
+        "fwSubnetAddress": "[steps( 'network' ).netPrivate.virtualNetwork.subnets.fwSubnet.addressPrefix ]",
         "publicIpName": "[steps( 'network' ).netPublic.publicIp.name ]",
         "publicIpDnsName": "[steps( 'network' ).netPublic.publicIp.domainNameLabel ]",
         "publicIpAddressType": "Dynamic",
