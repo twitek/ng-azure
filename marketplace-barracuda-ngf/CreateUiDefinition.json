@@ -85,19 +85,19 @@
                 "required": true,
                 "allowedValues": [
                   {
-                    "label": "Small (Level 2)",
+                    "label": "Small - Level 2 (1 core)",
                     "value": "1"
                   },
                   {
-                    "label": "Medium (Level 4)",
+                    "label": "Medium - Level 4 (2 cores)",
                     "value": "2"
                   },
                   {
-                    "label": "Large (Level 6)",
+                    "label": "Large - Level 6 (4 cores)",
                     "value": "4"
                   },
                   {
-                    "label": "X-Large (Level 8)",
+                    "label": "X-Large - Level 8 (8 cores)",
                     "value": "8"
                   }
                 ]
@@ -157,6 +157,12 @@
           "bladeTitle": "Network",
           "elements": [
             {
+              "name": "netPrivate",
+              "type": "Microsoft.Common.Section",
+              "label": "Private vNet configuration",
+              "elements": [
+                {
+
               "name": "virtualNetwork",
               "type": "Microsoft.Network.VirtualNetworkCombo",
               "label": {
@@ -191,7 +197,14 @@
                   }
                 }
               }
-            },
+            }
+          ]
+        },
+        {
+        "name": "netPrivate",
+        "type": "Microsoft.Common.Section",
+        "label": "Private vNet configuration",
+        "elements": [
             {
               "name": "publicIp",
               "type": "Microsoft.Network.PublicIpAddressCombo",
@@ -217,6 +230,8 @@
               },
               "visible": true
             }
+          ]
+        }
 
           ]
         },
