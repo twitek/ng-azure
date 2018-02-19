@@ -385,7 +385,7 @@
               "toolTip": "The size of virtual machine to provision.",
               "recommendedSizes": [
                 "[concat( 'Standard_F', steps( 'storage' ).fwVmCores, 's' )]",
-                "[concat( 'Standard_DS', div( steps( 'storage' ).fwVmCores, 2 ), '_v2' )]",
+                "[concat( 'Standard_DS', string( div( int( steps( 'storage' ).fwVmCores), 2 )), '_v2' )]",
                 "[concat( 'Standard_F', steps( 'storage' ).fwVmCores, 's_v2' )]",
                 "[concat( 'Standard_DS', steps( 'storage' ).fwVmCores, '_v3' )]"
               ],
