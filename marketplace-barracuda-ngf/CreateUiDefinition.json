@@ -429,7 +429,7 @@
               "count": "1"
             },
             {
-              "name": "fwSShEnable",
+              "name": "fwSshEnable",
               "type": "Microsoft.Common.OptionsGroup",
               "label": "SSH Management Access",
               "defaultValue": "Disabled",
@@ -447,6 +447,32 @@
                 ]
               },
               "visible": true
+            },
+            {
+              "name": "fwSshKey",
+              "type": "Microsoft.Compute.CredentialsCombo",
+              "label": {
+                "authenticationType": "Authentication type",
+                "password": "Password",
+                "confirmPassword": "Confirm password",
+                "sshPublicKey": "SSH public key"
+              },
+              "toolTip": {
+                "authenticationType": "",
+                "password": "",
+                "sshPublicKey": ""
+              },
+              "constraints": {
+                "required": true,
+                "customPasswordRegex": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$",
+                "customValidationMessage": "The password must contain at least 8 characters, with at least 1 letter and 1 number."
+              },
+              "options": {
+                "hideConfirmation": true,
+                "hidePassword": true
+              },
+              "osPlatform": "Linux",
+              "visible": "[equals( steps('advanced').fwSshEnable, '1' )]"
             }
           ]
         }
@@ -455,27 +481,27 @@
         "fwVmName": "[basics( 'fwVmName' )]",
         "fwVmVersion": "[basics( 'fwVmVersion' )]",
         "fwVmSku": "[basics( 'fwVmSku' )]",
-        "fwVmSize": "[steps( 'advanced' ).fwVmSize]",
-        "fwVmAddress": "[steps( 'advanced' ).fwVmAddress]",
-        "fwSubnetName": "[steps( 'network' ).virtualNetwork.subnets.fwSubnet.name]",
-        "fwSubnetAddress": "[steps( 'network' ).virtualNetwork.subnets.fwSubnet.addressPrefix]",
-        "publicIpName": "[steps( 'network' ).publicIp.name]",
-        "publicIpDnsName": "[steps( 'network' ).publicIp.domainNameLabel]",
+        "fwVmSize": "[steps( 'advanced' ).fwVmSize ]",
+        "fwVmAddress": "[steps( 'advanced' ).fwVmAddress ]",
+        "fwSubnetName": "[steps( 'network' ).virtualNetwork.subnets.fwSubnet.name ]",
+        "fwSubnetAddress": "[steps( 'network' ).virtualNetwork.subnets.fwSubnet.addressPrefix ]",
+        "publicIpName": "[steps( 'network' ).publicIp.name ]",
+        "publicIpDnsName": "[steps( 'network' ).publicIp.domainNameLabel ]",
         "publicIpAddressType": "Dynamic",
-        "publicIpNewOrNone": "[steps( 'network' ).publicIp.newOrExistingOrNone]",
-        "publicIp": "[steps( 'network' ).publicIp]",
+        "publicIpNewOrNone": "[steps( 'network' ).publicIp.newOrExistingOrNone ]",
+        "publicIp": "[steps( 'network' ).publicIp ]",
         "publicIpRG": "[steps( 'network' ).publicIp.resourceGroup ]",
-        "newStorageAccountName": "[steps( 'storage' ).storageAccount.name]",
-        "newStorageAccountType": "[steps( 'storage' ).storageAccount.type]",
-        "vnetName": "[steps( 'network' ).virtualNetwork.name]",
-        "vnetAddressSpace": "[steps( 'network').virtualNetwork.addressPrefix]",
-        "vnetRG": "[steps( 'network' ).virtualNetwork.resourceGroup]",
-        "ccIpAddress": "[steps( 'ngfManagement' ).ngcc.ccIpAddress]",
-        "ccClusterName": "[steps( 'ngfManagement' ).ngcc.ccClusterName]",
-        "ccRangeId": "[steps( 'ngfManagement' ).ngcc.ccRangeId]",
-        "ccSecret": "[steps( 'ngfManagement' ).ngcc.ccSecret]",
-        "fwParFileUrl": "[steps( 'ngfManagement' ).fwParFile.url]",
-        "fwSShEnable": "[steps( 'advanced' ).fwSShEnable]"
+        "newStorageAccountName": "[steps( 'storage' ).storageAccount.name ]",
+        "newStorageAccountType": "[steps( 'storage' ).storageAccount.type ]",
+        "vnetName": "[steps( 'network' ).virtualNetwork.name ]",
+        "vnetAddressSpace": "[steps( 'network').virtualNetwork.addressPrefix ]",
+        "vnetRG": "[steps( 'network' ).virtualNetwork.resourceGroup ]",
+        "ccIpAddress": "[steps( 'ngfManagement' ).ngcc.ccIpAddress ]",
+        "ccClusterName": "[steps( 'ngfManagement' ).ngcc.ccClusterName ]",
+        "ccRangeId": "[steps( 'ngfManagement' ).ngcc.ccRangeId ]",
+        "ccSecret": "[steps( 'ngfManagement' ).ngcc.ccSecret ]",
+        "fwParFileUrl": "[steps( 'ngfManagement' ).fwParFile ]",
+        "fwSShEnable": "[steps( 'advanced' ).fwSshEnable ]"
       }
    }
 }
