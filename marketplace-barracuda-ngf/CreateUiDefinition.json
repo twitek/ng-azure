@@ -521,7 +521,8 @@
         "ccSecret": "[steps( 'ngfManagement' ).ngcc.ccSecret ]",
         "fwParFileUrl": "[steps( 'ngfManagement' ).fwParFile ]",
         "fwSShEnable": "[steps( 'advanced' ).fwSshEnable ]",
-        "fwSshKey": "[steps( 'advanced' ).fwSshKey ]"
+        "fwSshKey": "[steps( 'advanced' ).fwSshKey ]",
+        "fwPassword": "[steps( 'ngfManagement' ).fwPassword ]"
       }
    }
 }
