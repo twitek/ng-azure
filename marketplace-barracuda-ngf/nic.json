@@ -1,0 +1,63 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "0.0.1",
+  "parameters": {
+    "fwVmName": {},
+    "publicIpRef": {},
+    "location": {},
+    "fwVmAddress": {},
+    "fwSubnetRef": {}
+  },
+  "variables": {
+    "nic0Name": "[concat( parameters( 'fwVmName' ), '-nic0' )]",
+    "apiVersion": {
+      "Compute": "2017-12-01",
+      "Network": "2017-10-01",
+      "Resources": "2017-05-10"
+    }
+  },
+  "resources": [
+    {
+      "name": "[concat( variables( 'nic0Name' ), '-public' )]",
+      "condition": "[not( empty( parameters( 'publicIpRef' )))]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "[variables( 'apiVersion' ).Network ]",
+      "location": "[parameters( 'location' )]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "enableIPForwarding": true,
+            "privateIPAllocationMethod": "[if( not( empty( parameters( 'fwVmAddress' ))), 'Static', 'Dynamic' )]",
+            "privateIPAddress": "[parameters( 'fwVmAddress' )]",
+            "subnet": {
+              "id": "[parameters( 'fwSubnetRef' )]"
+            },
+            "publicIPAddress": {
+              "id": "[parameters( 'publicIpRef' )]"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[concat( variables( 'nic0Name' ), '-private' )]",
+      "condition": "[empty( parameters( 'publicIpRef' ))]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "[variables( 'apiVersion' ).Network ]",
+      "location": "[parameters( 'location' )]",
+      "properties": {
+        "ipConfigurations": [
+          {
+            "enableIPForwarding": true,
+            "privateIPAllocationMethod": "[if( not( empty( parameters( 'fwVmAddress' ))), 'Static', 'Dynamic' )]",
+            "privateIPAddress": "[parameters( 'fwVmAddress' )]",
+            "subnet": {
+              "id": "[parameters( 'fwSubnetRef' )]"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {}
+}

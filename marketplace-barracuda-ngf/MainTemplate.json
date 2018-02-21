@@ -1,7 +1,129 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "0.0.1",
-  "parameters": {},
+  "parameters": {
+    "fwVmName": {
+      "type": "string",
+      "metadata": {
+        "description": "Firewall Name"
+      }
+    },
+    "fwVmVersion": {
+      "type": "string",
+      "metadata": {
+        "description": "Firmware version"
+      },
+      "defaultValue": "latest"
+    },
+    "fwVmSku": {
+      "type": "string",
+      "metadata": {
+        "description": "License scheme"
+      },
+      "defaultValue": "hourly"
+    },
+    "fwVmSize": {
+      "type": "string",
+      "metadata": {
+        "description": "firewall VM size"
+      }
+    },
+    "fwVmAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "Barracuda CloudGen Firewall private IP address"
+      }
+    },
+    "publicIp": {
+      "type": "object",
+      "metadata": {
+        "description": "Public IP object"
+      }
+    },
+    "newStorageAccount": {
+      "type": "object",
+      "metadata": {
+        "description": "New storage account object"
+      }
+    },
+    "vnet": {
+      "type": "object",
+      "metadata": {
+        "description": "VNet and subnet object"
+      }
+    },
+    "ccIpAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "IP Address of Control Center"
+      },
+      "defaultValue": ""
+    },
+    "ccClusterName": {
+      "type": "string",
+      "metadata": {
+        "description": "Control Center Cluster name"
+      },
+      "defaultValue": ""
+    },
+    "ccRangeId": {
+      "type": "string",
+      "metadata": {
+        "description": "Control Center Range ID"
+      },
+      "defaultValue": ""
+    },
+    "ccSecret": {
+      "type": "string",
+      "metadata": {
+        "description": "PAR file retrieval key"
+      },
+      "defaultValue": ""
+    },
+    "fwParFileUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Configuration backup PAR file"
+      },
+      "defaultValue": ""
+    },
+    "fwSshEnable": {
+      "type": "string",
+      "metadata": {
+        "description": "SSH management access enabled"
+      },
+      "defaultValue": "0"
+    },
+    "fwSshKey": {
+      "type": "string",
+      "metadata": {
+        "description": "SSH public key"
+      },
+      "defaultValue": ""
+    },
+    "fwPassword": {
+      "type": "string",
+      "metadata": {
+        "description": "Root password"
+      },
+      "defaultValue": ""
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Azure region to deploy"
+      },
+      "defaultValue": ""
+    },
+    "baseUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "The base URL for dependent assets",
+        "artifactsBaseUrl": ""
+      },
+      "defaultValue": "https://github.com/bartekmo/ng-azure/blob/ngf2/marketplace-barracuda-ngf"
+    }
+  },
   "variables": {
     "apiVersion": {
       "Compute": "2017-12-01",
@@ -11,15 +133,68 @@
   },
   "resources": [
     {
+      "name": "vNet",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables( 'apiVersion' ).Resources ]",
+      "condition": "[equal( parameters( 'vnet' ).newOrExisting, 'new' )]",
+      "properties": {
+        "templateLink": {
+          "uri": "[concat( parameters( 'baseUrl'), '/vnet.json' )]"
+        },
+        "parameters": {
+            "apiVersion": "[variables( 'apiVersion' )]"
+        }
+      }
+    },
+    {
+      "name": "publicIp",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables( 'apiVersion' ).Resources ]",
+      "condition": "[equal( parameters( 'publicIp' ).newOrExistingOrNone, 'new' )]",
+      "properties": {
+        "templateLink": {
+          "uri": "[concat( parameters( 'baseUrl'), '/pip.json' )]"
+        },
+        "parameters": {
+            "apiVersion": "[variables( 'apiVersion' )]"
+        }
+      }
+    },
+    {
+      "name": "firewallNic",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables( 'apiVersion' ).Resources ]",
+      "dependsOn": [
+        "[resourceId( 'Microsoft.Resources/deployments', 'vNet' )]",
+        "[resourceId( 'Microsoft.Resources/deployments', 'publicIp' )]"
+      ],
+      "properties": {
+        "templateLink": {
+          "uri": "[concat( parameters( 'baseUrl'), '/nic.json' )]"
+        },
+        "parameters": {
+          "apiVersion": "[variables( 'apiVersion' )]",
+          "fwVmName": {},
+          "publicIpRef": {},
+          "location": {},
+          "fwVmAddress": {},
+          "fwSubnetRef": {}
+        }
+      }
+    },
+    {
       "name": "firewallInstance",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables( 'apiVersion' ).Resources ]",
+      "dependsOn": [
+        "[resourceId( 'Microsoft.Resources/deployments', 'firewallNic' )]"
+      ],
       "properties": {
         "templateLink": {
-          "uri": "Artifacts/fw.json"
+          "uri": "[concat( parameters( 'baseUrl'), '/fw.json' )]"
         },
         "parameters": {
-
+          "apiVersion": "[variables( 'apiVersion' )]"
         }
       }
     }

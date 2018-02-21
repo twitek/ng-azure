@@ -1,0 +1,108 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "0.0.1",
+  "parameters": {
+    "fwVmName": {
+
+    },
+    "location": {
+
+    },
+    "fwVmVersion": {
+
+    },
+    "fwVmSku": {
+
+    },
+    "fwVmSize": {
+
+    },
+    "fwPassword": {
+
+    },
+    "fwBootDiagnosticsStorage": {
+
+    },
+    "fwBootDiagnosticsEnabled": {
+
+    },
+    "fwVmAddress": {},
+    "fwSubnetRef": {},
+    "publicIpRef": {},
+    "fwNic0Ref": {}
+  },
+  "variables": {
+    "apiVersion": {
+      "Compute": "2017-12-01",
+      "Network": "2017-10-01",
+      "Resources": "2017-05-10"
+    }
+  },
+  "resources": [
+    {
+        "name": "[parameters( 'fwVmName' )]",
+        "type": "Microsoft.Compute/virtualMachines",
+        "apiVersion": "[variables( 'apiVersion' ).Compute ]",
+        "location": "[parameters( 'location' )]",
+        "tags": {},
+        "plan": {
+          "name": "[parameters( 'fwVmSku' )]",
+          "publisher": "barracudanetworks",
+          "product": "barracuda-ng-firewall"
+        },
+        "properties": {
+          "hardwareProfile": {
+            "vmSize": "[parameters( 'fwVmSize' )]"
+          },
+          "storageProfile": {
+            "imageReference": {
+              "publisher": "barracudanetworks",
+              "offer": "barracuda-ng-firewall",
+              "sku": "[parameters( 'fwVmSku' )]",
+              "version": "[parameters( 'fwVmVersion' )]"
+            },
+            "osDisk": {
+              "osType": "Linux",
+              "caching": "ReadWrite",
+              "createOption": "FromImage",
+              "managedDisk": {
+                "storageAccountType": "Premium_LRS"
+              }
+            }
+          },
+          "osProfile": {
+            "computerName": "[parameters( 'fwVmName' )]",
+            "adminUsername": "will-be-replaced-by-root",
+            "adminPassword": "[parameters( 'fwPassword' )]",
+            "customData": "[base64( variables( 'fwCustomData' ))]",
+            "linuxConfiguration": {
+              "ssh": {
+                "publicKeys": [
+                  {
+                    "keyData": "[parameters( 'fwSshKey' )]"
+                  }
+                ]
+              }
+            }
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "[parameters( 'fwNic0Ref' )]",
+                "properties": {
+                  "primary": true
+                }
+              }
+            ]
+          },
+          "diagnosticsProfile": {
+            "bootDiagnostics": {
+              "enabled": "[parameters( 'fwBootDiagnosticsEnabled' )]",
+              "storageUri": "[parameters( 'fwBootDiagnosticsStorage' )]"
+            }
+          },
+        }
+      }
+  ],
+  "outputs": {}
+}

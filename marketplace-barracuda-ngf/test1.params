@@ -1,0 +1,83 @@
+{
+  "fwVmName": {
+    "value": "bam-test1"
+  },
+  "fwVmVersion": {
+    "value": "7.2.015802"
+  },
+  "fwVmSku": {
+    "value": "byol"
+  },
+  "fwVmSize": {
+    "value": "Standard_F1s"
+  },
+  "fwVmAddress": {
+    "value": "10.5.0.9"
+  },
+  "fwSubnetName": {
+    "value": "default"
+  },
+  "fwSubnetAddress": {
+    "value": "10.5.0.0/24"
+  },
+  "publicIpDnsName": {
+    "value": ""
+  },
+  "publicIpAddressType": {
+    "value": "Dynamic"
+  },
+  "publicIpNewOrNone": {
+    "value": "none"
+  },
+  "publicIp": {
+    "value": {
+      "resourceGroup": "bam-test1",
+      "domainNameLabel": "",
+      "publicIPAllocationMethod": "Dynamic",
+      "newOrExistingOrNone": "none"
+    }
+  },
+  "publicIpRG": {
+    "value": "bam-test1"
+  },
+  "vnetName": {
+    "value": "bam-tests"
+  },
+  "vnetRG": {
+    "value": "bam-tests"
+  },
+  "vnet": {
+    "value": {
+      "vnetPickerData": {
+        "id": "/subscriptions/bde58b49-9951-466e-90e2-592c0920ce77/resourceGroups/bam-tests/providers/Microsoft.Network/virtualNetworks/bam-tests",
+        "name": "bam-tests",
+        "addressPrefixes": [
+          "10.5.0.0/16"
+        ],
+        "subnetName": "default",
+        "subnetAddressPrefix": "10.5.0.0/24",
+        "location": "westeurope"
+      },
+      "name": "bam-tests",
+      "resourceGroup": "bam-tests",
+      "addressPrefixes": [
+        "10.5.0.0/16"
+      ],
+      "newOrExisting": "existing",
+      "subnets": {
+        "fwSubnet": {
+          "name": "default",
+          "addressPrefix": "10.5.0.0/24",
+          "startAddress": "10.5.0.9"
+        }
+      },
+      "isSubnetConfigured": true
+    }
+  },
+  "fwSShEnable": {
+    "value": "0"
+  },
+  "fwPassword": {
+    "value": "a"
+  }
+}
