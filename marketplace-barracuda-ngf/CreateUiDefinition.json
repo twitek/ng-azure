@@ -7,9 +7,9 @@
         {
           "name": "fwVmName",
           "type": "Microsoft.Common.TextBox",
-          "label": "Firewall Instance Host Name",
-          "toolTip": "Provide host name for newly created instance of Barracuda CloudGen Firewall",
-          "defaultValue": "BarracudaNGFW",
+          "label": "Firewall Name",
+          "toolTip": "Provide host name for the Barracuda CloudGen Firewall.",
+          "defaultValue": "BarracudaCGFW",
           "constraints": {
             "required": true,
             "regex": "^[A-Za-z0-9-_]{1,15}$",
@@ -20,7 +20,7 @@
           "name": "fwVmSku",
           "type": "Microsoft.Common.OptionsGroup",
           "label": "License scheme",
-          "toolTip": "Choose between hourly billing via Azure Marketplace (PAYG) and Bring-Your-Own-License.",
+          "toolTip": "Choose between hourly billing via Azure Marketplace (PAYG) and Bring-Your-Own-License (BYOL).",
           "defaultValue": "PAYG",
           "constraints": {
             "required": true,
@@ -39,8 +39,8 @@
         {
           "name": "fwVmVersion",
           "type": "Microsoft.Common.DropDown",
-          "label": "Firmware release version",
-          "toolTip": "Select your preferred firmware version. 'EA' stands for Early Availability - this release is not recommended for critical deployments, 'LTS' stands for Long Term Support. Check [Barracuda EoS plan](https://campus.barracuda.com/doc/71860849/) and [Release Notes](https://campus.barracuda.com/doc/73723948/) for more details.",
+          "label": "Firmware version",
+          "toolTip": "Select your preferred firmware version. 'EA' stands for Early Availability - these releases are not recommended for critical deployments, 'LTS' stands for Long Term Support. Check [Barracuda EoS plan](https://campus.barracuda.com/doc/71860849/) and [Release Notes](https://campus.barracuda.com/doc/73723948/) for more details.",
           "defaultValue": "7.2.0 (EA1)",
           "constraints": {
             "required": true,
@@ -78,8 +78,8 @@
             {
               "name": "fwVmCores",
               "type": "Microsoft.Common.DropDown",
-              "label": "Firewall Instance Size",
-              "toolTip": "Choose instance size corresponding to your license. Recommended instance type will be automatically selected, but you can override this recommendation in Advanced Settings step.",
+              "label": "Choose a firewall VM size",
+              "toolTip": "Choose the VM size to match your license. The recommended VM type is automatically selected, but can be overridden later in the Advanced configuration step.",
               "defaultValue": "Small (Level 2)",
               "constraints": {
                 "required": true,
@@ -127,8 +127,8 @@
             {
               "name": "storageAccount",
               "type": "Microsoft.Storage.StorageAccountSelector",
-              "label": "Storage Account",
-              "toolTip": "Storage Account for the disk image of the Barracuda NextGen Firewall",
+              "label": "Storage account",
+              "toolTip": "Storage account for the disk image of the Barracuda CloudGen Firewall.",
               "defaultValue": {
                 "type": "Premium_LRS"
               },
@@ -169,8 +169,8 @@
                 "subnets": "Subnets"
               },
                   "toolTip": {
-                "virtualNetwork": "Select existing or create a new VNet for your firewall deployment",
-                "subnets": "If you plan to protect outgoing or internal traffic with this firewall, it must be placed in a subnet separated from protected instances. [Read more about user-defined routes](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview#user-defined)"
+                "virtualNetwork": "Select existing or create a new Virtual Network for your firewall deployment",
+                "subnets": "To protect outgoing or internal traffic with this firewall, place the firewall in a separte subnet from protected instances. [More information on user-defined routes](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview#user-defined)"
               },
                   "defaultValue": {
                 "name": "newVirtualNetwork",
@@ -184,7 +184,7 @@
               },
                   "subnets": {
                 "fwSubnet": {
-                  "label": "Firewall Subnet",
+                  "label": "Firewall subnet",
                   "defaultValue": {
                     "name": "FirewallSubnet",
                     "addressPrefixSize": "/29"
@@ -208,11 +208,11 @@
                   "name": "publicIp",
                   "type": "Microsoft.Network.PublicIpAddressCombo",
                   "label": {
-                "publicIpAddress": "Public IP Address Name",
-                "domainNameLabel": "Domain Name Label"
+                "publicIpAddress": "Public IP address name",
+                "domainNameLabel": "Domain name label"
               },
                   "toolTip": {
-                "publicIpAddress": "Name of public IP address ARM resource",
+                "publicIpAddress": "Name for the public IP address resource.",
                 "domainNameLabel": "Prefix to use for public IP address DNS name (e.g. [prefix].region.cloudapp.azure.com)"
               },
                   "defaultValue": {
@@ -246,7 +246,7 @@
             {
               "name": "fwParFile",
               "type": "Microsoft.Common.FileUpload",
-              "label": "Restore from PAR file. This will restore configuration from provided PAR (Barracuda CloudGen Firewall configuration backup) file. Make sure your IP configuration for this instance matches the one in PAR file.",
+              "label": "Restore the firewall configuration from an unencrypted configuration backup (PAR or PGZ file) of a Barracuda CloudGen Firewall. If you are using static IP addresses in the firewall configuration, verify that the private IP address of the firewall VM is also used in the PAR file.",
               "toolTip": "",
               "constraints": {
                 "required": false,
@@ -265,28 +265,28 @@
               "type": "Microsoft.Common.TextBox",
               "label": "Management ACL",
               "defaultValue": "0.0.0.0/0",
-              "toolTip": "Restrict management connections to the firewall to this subnet. If not 0.0.0.0/0, this setting will introduce a Network Security Group restricting access to management ports of the firewall.",
+              "toolTip": "Introduces a Network Security Group restricting access to management ports of the firewall. Enter 0.0.0.0/0 to allow access from any network and to skip creating a Network Security Group.",
               "constraints": {
                 "required": true,
                 "regex": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$",
-                "validationMessage": "Please provide subnet address in CIDR notation"
+                "validationMessage": "Enter a subnet address in CIDR notation."
               },
               "visible": true
             },
             {
               "name": "fwMgmtType",
               "type": "Microsoft.Common.DropDown",
-              "label": "Firewall management tool",
-              "defaultValue": "Firewall Admin app",
-              "toolTip": "Choose the way to manage your firewall",
+              "label": "Firewall management interface",
+              "defaultValue": "Firewall Admin (Windows only)",
+              "toolTip": "Choose the management interface for your firewall.",
               "constraints": {
                 "allowedValues": [
                   {
-                    "label": "Web UI",
+                    "label": "Web Interface",
                     "value": "webui"
                   },
                   {
-                    "label": "Firewall Admin app",
+                    "label": "Firewall Admin (Windows only)",
                     "value": "ngadmin"
                   },
                   {
@@ -301,7 +301,7 @@
             "name": "fwPassword",
             "type": "Microsoft.Common.PasswordBox",
             "label": {
-              "password": "Root Password",
+              "password": "Root password",
               "confirmPassword": "Confirm password"
             },
             "toolTip": "",
@@ -318,46 +318,46 @@
           {
             "name": "ngcc",
             "type": "Microsoft.Common.Section",
-            "label": "Control Center binding",
+            "label": "Control Center point of entry IP address",
             "elements": [
               {
                 "name": "ccIpAddress",
                 "type": "Microsoft.Common.TextBox",
                 "label": "IP Address of Control Center",
-                "toolTip": "Publicly reachable IP address of Control Center",
+                "toolTip": "Publicly reachable IP address for the NextGen Control Center. If the Control Center is behind another firewall open port TCP 806.",
                 "constraints": {
                   "required": true,
                   "regex": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$",
-                  "validationMessage": "Must be a valid IPv4 address of NGCC"
+                  "validationMessage": "Must be a valid IPv4 address of a Firewall Control Center."
                 }
               },
               {
                 "name": "ccRangeId",
                 "type": "Microsoft.Common.TextBox",
-                "label": "Range ID for firewall box",
-                "toolTip": "ID number of NGCC range hosting deployed NGFW instance configuration",
+                "label": "Control Center Range ID",
+                "toolTip": "ID number of the Control Center range containing the CloudGen Firewall configuration.",
                 "constraints": {
                   "required": true,
                   "regex": "^[0-9]{1,2}$",
-                  "validationMessage": "Must be a range ID number"
+                  "validationMessage": "Must be a range ID number."
                 }
               },
               {
                 "name": "ccClusterName",
                 "type": "Microsoft.Common.TextBox",
-                "label": "Cluster name for firewall box",
-                "toolTip": "Name of cluster hosting deployed NGFW instance configuration",
+                "label": "Control Center Cluster name",
+                "toolTip": "Name of Control Center cluster containing the CloudGen Firewall configuration.",
                 "constraints": {
                   "required": true,
                   "regex": "^[a-zA-Z0-9-]{1,16}$",
-                  "validationMessage": "Must be a valid NGCC cluster name"
+                  "validationMessage": "Must be a valid Control Center cluster name."
                 }
               },
               {
                 "name": "ccSecret",
                 "type": "Microsoft.Common.TextBox",
                 "label": "PAR file retrieval key",
-                "toolTip": "PAR file retrieval shared key from Box Properties > Operational settings",
+                "toolTip": "Shared secret configured on the Control Center to authenticate the firewall VM when retrieving the PAR file. Go to Box Properties > Operational settings page and switch to Advanced view to enter the passphrase.",
                 "constraints": {
                   "required": true
                 },
@@ -384,12 +384,12 @@
               "name": "fwVmAddress",
               "type": "Microsoft.Common.TextBox",
               "label": "Barracuda CloudGen Firewall private IP address",
-              "toolTip": "Provide static IP address from Firewall Subnet defined above",
+              "toolTip": "Enter a static IP address from the subnet the firewall is deployed to. The first four and the last IP addresses in the subnet are reserved by Azure.",
               "defaultValue": "[steps( 'network' ).netPrivate.virtualNetwork.subnets.fwSubnet.startAddress]",
               "constraints": {
                 "required": false,
                 "regex": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$",
-                "validationMessage": "Must be a valid IPv4 address from Firewall Subnet"
+                "validationMessage": "Must be a valid IPv4 address in the subnet the firewall is deployed to."
               }
             },
             {
@@ -401,8 +401,8 @@
             {
               "name": "fwVmSize",
               "type": "Microsoft.Compute.SizeSelector",
-              "label": "Virtual firewall instance size",
-              "toolTip": "The size of virtual machine to provision.",
+              "label": "Custom firewall VM size",
+              "toolTip": "Override the recommended firewall VM size selected in the Size and Storage configuration step.",
               "recommendedSizes": [
                 "[concat( 'Standard_F', steps( 'storage' ).fwVmCores, 's' )]",
                 "[concat( 'Standard_DS', string( div( int( steps( 'storage' ).fwVmCores), 2 )), '_v2' )]",
@@ -450,9 +450,9 @@
             {
               "name": "fwSshEnable",
               "type": "Microsoft.Common.OptionsGroup",
-              "label": "SSH Management Access",
+              "label": "SSH management access",
               "defaultValue": "Disabled",
-              "toolTip": "Enabling SSH access will configure firewall SSH settings to allow root login via SSH with key-based authentication. SSH connections are subject for Management ACL settings",
+              "toolTip": "Enables SSH based access uing key-based authentication for the root user. Note that Manamgement ACL settings are enforced for SSH connections.",
               "constraints": {
                 "allowedValues": [
                   {
