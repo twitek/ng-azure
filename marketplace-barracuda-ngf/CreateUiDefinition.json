@@ -80,7 +80,7 @@
               "type": "Microsoft.Common.DropDown",
               "label": "Choose a firewall VM size",
               "toolTip": "Choose the VM size to match your license. The recommended VM type is automatically selected, but can be overridden later in the Advanced configuration step.",
-              "defaultValue": "Small (Level 2)",
+              "defaultValue": "Small - Level 2 (1 core)",
               "constraints": {
                 "required": true,
                 "allowedValues": [
@@ -246,8 +246,8 @@
             {
               "name": "fwParFile",
               "type": "Microsoft.Common.FileUpload",
-              "label": "Restore the firewall configuration from an unencrypted configuration backup (PAR or PGZ file) of a Barracuda CloudGen Firewall. If you are using static IP addresses in the firewall configuration, verify that the private IP address of the firewall VM is also used in the PAR file.",
-              "toolTip": "",
+              "label": "Configuration backup PAR file",
+              "toolTip": "Restore the firewall configuration from an unencrypted configuration backup (PAR or PGZ file) of a Barracuda CloudGen Firewall. If you are using static IP addresses in the firewall configuration, verify that the private IP address of the firewall VM is also used in the PAR file.",
               "constraints": {
                 "required": false,
                 "accept": ".par,.pgz"
@@ -502,28 +502,18 @@
         "fwVmSku": "[basics( 'fwVmSku' )]",
         "fwVmSize": "[steps( 'advanced' ).fwVmSize ]",
         "fwVmAddress": "[steps( 'advanced' ).fwVmAddress ]",
-        "fwSubnetName": "[steps( 'network' ).netPrivate.virtualNetwork.subnets.fwSubnet.name ]",
-        "fwSubnetAddress": "[steps( 'network' ).netPrivate.virtualNetwork.subnets.fwSubnet.addressPrefix ]",
-        "publicIpName": "[steps( 'network' ).netPublic.publicIp.name ]",
-        "publicIpDnsName": "[steps( 'network' ).netPublic.publicIp.domainNameLabel ]",
-        "publicIpAddressType": "Dynamic",
-        "publicIpNewOrNone": "[steps( 'network' ).netPublic.publicIp.newOrExistingOrNone ]",
         "publicIp": "[steps( 'network' ).netPublic.publicIp ]",
-        "publicIpRG": "[steps( 'network' ).netPublic.publicIp.resourceGroup ]",
-        "newStorageAccountName": "[steps( 'storage' ).storageAccount.name ]",
-        "newStorageAccountType": "[steps( 'storage' ).storageAccount.type ]",
-        "vnetName": "[steps( 'network' ).netPrivate.virtualNetwork.name ]",
-        "vnetAddressSpace": "[steps( 'network').netPrivate.virtualNetwork.addressPrefix ]",
-        "vnetRG": "[steps( 'network' ).netPrivate.virtualNetwork.resourceGroup ]",
+        "newStorageAccount": "[steps( 'storage' ).storageAccount ]",
         "vnet": "[steps( 'network' ).netPrivate.virtualNetwork ]",
         "ccIpAddress": "[steps( 'ngfManagement' ).ngcc.ccIpAddress ]",
         "ccClusterName": "[steps( 'ngfManagement' ).ngcc.ccClusterName ]",
         "ccRangeId": "[steps( 'ngfManagement' ).ngcc.ccRangeId ]",
         "ccSecret": "[steps( 'ngfManagement' ).ngcc.ccSecret ]",
         "fwParFileUrl": "[steps( 'ngfManagement' ).fwParFile ]",
-        "fwSShEnable": "[steps( 'advanced' ).fwSshEnable ]",
+        "fwSshEnable": "[steps( 'advanced' ).fwSshEnable ]",
         "fwSshKey": "[steps( 'advanced' ).fwSshKey ]",
-        "fwPassword": "[steps( 'ngfManagement' ).fwPassword ]"
+        "fwPassword": "[steps( 'ngfManagement' ).fwPassword ]",
+        "location": "[location()]"
       }
    }
 }
