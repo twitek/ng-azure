@@ -16,11 +16,10 @@
       "defaultValue": ""
     },
     "location": {
-      "location": {
-        "type": "string",
-        "metadata": {
-          "description": "Azure region to deploy"
-        },
+      "type": "string",
+      "metadata": {
+        "description": "Azure region to deploy"
+      },
       "defaultValue": "[resourceGroup().location]"
     },
     "fwVmAddress": {
