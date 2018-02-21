@@ -515,6 +515,7 @@
         "vnetName": "[steps( 'network' ).netPrivate.virtualNetwork.name ]",
         "vnetAddressSpace": "[steps( 'network').netPrivate.virtualNetwork.addressPrefix ]",
         "vnetRG": "[steps( 'network' ).netPrivate.virtualNetwork.resourceGroup ]",
+        "vnet": "[steps( 'network' ).netPrivate.virtualNetwork ]",
         "ccIpAddress": "[steps( 'ngfManagement' ).ngcc.ccIpAddress ]",
         "ccClusterName": "[steps( 'ngfManagement' ).ngcc.ccClusterName ]",
         "ccRangeId": "[steps( 'ngfManagement' ).ngcc.ccRangeId ]",
