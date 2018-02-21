@@ -95,14 +95,14 @@
       "defaultValue": "0"
     },
     "fwSshKey": {
-      "type": "string",
+      "type": "secureString",
       "metadata": {
         "description": "SSH public key"
       },
       "defaultValue": ""
     },
     "fwPassword": {
-      "type": "string",
+      "type": "secureString",
       "metadata": {
         "description": "Root password"
       },
