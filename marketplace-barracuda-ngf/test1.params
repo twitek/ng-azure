@@ -14,21 +14,6 @@
   "fwVmAddress": {
     "value": "10.5.0.9"
   },
-  "fwSubnetName": {
-    "value": "default"
-  },
-  "fwSubnetAddress": {
-    "value": "10.5.0.0/24"
-  },
-  "publicIpDnsName": {
-    "value": ""
-  },
-  "publicIpAddressType": {
-    "value": "Dynamic"
-  },
-  "publicIpNewOrNone": {
-    "value": "none"
-  },
   "publicIp": {
     "value": {
       "resourceGroup": "bam-test1",
@@ -36,15 +21,6 @@
       "publicIPAllocationMethod": "Dynamic",
       "newOrExistingOrNone": "none"
     }
-  },
-  "publicIpRG": {
-    "value": "bam-test1"
-  },
-  "vnetName": {
-    "value": "bam-tests"
-  },
-  "vnetRG": {
-    "value": "bam-tests"
   },
   "vnet": {
     "value": {
@@ -74,10 +50,13 @@
       "isSubnetConfigured": true
     }
   },
-  "fwSShEnable": {
+  "fwSshEnable": {
     "value": "0"
   },
   "fwPassword": {
     "value": "a"
+  },
+  "location": {
+    "value": "westeurope"
   }
 }
