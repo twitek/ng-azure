@@ -57,16 +57,18 @@
       "apiVersion": "[parameters( 'apiVersion' ).Network ]",
       "location": "[parameters( 'location' )]",
       "properties": {
+        "enableIPForwarding": true,
         "ipConfigurations": [
           {
-            "enableIPForwarding": true,
-            "privateIPAllocationMethod": "[if( not( empty( parameters( 'fwVmAddress' ))), 'Static', 'Dynamic' )]",
-            "privateIPAddress": "[parameters( 'fwVmAddress' )]",
-            "subnet": {
-              "id": "[parameters( 'fwSubnetRef' )]"
-            },
-            "publicIPAddress": {
-              "id": "[parameters( 'publicIpRef' )]"
+            "properties": {
+              "privateIPAllocationMethod": "[if( not( empty( parameters( 'fwVmAddress' ))), 'Static', 'Dynamic' )]",
+              "privateIPAddress": "[parameters( 'fwVmAddress' )]",
+              "subnet": {
+                "id": "[parameters( 'fwSubnetRef' )]"
+              },
+              "publicIPAddress": {
+                "id": "[parameters( 'publicIpRef' )]"
+              }
             }
           }
         ]
@@ -79,13 +81,15 @@
       "apiVersion": "[parameters( 'apiVersion' ).Network ]",
       "location": "[parameters( 'location' )]",
       "properties": {
+        "enableIPForwarding": true,
         "ipConfigurations": [
           {
-            "enableIPForwarding": true,
-            "privateIPAllocationMethod": "[if( not( empty( parameters( 'fwVmAddress' ))), 'Static', 'Dynamic' )]",
-            "privateIPAddress": "[parameters( 'fwVmAddress' )]",
-            "subnet": {
-              "id": "[parameters( 'fwSubnetRef' )]"
+            "properties": {
+              "privateIPAllocationMethod": "[if( not( empty( parameters( 'fwVmAddress' ))), 'Static', 'Dynamic' )]",
+              "privateIPAddress": "[parameters( 'fwVmAddress' )]",
+              "subnet": {
+                "id": "[parameters( 'fwSubnetRef' )]"
+              }
             }
           }
         ]
