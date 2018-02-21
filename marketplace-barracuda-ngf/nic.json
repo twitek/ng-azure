@@ -60,9 +60,11 @@
         "enableIPForwarding": true,
         "ipConfigurations": [
           {
+            "name": "ipconfig1",
             "properties": {
+              "privateIpAddressVersion": "IPv4",
               "privateIPAllocationMethod": "[if( not( empty( parameters( 'fwVmAddress' ))), 'Static', 'Dynamic' )]",
-              "privateIPAddress": "[parameters( 'fwVmAddress' )]",
+              "privateIpAddress": "[parameters( 'fwVmAddress' )]",
               "subnet": {
                 "id": "[parameters( 'fwSubnetRef' )]"
               },
@@ -84,9 +86,11 @@
         "enableIPForwarding": true,
         "ipConfigurations": [
           {
+            "name": "ipconfig1",
             "properties": {
+              "privateIpAddressVersion": "IPv4",
               "privateIPAllocationMethod": "[if( not( empty( parameters( 'fwVmAddress' ))), 'Static', 'Dynamic' )]",
-              "privateIPAddress": "[parameters( 'fwVmAddress' )]",
+              "privateIpAddress": "[parameters( 'fwVmAddress' )]",
               "subnet": {
                 "id": "[parameters( 'fwSubnetRef' )]"
               }
