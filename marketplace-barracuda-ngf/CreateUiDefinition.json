@@ -199,7 +199,7 @@
                       "label": "Protected subnet",
                       "defaultValue": {
                         "name": "ProtectedSubnet",
-                        "addressPefixSize": "/24"
+                        "addressPrefixSize": "/24"
                       },
                       "constraints": {
                         "minAddressPrefixSize": "/30",
