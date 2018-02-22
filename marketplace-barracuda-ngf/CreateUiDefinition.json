@@ -202,7 +202,9 @@
                         "addressPefixSize": "/24"
                       },
                       "constraints": {
-                        "minAddressPrefixSize": "/30"
+                        "minAddressPrefixSize": "/30",
+                        "minAddressCount": 0,
+                        "requireContiguousAddresses": false
                       }
                     }
                   }
