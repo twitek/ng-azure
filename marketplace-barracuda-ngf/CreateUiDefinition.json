@@ -200,6 +200,9 @@
                       "defaultValue": {
                         "name": "ProtectedSubnet",
                         "addressPefixSize": "/24"
+                      },
+                      "constraints": {
+                        "minAddressPrefixSize": "/30"
                       }
                     }
                   }
