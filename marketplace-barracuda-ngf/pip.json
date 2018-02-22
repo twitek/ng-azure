@@ -54,7 +54,7 @@
     "selfLink": {
       "type": "string",
       "value": "[if( equals( parameters( 'pip' ).newOrExistingOrNone, 'none' ), '',
-        resourceId( 'Microsoft.Network/publicIPAddresses', parameters( 'pip' ).name ))]"
+        resourceId( parameters( 'pip' ).resourceGroup, 'Microsoft.Network/publicIPAddresses', parameters( 'pip' ).name ))]"
     }
   }
 }
