@@ -165,37 +165,44 @@
                   "name": "virtualNetwork",
                   "type": "Microsoft.Network.VirtualNetworkCombo",
                   "label": {
-                "virtualNetwork": "Virtual network",
-                "subnets": "Subnets"
-              },
+                    "virtualNetwork": "Virtual network",
+                    "subnets": "Subnets"
+                  },
                   "toolTip": {
-                "virtualNetwork": "Select existing or create a new Virtual Network for your firewall deployment",
-                "subnets": "To protect outgoing or internal traffic with this firewall, place the firewall in a separte subnet from protected instances. [More information on user-defined routes](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview#user-defined)"
-              },
+                    "virtualNetwork": "Select existing or create a new Virtual Network for your firewall deployment",
+                    "subnets": "To protect outgoing or internal traffic with this firewall, place the firewall in a separte subnet from protected instances. [More information on user-defined routes](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview#user-defined)"
+                  },
                   "defaultValue": {
-                "name": "newVirtualNetwork",
-                "addressPrefixSize": "/16"
-              },
-                  "constraints": {
-                "minAddressPrefixSize": "/24"
-              },
-                  "options": {
-                "hideExisting": false
-              },
-                  "subnets": {
-                "fwSubnet": {
-                  "label": "Firewall subnet",
-                  "defaultValue": {
-                    "name": "FirewallSubnet",
-                    "addressPrefixSize": "/29"
+                    "name": "newVirtualNetwork",
+                    "addressPrefixSize": "/16"
                   },
                   "constraints": {
-                    "minAddressPrefixSize": "/30",
-                    "minAddressCount": 2,
-                    "requireContiguousAddresses": false
+                    "minAddressPrefixSize": "/24"
+                  },
+                  "options": {
+                    "hideExisting": false
+                  },
+                  "subnets": {
+                    "fwSubnet": {
+                      "label": "Firewall subnet",
+                      "defaultValue": {
+                        "name": "FirewallSubnet",
+                        "addressPrefixSize": "/29"
+                      },
+                      "constraints": {
+                        "minAddressPrefixSize": "/30",
+                        "minAddressCount": 2,
+                        "requireContiguousAddresses": false
+                      }
+                    },
+                    "clientSubnet": {
+                      "label": "Protected subnet",
+                      "defaultValue": {
+                        "name": "ProtectedSubnet",
+                        "addressPefixSize": "/24"
+                      }
+                    }
                   }
-                }
-              }
                 }
               ]
             },
