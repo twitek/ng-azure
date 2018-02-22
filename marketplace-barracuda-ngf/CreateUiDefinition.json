@@ -187,7 +187,7 @@
                       "label": "Firewall subnet",
                       "defaultValue": {
                         "name": "FirewallSubnet",
-                        "addressPrefixSize": "/29"
+                        "addressPrefixSize": "/24"
                       },
                       "constraints": {
                         "minAddressPrefixSize": "/30",
