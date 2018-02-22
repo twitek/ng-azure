@@ -170,7 +170,7 @@
                   },
                   "toolTip": {
                     "virtualNetwork": "Select existing or create a new Virtual Network for your firewall deployment",
-                    "subnets": "To protect outgoing or internal traffic with this firewall, place the firewall in a separte subnet from protected instances. [More information on user-defined routes](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview#user-defined)"
+                    "subnets": "'Firewall Subnet' will be used to host your firewall VM, 'Protected Subnet' will be (re-)routed via the firewall. Firewall must be placed in a separte subnet from protected instances. [More information on user-defined routes](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview#user-defined)"
                   },
                   "defaultValue": {
                     "name": "newVirtualNetwork",
