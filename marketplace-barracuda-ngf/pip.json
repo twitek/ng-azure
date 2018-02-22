@@ -1,10 +1,59 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "0.0.1",
-  "parameters": {},
-  "variables": {},
+  "parameters": {
+    "apiVersion": {
+      "type": "object",
+      "metadata": {
+        "description": "API versions"
+      },
+      "defaultValue": {
+        "Compute": "2017-12-01",
+        "Network": "2017-10-01",
+        "Resources": "2017-05-10"
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Azure region to deploy"
+      },
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "pip": {
+      "type": "object",
+      "metadata": {
+        "description": "Public IP parameters"
+      }
+    }
+  },
+  "variables": {
+    "pipSKu": "Basic",
+    "pipAddressVersion": "IPv4"
+  },
   "resources": [
-
+    {
+        "apiVersion": "[parameters( 'apiVersion' ).Network ]",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "name": "[parameters( 'pip' ).name ]",
+        "condition": "[equals( parameters( 'pip' ).newOrExistingOrNone, 'new' )]",
+        "location": "[parameters( 'location' )]",
+        "sku": {
+            "name": "[variables( 'pipSku' )]"
+        },
+        "properties": {
+            "publicIPAllocationMethod": "[parameters( 'pip' ).publicIPAllocationMethod ]",
+            "publicIpAddressVersion": "[variables( 'pipAddressVersion' )]",
+            "dnsSettings": {
+                "domainNameLabel": "[parameters( 'pip' ).domainNameLabel ]"
+            }
+        }
+    }
   ],
-  "outputs": {}
+  "outputs": {
+    "selfLink": {
+      "type": "string",
+      "value": "[if( equals( parameters( 'pip' ).newOrExistingOrNone, 'new' ), resourceId( reference( parameters( 'pip' ).name )), if( equals( parameters( 'pip' ).newOrExistingOrNone, 'existing' ), resourceId( parameters( 'pip' ).resourceGroup, 'Microsoft.Network/publicIPAddress', parameters( 'pip' ).name ), '' ))]"
+    }
+  }
 }
