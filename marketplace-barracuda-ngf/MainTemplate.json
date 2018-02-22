@@ -44,7 +44,8 @@
       "type": "object",
       "metadata": {
         "description": "New storage account object"
-      }
+      },
+      "defaultValue": {}
     },
     "vnet": {
       "type": "object",
@@ -113,7 +114,7 @@
       "metadata": {
         "description": "Azure region to deploy"
       },
-      "defaultValue": ""
+      "defaultValue": "[resourceGroup().location]"
     },
     "baseUrl": {
       "type": "string",
@@ -121,7 +122,7 @@
         "description": "The base URL for dependent assets",
         "artifactsBaseUrl": ""
       },
-      "defaultValue": "https://github.com/bartekmo/ng-azure/blob/ngf2/marketplace-barracuda-ngf"
+      "defaultValue": "https://raw.githubusercontent.com/bartekmo/ng-azure/ngf2/marketplace-barracuda-ngf"
     }
   },
   "variables": {
@@ -129,14 +130,17 @@
       "Compute": "2017-12-01",
       "Network": "2017-10-01",
       "Resources": "2017-05-10"
-    }
+    },
+    "publicIpHolder0": "[if( equals(parameters( 'publicIp' ).newOrExistingOrNone, 'existing' ), parameters( 'publicIp').domainNameLabel, '' )]",
+    "publicIpRef": "[if( equals( parameters( 'publicIp' ).newOrExistingOrNone, 'new' ), parameters( 'publicIp').domainNameLabel, '' )]",
+    "fwSubnetRefFromParam": "[concat( resourceId( parameters( 'vnet' ).resourceGroup, 'Microsoft.Network/virtualNetworks', parameters( 'vnet' ).name ), '/subnets/', parameters( 'vnet' ).subnets.fwSubnet.name )]"
   },
   "resources": [
     {
       "name": "vNet",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables( 'apiVersion' ).Resources ]",
-      "condition": "[equal( parameters( 'vnet' ).newOrExisting, 'new' )]",
+      "condition": "[equals( parameters( 'vnet' ).newOrExisting, 'new' )]",
       "properties": {
         "templateLink": {
           "uri": "[concat( parameters( 'baseUrl'), '/vnet.json' )]"
@@ -150,13 +154,21 @@
       "name": "publicIp",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables( 'apiVersion' ).Resources ]",
-      "condition": "[equal( parameters( 'publicIp' ).newOrExistingOrNone, 'new' )]",
       "properties": {
         "templateLink": {
           "uri": "[concat( parameters( 'baseUrl'), '/pip.json' )]"
         },
+        "mode": "[deployment().properties.mode]",
         "parameters": {
-            "apiVersion": "[variables( 'apiVersion' )]"
+            "apiVersion": {
+              "value": "[variables( 'apiVersion' )]"
+            },
+            "location": {
+              "value": "[parameters( 'location' )]"
+            },
+            "pip": {
+              "value": "[parameters( 'publicIp' )]"
+            }
         }
       }
     },
@@ -172,13 +184,26 @@
         "templateLink": {
           "uri": "[concat( parameters( 'baseUrl'), '/nic.json' )]"
         },
+        "mode": "Incremental",
         "parameters": {
-          "apiVersion": "[variables( 'apiVersion' )]",
-          "fwVmName": {},
-          "publicIpRef": {},
-          "location": {},
-          "fwVmAddress": {},
-          "fwSubnetRef": {}
+          "apiVersion": {
+            "value": "[variables( 'apiVersion' )]"
+          },
+          "location": {
+            "value": "[parameters( 'location' )]"
+          },
+          "nicName": {
+            "value": "[concat( parameters( 'fwVmName' ), '-nic0' )]"
+          },
+          "publicIpRef": {
+            "value": "[reference( 'publicIp' ).outputs.selfLink.value ]"
+          },
+          "fwVmAddress": {
+            "value": "[parameters( 'fwVmAddress' )]"
+          },
+          "fwSubnetRef": {
+            "value": "[if( equals( parameters( 'vnet' ).newOrExisting, 'existing' ), variables( 'fwSubnetRefFromParam' ), '' )]"
+          }
         }
       }
     },
@@ -186,6 +211,7 @@
       "name": "firewallInstance",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables( 'apiVersion' ).Resources ]",
+      "condition": false,
       "dependsOn": [
         "[resourceId( 'Microsoft.Resources/deployments', 'firewallNic' )]"
       ],
@@ -194,7 +220,12 @@
           "uri": "[concat( parameters( 'baseUrl'), '/fw.json' )]"
         },
         "parameters": {
-          "apiVersion": "[variables( 'apiVersion' )]"
+          "apiVersion": {
+            "value": "[variables( 'apiVersion' )]"
+          },
+          "location": {
+            "value": "[parameters( 'location' )]"
+          }
         }
       }
     }
