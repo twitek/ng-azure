@@ -405,12 +405,6 @@
               }
             },
             {
-              "name": "dummy",
-              "type": "Microsoft.Compute.TextBox",
-              "label": "debug ds_v2",
-              "defaultValue": "[concat( 'Standard_DS', string( div( int( steps( 'storage' ).fwVmCores), 2 )), '_v2' )]"
-            },
-            {
               "name": "fwVmSize",
               "type": "Microsoft.Compute.SizeSelector",
               "label": "Custom firewall VM size",
