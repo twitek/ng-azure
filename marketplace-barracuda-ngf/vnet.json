@@ -42,7 +42,7 @@
       "type": "Microsoft.Network/virtualNetworks",
       "apiVersion": "[parameters( 'apiVersion' ).Network ]",
       "location": "[parameters( 'location' )]",
-      "condition": "[equals( parameters( 'vnet' ).newOrExisting ), 'new' ]",
+      "condition": "[equals( parameters( 'vnet' ).newOrExisting , 'new' )]",
       "dependsOn": [
         "[variables( 'rtName' )]"
       ],
