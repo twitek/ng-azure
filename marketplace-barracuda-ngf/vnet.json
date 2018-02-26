@@ -34,7 +34,7 @@
     }
   },
   "variables": {
-    "rtName": "[concat( substring( parameters( 'vnet' ).subnets.clientSubnet.name, 0, 55 ), '-via-cuda' )]"
+    "rtName": "[concat( parameters( 'vnet' ).subnets.clientSubnet.name), '-via-cuda' )]"
   },
   "resources": [
     {
