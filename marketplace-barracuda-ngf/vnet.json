@@ -44,7 +44,7 @@
       "location": "[parameters( 'location' )]",
       "condition": "[equals( parameters( 'vnet' ).newOrExisting ), 'new' ]",
       "dependsOn": [
-        "[reference( variables( 'rtName' ))]"
+        "[variables( 'rtName' )]"
       ],
       "properties": {
         "addressSpace": {
