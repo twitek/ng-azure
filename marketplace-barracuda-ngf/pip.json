@@ -36,7 +36,7 @@
         "apiVersion": "[parameters( 'apiVersion' ).Network ]",
         "type": "Microsoft.Network/publicIPAddresses",
         "condition": "[equals( parameters( 'pip' ).newOrExistingOrNone, 'new' )]",
-        "name": "[parameters( 'pip' ).name ]",
+        "name": "[if( empty( parameters( 'pip' ).name), 'dummy', parameters( 'pip' ).name )]",
         "location": "[parameters( 'location' )]",
         "sku": {
             "name": "[variables( 'pipSku' )]"

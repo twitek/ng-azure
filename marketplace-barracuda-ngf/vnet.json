@@ -43,7 +43,9 @@
       "apiVersion": "[parameters( 'apiVersion' ).Network ]",
       "location": "[parameters( 'location' )]",
       "condition": "[equals( parameters( 'vnet' ).newOrExisting ), 'new' ]",
-      "dependsOn": "[variables( 'rtName' )]",
+      "dependsOn": [  
+        "[reference( variables( 'rtName' ))]"
+      ],
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
