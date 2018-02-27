@@ -79,7 +79,7 @@
       "defaultValue": false
     },
     "fwSshKey": {
-      "type": "secureString",
+      "type": "secureObject",
       "metadata": {
         "description": "SSH key"
       },
