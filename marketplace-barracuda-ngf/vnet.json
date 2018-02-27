@@ -64,7 +64,7 @@
             "name": "[parameters( 'vnet' ).subnets.clientSubnet.name]",
             "properties": {
               "addressPrefix": "[parameters( 'vnet' ).subnets.clientSubnet.addressPrefix]",
-              "routeTables": "[reference( variables( 'rtName' ))]"
+              "routeTable": "[reference( variables( 'rtName' ))]"
             }
           }
         ]
