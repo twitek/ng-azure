@@ -65,7 +65,7 @@
             "properties": {
               "addressPrefix": "[parameters( 'vnet' ).subnets.clientSubnet.addressPrefix]",
               "routeTable": {
-                "id": "[reference( variables( 'rtName' ))]"
+                "id": "[resourceId( 'Microsoft.Network/routeTables', variables( 'rtName' ))]"
               }
             }
           }
