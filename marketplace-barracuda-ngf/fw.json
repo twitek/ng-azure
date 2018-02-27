@@ -93,7 +93,7 @@
     }
   },
   "variables": {
-    "adminUsername": "root",
+    "adminUsername": "dummy",
     "fwCustomData": "#!/bin/bash
     "
   },
