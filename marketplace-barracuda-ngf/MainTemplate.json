@@ -214,13 +214,13 @@
             "value": "[parameters( 'fwVmAddress' )]"
           },
           "fwSubnetRef": {
-            "value": "[if( equals( parameters( 'vnet' ).newOrExisting, 'existing' ), variables( 'fwSubnetRefFromParam' ), reference( 'vnet' ), variables( 'apiVersion' ).Resources ).outputs.fwSubnetRef.value ]"
+            "value": "[if( equals( parameters( 'vnet' ).newOrExisting, 'existing' ), variables( 'fwSubnetRefFromParam' ), reference( 'vnet' , variables( 'apiVersion' ).Resources ).outputs.fwSubnetRef.value )]"
           }
         }
       }
     },
     {
-      "name": "firewallInstance",
+      "name": "firewall",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables( 'apiVersion' ).Resources ]",
       "condition": false,
@@ -237,6 +237,33 @@
           },
           "location": {
             "value": "[parameters( 'location' )]"
+          },
+          "fwVmName": {
+            "value": "[parameters( 'fwVmName' )]"
+          },
+          "fwVmVersion": {
+            "value": "[parameters( 'fwVmVersion' )]"
+          },
+          "fwVmSku": {
+            "value": "[parameters( 'fwVmSku' )]"
+          },
+          "fwVmSize": {
+            "value": "[parameters( 'fwVmSize' )]"
+          },
+          "fwPassword": {
+            "value": "[parameters( 'fwPassword' )]"
+          },
+          "fwBootDiagnosticsStorage": {
+            "value": ""
+          },
+          "fwBootDiagnosticsEnabled": {
+            "value": false
+          },
+          "fwSshEnable": {
+            "value": "[parameters( 'fwSshEnable' )]"
+          },
+          "fwNicRef": {
+            "value": "[reference( 'firewallNic', variables( 'apiVersion' ).Resources ).outputs.selfLink.value]"
           }
         }
       }
