@@ -78,6 +78,13 @@
       },
       "defaultValue": false
     },
+    "fwSshKey": {
+      "type": "secureString",
+      "metadata": {
+        "description": "SSH key"
+      },
+      "defaultValue": ""
+    },
     "fwNicRef": {
       "type": "string",
       "metadata": {
