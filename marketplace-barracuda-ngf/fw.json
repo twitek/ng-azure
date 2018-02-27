@@ -92,7 +92,7 @@
     {
         "name": "[parameters( 'fwVmName' )]",
         "type": "Microsoft.Compute/virtualMachines",
-        "apiVersion": "[variables( 'apiVersion' ).Compute ]",
+        "apiVersion": "[parameters( 'apiVersion' ).Compute ]",
         "location": "[parameters( 'location' )]",
         "tags": {},
         "plan": {
