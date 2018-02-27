@@ -94,6 +94,16 @@
   },
   "variables": {
     "adminUsername": "dummy",
+    "sshKeySection": {
+      "ssh": {
+        "publicKeys": [
+          {
+            "path": "[concat( '/home/', variables( 'adminUsername' ), '/.ssh/authorized_keys')]",
+            "keyData": "[parameters( 'fwSshKey' )]"
+          }
+        ]
+      }
+    },
     "fwCustomData": "#!/bin/bash
     "
   },
@@ -134,16 +144,7 @@
             "adminUsername": "[variables('adminUsername')]",
             "adminPassword": "[parameters( 'fwPassword' )]",
             "customData": "[base64( variables( 'fwCustomData' ))]",
-            "linuxConfiguration": {
-              "ssh": {
-                "publicKeys": [
-                  {
-                    "path": "[concat( '/home/', variables( 'adminUsername' ), '/.ssh/authorized_keys')]",
-                    "keyData": "[parameters( 'fwSshKey' )]"
-                  }
-                ]
-              }
-            }
+            "linuxConfiguration": "[if( parameters( 'fwSshEnable' ), variables( 'sshKeySection' ), json( 'null' ))]"
           },
           "networkProfile": {
             "networkInterfaces": [
