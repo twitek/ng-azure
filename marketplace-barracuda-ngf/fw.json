@@ -93,6 +93,7 @@
     }
   },
   "variables": {
+    "adminUsername": "root",
     "fwCustomData": "#!/bin/bash
     "
   },
@@ -130,14 +131,14 @@
           },
           "osProfile": {
             "computerName": "[parameters( 'fwVmName' )]",
-            "adminUsername": "will-be-replaced-by-root",
+            "adminUsername": "[variables('adminUsername')]",
             "adminPassword": "[parameters( 'fwPassword' )]",
             "customData": "[base64( variables( 'fwCustomData' ))]",
             "linuxConfiguration": {
               "ssh": {
                 "publicKeys": [
                   {
-                    "path": "/root/.ssh/authorized_keys",
+                    "path": "[concat( '/home/', variables( 'adminUsername' ), '/.ssh/authorized_keys]",
                     "keyData": "[parameters( 'fwSshKey' )]"
                   }
                 ]
