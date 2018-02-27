@@ -48,10 +48,7 @@
       ],
       "properties": {
         "addressSpace": {
-          "addressPrefixes": [
-            "[parameters( 'vnet' ).subnets.fwSubnet.addressPrefix]",
-            "[parameters( 'vnet' ).subnets.clientSubnet.addressPrefix]"
-          ]
+          "addressPrefixes": "[parameters( 'vnet' ).addressPrefixes]"
         },
         "subnets": [
           {
