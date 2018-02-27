@@ -103,7 +103,7 @@
   "outputs": {
     "selfLink": {
             "type": "string",
-            "value": "[resourceId('Microsoft.Network/publicIPAddresses', variables( 'nicNameFinal' ))]"
+            "value": "[resourceId('Microsoft.Network/networkInterfaces', variables( 'nicNameFinal' ))]"
         }
   }
 }
