@@ -137,6 +137,7 @@
               "ssh": {
                 "publicKeys": [
                   {
+                    "path": "/root/.ssh/authorized_keys",
                     "keyData": "[parameters( 'fwSshKey' )]"
                   }
                 ]
