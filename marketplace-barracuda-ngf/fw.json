@@ -85,6 +85,32 @@
       },
       "defaultValue": ""
     },
+    "fwMgmtType": {
+      "type": "string",
+      "metadata": {
+        "description": "how do you manage your firewall?"
+      },
+      "allowedValues": [
+        "ngadmin",
+        "webui",
+        "ngcc"
+      ],
+      "defaultValue": "ngadmin"
+    },
+    "fwParFileUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "URL for PAR file to restore configuration from"
+      },
+      "defaultValue": ""
+    },
+    "fwCcData": {
+      "type": "object",
+      "metadata": {
+        "description": "Collection of Control Center data"
+      },
+      "defaultValue": {}
+    },
     "fwNicRef": {
       "type": "string",
       "metadata": {
@@ -116,9 +142,17 @@ echo \"Enabling Web Interface\"
 /opt/phion/bin/cloud-enable-webui
 ",
     "fwCustomDataCC": "",
-    "fwCustomData": "[if( parameters( 'fwSshEnable' ),
+    "fwCustomDataParRestore": "",
+    "fwCustomData1": "[if( parameters( 'fwSshEnable' ),
       concat( '#!/bin/bash', variables( 'fwCustomDataSsh' )),
-      '#!/bin/bash' )]"
+      if( equals( parameters( 'fwMgmtType' ), 'webui' ), concat( '#!/bin/bash', variable( 'fwCustomDataWebUi' )),
+      if( equals( parameters( 'fwMgmtType' ), 'ngcc' ), concat( '#!/bin/bash', variable( 'fwCustomDataCC' )),
+      '#!/bin/bash' )))]",
+    "fwCustomData": "[if( not( empty( parameters( 'fwParFileUrl' ))), concat( '#!/bin/bash', variable( 'fwCustomDataParRestore' )),
+      if ( equals( parameters( 'fwMgmtType' ), 'ngcc' ), concat( '#!/bin/bash', variable( 'fwCustomDataCC' )),
+      if ( equals( parameters( 'fw'MgmtType' ), 'webui' ), concat( '#!/bin/bash', variable( 'fwCustomDataWebUi' )),
+      if ( parameters( 'fwSshEnable' ), concat( '#!/bin/bash', variables( 'fwCustomDataSsh' )),
+      '#!/bin/bash' ))))]"
   },
   "resources": [
     {

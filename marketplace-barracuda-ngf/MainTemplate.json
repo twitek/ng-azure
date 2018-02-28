@@ -53,33 +53,12 @@
         "description": "VNet and subnet object"
       }
     },
-    "ccIpAddress": {
-      "type": "string",
+    "fwCcData": {
+      "type": "object",
       "metadata": {
-        "description": "IP Address of Control Center"
+        "description": "Collection of Control Center data"
       },
-      "defaultValue": ""
-    },
-    "ccClusterName": {
-      "type": "string",
-      "metadata": {
-        "description": "Control Center Cluster name"
-      },
-      "defaultValue": ""
-    },
-    "ccRangeId": {
-      "type": "string",
-      "metadata": {
-        "description": "Control Center Range ID"
-      },
-      "defaultValue": ""
-    },
-    "ccSecret": {
-      "type": "string",
-      "metadata": {
-        "description": "PAR file retrieval key"
-      },
-      "defaultValue": ""
+      "defaultValue": {}
     },
     "fwParFileUrl": {
       "type": "string",
@@ -261,10 +240,16 @@
             "value": false
           },
           "fwSshEnable": {
-            "value": "[parameters( 'fwSshEnable' )]"
+            "value": "[if( equals( parameters( 'fwSshEnable' ), "1" ), true, false )]"
           },
           "fwSshKey": {
             "value": "[parameters( 'fwSshKey' )]"
+          },
+          "fwMgmtType": {
+            "value": "[parameters( 'fwMgmtType' )]"
+          },
+          "fwCcData": {
+            "value": "[parameters( 'fwCcData' )]"
           },
           "fwNicRef": {
             "value": "[reference( 'firewallNic', variables( 'apiVersion' ).Resources ).outputs.selfLink.value]"
