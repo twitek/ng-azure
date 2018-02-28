@@ -151,9 +151,15 @@ echo \"Enabling Web Interface\"
     "fwCustomData": "[
       if( not( empty( parameters( 'fwParFileUrl' ))),
         concat( '#!/bin/bash', variables( 'fwCustomDataParRestore' )),
-        if( equals( parameters( 'fwMgmtType' ), 'ngcc' ),
-          concat( '#!/bin/bash', variables( 'fwCustomDataCC' )), 
-          'b'
+        if ( equals( parameters( 'fwMgmtType' ), 'ngcc' ),
+          concat( '#!/bin/bash', variables( 'fwCustomDataCC' )),
+          if ( equals( parameters( 'fwMgmtType' ), 'webui' ),
+            concat( '#!/bin/bash', variables( 'fwCustomDataWebUi' )),
+            if ( parameters( 'fwSshEnable' ),
+              concat( '#!/bin/bash', variables( 'fwCustomDataSsh' )),
+              '#!/bin/bash'
+            )
+          )
         )
       )]"
   },
