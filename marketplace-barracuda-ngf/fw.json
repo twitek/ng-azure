@@ -151,13 +151,7 @@ echo \"Enabling Web Interface\"
     "fwCustomData": "[
       if( not( empty( parameters( 'fwParFileUrl' ))),
         concat( '#!/bin/bash', variables( 'fwCustomDataParRestore' )),
-        if ( equals( parameters( 'fwMgmtType' ), 'ngcc' ),
-          concat( '#!/bin/bash', variables( 'fwCustomDataCC' )),
-          if ( equals( parameters( 'fw'MgmtType' ), 'webui' ),
-            concat( '#!/bin/bash', variables( 'fwCustomDataWebUi' )),
-            ''
-          )
-        )
+        ''
       )]"
   },
   "resources": [
