@@ -497,7 +497,7 @@
                 "hidePassword": true
               },
               "osPlatform": "Linux",
-              "visible": "[equals( steps('advanced').fwSshEnable, '1' )]"
+              "visible": "[steps('advanced').fwSshEnable]"
             }
           ]
         }
