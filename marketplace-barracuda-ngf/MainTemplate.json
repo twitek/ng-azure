@@ -89,14 +89,14 @@
       "defaultValue": ""
     },
     "fwSshEnable": {
-      "type": "string",
+      "type": "bool",
       "metadata": {
         "description": "SSH management access enabled"
       },
-      "defaultValue": "0"
+      "defaultValue": false
     },
     "fwSshKey": {
-      "type": "secureString",
+      "type": "secureObject",
       "metadata": {
         "description": "SSH public key"
       },
@@ -223,7 +223,7 @@
       "name": "firewall",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "[variables( 'apiVersion' ).Resources ]",
-      "condition": false,
+      "condition": true,
       "dependsOn": [
         "[resourceId( 'Microsoft.Resources/deployments', 'firewallNic' )]"
       ],
@@ -231,6 +231,7 @@
         "templateLink": {
           "uri": "[concat( parameters( 'baseUrl'), '/fw.json' )]"
         },
+        "mode": "[deployment().properties.mode]",
         "parameters": {
           "apiVersion": {
             "value": "[variables( 'apiVersion' )]"
@@ -261,6 +262,9 @@
           },
           "fwSshEnable": {
             "value": "[parameters( 'fwSshEnable' )]"
+          },
+          "fwSshKey": {
+            "value": "[parameters( 'fwSshKey' )]"
           },
           "fwNicRef": {
             "value": "[reference( 'firewallNic', variables( 'apiVersion' ).Resources ).outputs.selfLink.value]"
