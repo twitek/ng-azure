@@ -463,11 +463,11 @@
                 "allowedValues": [
                   {
                     "label": "Disabled",
-                    "value": "0"
+                    "value": false
                   },
                   {
                     "label": "Enabled",
-                    "value": "1"
+                    "value": true
                   }
                 ]
               },
@@ -511,6 +511,8 @@
         "publicIp": "[steps( 'network' ).netPublic.publicIp ]",
         "newStorageAccount": "[steps( 'storage' ).storageAccount ]",
         "vnet": "[steps( 'network' ).netPrivate.virtualNetwork ]",
+        "fwParFile": "[steps( 'ngfManagement' ).fwParFile ]",
+        "fwMgmtType": "[steps( 'ngfManagement' ).fwMgmtType ]",
         "ccIpAddress": "[steps( 'ngfManagement' ).ngcc.ccIpAddress ]",
         "ccClusterName": "[steps( 'ngfManagement' ).ngcc.ccClusterName ]",
         "ccRangeId": "[steps( 'ngfManagement' ).ngcc.ccRangeId ]",
