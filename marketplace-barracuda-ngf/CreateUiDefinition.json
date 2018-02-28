@@ -208,6 +208,18 @@
                       }
                     }
                   }
+                },
+                {
+                  "name": "fwVmAddress",
+                  "type": "Microsoft.Common.TextBox",
+                  "label": "Barracuda CloudGen Firewall private IP address",
+                  "toolTip": "Enter a static IP address from the subnet the firewall is deployed to. The first four and the last IP addresses in the subnet are reserved by Azure.",
+                  "defaultValue": "[steps( 'network' ).netPrivate.virtualNetwork.subnets.fwSubnet.startAddress]",
+                  "constraints": {
+                    "required": false,
+                    "regex": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$",
+                    "validationMessage": "Must be a valid IPv4 address in the subnet the firewall is deployed to."
+                  }
                 }
               ]
             },
@@ -463,11 +475,11 @@
                 "allowedValues": [
                   {
                     "label": "Disabled",
-                    "value": false
+                    "value": "0"
                   },
                   {
                     "label": "Enabled",
-                    "value": true
+                    "value": "1"
                   }
                 ]
               },
@@ -497,7 +509,7 @@
                 "hidePassword": true
               },
               "osPlatform": "Linux",
-              "visible": "[steps('advanced').fwSshEnable]"
+              "visible": "[equals( steps('advanced').fwSshEnable, '1' )]"
             }
           ]
         }
