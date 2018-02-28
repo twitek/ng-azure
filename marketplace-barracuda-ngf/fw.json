@@ -96,6 +96,7 @@
     "adminUsername": "dummy",
     "sshKeySection": {
       "ssh": {
+        "disablePasswordAuthentication": false,
         "publicKeys": [
           {
             "path": "[concat( '/home/', variables( 'adminUsername' ), '/.ssh/authorized_keys')]",
