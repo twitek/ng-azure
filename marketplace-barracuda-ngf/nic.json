@@ -51,6 +51,25 @@
         "description": "Subnet allowed to connect to management ports"
       },
       "defaultValue": "0.0.0.0/0"
+    },
+    "fwMgmtType": {
+      "type": "string",
+      "metadata": {
+        "description": "how do you manage your firewall?"
+      },
+      "allowedValues": [
+        "ngadmin",
+        "webui",
+        "ngcc"
+      ],
+      "defaultValue": "ngadmin"
+    },
+    "fwSshEnable": {
+      "type": "string",
+      "metadata": {
+        "description": "SSH management access enabled"
+      },
+      "defaultValue": "0"
     }
   },
   "variables": {
