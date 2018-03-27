@@ -55,16 +55,15 @@
   },
   "variables": {
     "nicNameFinal": "[if( empty( parameters( 'publicIpRef' )), concat( parameters( 'nicName' ), '-private' ), concat( parameters( 'nicName' ), '-public' ))]",
-    "mgmtPortList": [
-      "807",
-      "22",
-      "8443"
-    ]
+    "mgmtPortListWebUi": [ "8443" ],
+    "mgmtPortListNgadmin": [ "807" ],
+    "mgmtPortListNgadminSsh": ["807", "22" ],
+    "mgmtPortList": "[if( equals( parameters( 'fwMgmtType' ), 'webui' ), variables( 'fwMgmtPortListWebUi'), if( equals( parameters( 'fwSshEnable' ), 1 ), variables( 'mgmtPortListNgadminSsh' ), variables( 'mgmtPortListNgadmin' )))]"
   },
   "resources": [
     {
       "name": "[concat( parameters( 'nicName' ), '-ACL' )]",
-      "condition": "[not( equal( parameters( 'fwAcl' ), '0.0.0.0/0' ))]",
+      "condition": "[not( equals( parameters( 'fwAcl' ), '0.0.0.0/0' ))]",
       "type": "Microsoft.Network/networkSecurityGroups",
       "apiVersion": "[parameters( 'apiVersion' ).Network ]",
       "location": "[parameters( 'location' )]",
@@ -147,7 +146,7 @@
           }
         ],
         "networkSecurityGroup": {
-          "id": "[if( equal( parameters( 'fwAcl' ), '0.0.0.0/0' ), json(null), resourceId( 'Microsoft.COmpute/networkSecurityGroups', concat( parameters( 'nicName' ), '-ACL' )))]"
+          "id": "[if( equals( parameters( 'fwAcl' ), '0.0.0.0/0' ), json(null), resourceId( 'Microsoft.COmpute/networkSecurityGroups', concat( parameters( 'nicName' ), '-ACL' )))]"
         }
       }
     },
@@ -173,7 +172,7 @@
           }
         ],
         "networkSecurityGroup": {
-          "id": "[if( equal( parameters( 'fwAcl' ), '0.0.0.0/0' ), json(null), resourceId( 'Microsoft.COmpute/networkSecurityGroups', concat( parameters( 'nicName' ), '-ACL' )))]"
+          "id": "[if( equals( parameters( 'fwAcl' ), '0.0.0.0/0' ), json(null), resourceId( 'Microsoft.COmpute/networkSecurityGroups', concat( parameters( 'nicName' ), '-ACL' )))]"
         }
       }
     }
