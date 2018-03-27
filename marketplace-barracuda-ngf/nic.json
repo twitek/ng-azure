@@ -165,7 +165,7 @@
           }
         ],
         "networkSecurityGroup": {
-          "id": "[if( equals( parameters( 'fwAcl' ), '0.0.0.0/0' ), json(null), resourceId( 'Microsoft.COmpute/networkSecurityGroups', concat( parameters( 'nicName' ), '-ACL' )))]"
+          "id": "[if( equals( parameters( 'fwAcl' ), '0.0.0.0/0' ), null, resourceId( 'Microsoft.Compute/networkSecurityGroups', concat( parameters( 'nicName' ), '-ACL' )))]"
         }
       }
     },
@@ -189,10 +189,7 @@
               }
             }
           }
-        ],
-        "networkSecurityGroup": {
-          "id": "[if( equals( parameters( 'fwAcl' ), '0.0.0.0/0' ), json(null), resourceId( 'Microsoft.COmpute/networkSecurityGroups', concat( parameters( 'nicName' ), '-ACL' )))]"
-        }
+        ]
       }
     }
   ],
