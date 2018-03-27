@@ -44,6 +44,12 @@
       "metadata": {
         "description": "Subnet resource id"
       }
+    },
+    "aclObject": {
+      "type": "object",
+      "metadata": {
+        "description": "Object referencing NSG resource or null for management ACL"
+      }
     }
   },
   "variables": {
@@ -74,9 +80,7 @@
             }
           }
         ],
-        "networkSecurityGroup": {
-          "id": ""
-        }
+        "networkSecurityGroup": "[parameters( 'aclObject' )]"
       }
     },
     {
@@ -99,7 +103,8 @@
               }
             }
           }
-        ]
+        ],
+        "networkSecurityGroup": "[parameters( 'aclObject' )]"
       }
     }
   ],
