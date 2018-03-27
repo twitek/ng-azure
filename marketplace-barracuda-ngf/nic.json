@@ -44,12 +44,84 @@
       "metadata": {
         "description": "Subnet resource id"
       }
-    }
+    },
+    "fwAcl": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet allowed to connect to management ports"
+      }
+    },
+    "defaultValue": "0.0.0.0/0"
   },
   "variables": {
-    "nicNameFinal": "[if( empty( parameters( 'publicIpRef' )), concat( parameters( 'nicName' ), '-private' ), concat( parameters( 'nicName' ), '-public' ))]"
+    "nicNameFinal": "[if( empty( parameters( 'publicIpRef' )), concat( parameters( 'nicName' ), '-private' ), concat( parameters( 'nicName' ), '-public' ))]",
+    "mgmtPortList": [
+      "807",
+      "22",
+      "8443"
+    ]
   },
   "resources": [
+    {
+      "name": "[concat( parameters( 'nicName' ), '-ACL' )]",
+      "condition": "[not( equal( parameters( 'fwAcl' ), '0.0.0.0/0' ))]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "[parameters( 'apiVersion' ).Network ]",
+      "location": "[parameters( 'location' )]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "firewallAllowAll",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 1000,
+              "direction": "Inbound",
+              "sourcePortRanges": [],
+              "destinationPortRanges": [],
+              "sourceAddressPrefixes": [],
+              "destinationAddressPrefixes": []
+            }
+          },
+          {
+            "name": "firewallMgmtAcl-Allow",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "[parameters( 'fwAcl' )]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 900,
+              "direction": "Inbound",
+              "sourcePortRanges": [],
+              "destinationPortRanges": "[variables( 'mgmtPortList' )]",
+              "sourceAddressPrefixes": [],
+              "destinationAddressPrefixes": []
+            }
+          },
+          {
+            "name": "firewallMgmtAcl-Deny",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Deny",
+              "priority": 901,
+              "direction": "Inbound",
+              "sourcePortRanges": [],
+              "destinationPortRanges": "[variables( 'mgmtPortList' )]",
+              "sourceAddressPrefixes": [],
+              "destinationAddressPrefixes": []
+            }
+          }
+        ]
+      }
+    },
     {
       "name": "[concat( parameters( 'nicName' ), '-public' )]",
       "condition": "[not( empty( parameters( 'publicIpRef' )))]",
@@ -70,6 +142,9 @@
               },
               "publicIPAddress": {
                 "id": "[parameters( 'publicIpRef' )]"
+              },
+              "networkSecurityGroup": {
+                    "id": "[if( equal( parameters( 'fwAcl' ), '0.0.0.0/0' ), json(null), resourceId( 'Microsoft.COmpute/networkSecurityGroups', concat( parameters( 'nicName' ), '-ACL' )))]"
               }
             }
           }
