@@ -49,9 +49,9 @@
       "type": "string",
       "metadata": {
         "description": "Subnet allowed to connect to management ports"
-      }
-    },
-    "defaultValue": "0.0.0.0/0"
+      },
+      "defaultValue": "0.0.0.0/0"
+    }
   },
   "variables": {
     "nicNameFinal": "[if( empty( parameters( 'publicIpRef' )), concat( parameters( 'nicName' ), '-private' ), concat( parameters( 'nicName' ), '-public' ))]",
