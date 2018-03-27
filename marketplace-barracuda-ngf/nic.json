@@ -146,6 +146,9 @@
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "[parameters( 'apiVersion' ).Network ]",
       "location": "[parameters( 'location' )]",
+      "dependsOn": [
+        "[reference( concat( parameters( 'nicName' ), '-ACL' ))]"
+      ],
       "properties": {
         "enableIPForwarding": true,
         "ipConfigurations": [
