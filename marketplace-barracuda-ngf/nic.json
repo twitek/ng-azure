@@ -165,7 +165,7 @@
           }
         ],
         "networkSecurityGroup": {
-          "id": "[if( equals( parameters( 'fwAcl' ), '0.0.0.0/0' ), null, resourceId( 'Microsoft.Network/networkSecurityGroups', concat( parameters( 'nicName' ), '-ACL' )))]"
+          "id": "[if( equals( parameters( 'fwAcl' ), '0.0.0.0/0' ), '', resourceId( 'Microsoft.Network/networkSecurityGroups', concat( parameters( 'nicName' ), '-ACL' )))]"
         }
       }
     },
