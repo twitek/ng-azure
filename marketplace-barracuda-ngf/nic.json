@@ -147,7 +147,7 @@
       "apiVersion": "[parameters( 'apiVersion' ).Network ]",
       "location": "[parameters( 'location' )]",
       "dependsOn": [
-        "[reference( concat( parameters( 'nicName' ), '-ACL' ))]"
+        "[if( equals(), null, resourceId( 'Microsoft.Network/networkSecurityGroups', concat( parameters( 'nicName' ), '-ACL' )))]"
       ],
       "properties": {
         "enableIPForwarding": true,
