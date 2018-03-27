@@ -44,111 +44,18 @@
       "metadata": {
         "description": "Subnet resource id"
       }
-    },
-    "fwAcl": {
-      "type": "string",
-      "metadata": {
-        "description": "Subnet allowed to connect to management ports"
-      },
-      "defaultValue": "0.0.0.0/0"
-    },
-    "fwMgmtType": {
-      "type": "string",
-      "metadata": {
-        "description": "how do you manage your firewall?"
-      },
-      "allowedValues": [
-        "ngadmin",
-        "webui",
-        "ngcc"
-      ],
-      "defaultValue": "ngadmin"
-    },
-    "fwSshEnable": {
-      "type": "string",
-      "metadata": {
-        "description": "SSH management access enabled"
-      },
-      "defaultValue": "0"
     }
   },
   "variables": {
-    "nicNameFinal": "[if( empty( parameters( 'publicIpRef' )), concat( parameters( 'nicName' ), '-private' ), concat( parameters( 'nicName' ), '-public' ))]",
-    "mgmtPortListWebUi": [ "8443" ],
-    "mgmtPortListNgadmin": [ "807" ],
-    "mgmtPortListNgadminSsh": ["807", "22" ],
-    "mgmtPortList": "[if( equals( parameters( 'fwMgmtType' ), 'webui' ), variables( 'fwMgmtPortListWebUi'), if( equals( parameters( 'fwSshEnable' ), 1 ), variables( 'mgmtPortListNgadminSsh' ), variables( 'mgmtPortListNgadmin' )))]"
+    "nicNameFinal": "[if( empty( parameters( 'publicIpRef' )), concat( parameters( 'nicName' ), '-private' ), concat( parameters( 'nicName' ), '-public' ))]"
   },
   "resources": [
-    {
-      "name": "[concat( parameters( 'nicName' ), '-ACL' )]",
-      "condition": "[not( equals( parameters( 'fwAcl' ), '0.0.0.0/0' ))]",
-      "type": "Microsoft.Network/networkSecurityGroups",
-      "apiVersion": "[parameters( 'apiVersion' ).Network ]",
-      "location": "[parameters( 'location' )]",
-      "properties": {
-        "securityRules": [
-          {
-            "name": "firewallAllowAll",
-            "properties": {
-              "protocol": "*",
-              "sourcePortRange": "*",
-              "destinationPortRange": "*",
-              "sourceAddressPrefix": "*",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 1000,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": [],
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "firewallMgmtAcl-Allow",
-            "properties": {
-              "protocol": "TCP",
-              "sourcePortRange": "*",
-              "sourceAddressPrefix": "[parameters( 'fwAcl' )]",
-              "destinationAddressPrefix": "*",
-              "access": "Allow",
-              "priority": 900,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": "[variables( 'mgmtPortList' )]",
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          },
-          {
-            "name": "firewallMgmtAcl-Deny",
-            "properties": {
-              "protocol": "TCP",
-              "sourcePortRange": "*",
-              "sourceAddressPrefix": "*",
-              "destinationAddressPrefix": "*",
-              "access": "Deny",
-              "priority": 901,
-              "direction": "Inbound",
-              "sourcePortRanges": [],
-              "destinationPortRanges": "[variables( 'mgmtPortList' )]",
-              "sourceAddressPrefixes": [],
-              "destinationAddressPrefixes": []
-            }
-          }
-        ]
-      }
-    },
     {
       "name": "[concat( parameters( 'nicName' ), '-public' )]",
       "condition": "[not( empty( parameters( 'publicIpRef' )))]",
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "[parameters( 'apiVersion' ).Network ]",
       "location": "[parameters( 'location' )]",
-      "dependsOn": [
-        "[if( equals( parameters( 'fwAcl' ), '0.0.0.0/0' ), '', resourceId( 'Microsoft.Network/networkSecurityGroups', concat( parameters( 'nicName' ), '-ACL' )))]"
-      ],
       "properties": {
         "enableIPForwarding": true,
         "ipConfigurations": [
@@ -168,7 +75,7 @@
           }
         ],
         "networkSecurityGroup": {
-          "id": "[if( equals( parameters( 'fwAcl' ), '0.0.0.0/0' ), '', resourceId( 'Microsoft.Network/networkSecurityGroups', concat( parameters( 'nicName' ), '-ACL' )))]"
+          "id": ""
         }
       }
     },
