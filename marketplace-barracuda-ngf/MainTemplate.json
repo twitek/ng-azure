@@ -53,6 +53,18 @@
         "description": "VNet and subnet object"
       }
     },
+    "fwMgmtType": {
+      "type": "string",
+      "metadata": {
+        "description": "how do you manage your firewall?"
+      },
+      "allowedValues": [
+        "ngadmin",
+        "webui",
+        "ngcc"
+      ],
+      "defaultValue": "ngadmin"
+    },
     "fwCcData": {
       "type": "object",
       "metadata": {
@@ -68,18 +80,22 @@
       "defaultValue": ""
     },
     "fwSshEnable": {
-      "type": "bool",
+      "type": "string",
       "metadata": {
         "description": "SSH management access enabled"
       },
-      "defaultValue": false
+      "defaultValue": "0"
     },
     "fwSshKey": {
       "type": "secureObject",
       "metadata": {
         "description": "SSH public key"
       },
-      "defaultValue": ""
+      "defaultValue": {
+        "password": null,
+        "sshPublicKey": "",
+        "authenticationType": "sshPublicKey"
+      }
     },
     "fwPassword": {
       "type": "secureString",
@@ -198,6 +214,41 @@
         }
       }
     },
+
+    {
+      "name": "attachRouting",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables( 'apiVersion' ).Resources ]",
+      "resourceGroup": "[parameters( 'vnet' ).resourceGroup]",
+      "dependsOn": [
+        "vnet"
+      ],
+      "condition": "[equals( parameters( 'vnet' ).newOrExisting, 'existing' )]",
+      "properties": {
+        "mode": "Incremental",
+        "parameters": {},
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "0.1",
+          "parameters": {},
+          "variables": {},
+          "resources": [
+            {
+              "type": "Microsoft.Network/virtualNetworks/subnets",
+              "name": "[concat( parameters( 'vnet' ).name, '/', parameters( 'vnet' ).subnets.clientSubnet.name )]",
+              "apiVersion": "[variables( 'apiVersion' ).Network ]",
+              "properties": {
+                "addressPrefix": "[parameters( 'vnet' ).subnets.clientSubnet.addressPrefix ]",
+                "routeTable": {
+                  "id": "[resourceId( 'Microsoft.Network/routeTables', concat( parameters( 'vnet' ).name, '-', parameters( 'vnet' ).subnets.clientSubnet.name, '-via-cuda' ))]"
+                }
+              }
+            }
+          ]
+        }
+      }
+    },
+
     {
       "name": "firewall",
       "type": "Microsoft.Resources/deployments",
@@ -240,7 +291,7 @@
             "value": false
           },
           "fwSshEnable": {
-            "value": "[if( equals( parameters( 'fwSshEnable' ), "1" ), true, false )]"
+            "value": "[equals( parameters( 'fwSshEnable' ), '1' )]"
           },
           "fwSshKey": {
             "value": "[parameters( 'fwSshKey' )]"
