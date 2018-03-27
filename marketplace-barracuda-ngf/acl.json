@@ -124,7 +124,7 @@
   "outputs": {
     "selfLink": {
       "type": "string",
-      "value": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters( 'nsgName' )]"
+      "value": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters( 'nsgName' ))]"
     }
 
   }
