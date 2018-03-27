@@ -57,7 +57,7 @@
     "mgmtPortListWebUi": [ "8443" ],
     "mgmtPortListNgadmin": [ "807" ],
     "mgmtPortListNgadminSsh": ["807", "22" ],
-    "mgmtPortList": "[if( equals( parameters( 'fwMgmtType' ), 'webui' ), variables( 'fwMgmtPortListWebUi'), if( equals( parameters( 'fwSshEnable' ), 1 ), variables( 'mgmtPortListNgadminSsh' ), variables( 'mgmtPortListNgadmin' )))]"
+    "mgmtPortList": "[if( equals( parameters( 'fwMgmtType' ), 'webui' ), variables( 'fwMgmtPortListWebUi'), if( equals( parameters( 'fwSshEnable' ), '1' ), variables( 'mgmtPortListNgadminSsh' ), variables( 'mgmtPortListNgadmin' )))]"
   },
   "resources": [
     {
