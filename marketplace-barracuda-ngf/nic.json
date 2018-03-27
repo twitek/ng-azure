@@ -146,9 +146,7 @@
       "type": "Microsoft.Network/networkInterfaces",
       "apiVersion": "[parameters( 'apiVersion' ).Network ]",
       "location": "[parameters( 'location' )]",
-      "dependsOn": [
-        "[if( equals(), null, resourceId( 'Microsoft.Network/networkSecurityGroups', concat( parameters( 'nicName' ), '-ACL' )))]"
-      ],
+      "dependsOn": "[if( equals( parameters( 'fwAcl' ), '0.0.0.0/0' ), array(null), array( resourceId( 'Microsoft.Network/networkSecurityGroups', concat( parameters( 'nicName' ), '-ACL' ))))]",
       "properties": {
         "enableIPForwarding": true,
         "ipConfigurations": [
