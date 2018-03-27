@@ -133,7 +133,7 @@
     },
     "fwCustomDataSsh": "
 echo \"Enabling SSH access\" > /dev/ttyS0
-sed -i -- 's/PROOT\\s*=\\s*no/PROOT = yes/g' /opt/phion/config/configroot/boxother/ssh.conf
+sed -i -- 's/PROOT\\s*=\\s*no/PROOT = without-password/g' /opt/phion/config/configroot/boxother/ssh.conf
 cp /opt/phion/config/configroot/boxother/ssh.conf /opt/phion/config/active/ssh.conf
 /opt/phion/modules/box/boxother/ssh/bin/activate
 ",
