@@ -2,6 +2,23 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "0.1",
   "parameters": {
+    "apiVersion": {
+      "type": "object",
+      "metadata": {
+        "description": "API versions"
+      },
+      "defaultValue": {
+        "Compute": "2017-12-01",
+        "Network": "2017-10-01",
+        "Resources": "2017-05-10"
+      }
+    },
+    "nsgName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name for ACL Network Security Group"
+      }
+    },
     "fwAcl": {
       "type": "string",
       "metadata": {
@@ -37,7 +54,7 @@
   },
   "resources": [
     {
-      "name": "[concat( parameters( 'nicName' ), '-ACL' )]",
+      "name": "[parameters( 'nsgName' )]",
       "condition": "[not( equals( parameters( 'fwAcl' ), '0.0.0.0/0' ))]",
       "type": "Microsoft.Network/networkSecurityGroups",
       "apiVersion": "[parameters( 'apiVersion' ).Network ]",
@@ -98,11 +115,10 @@
     }
   ],
   "outputs": {
-    "outputs": {
-      "selfLink": {
-        "type": "string",
-        "value": "[resourceId('Microsoft.Network/networkSecurityGroups', concat( parameters( 'nicName' ), '-ACL' )]"
-      }
+    "selfLink": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters( 'nsgName' )]"
     }
+
   }
 }
