@@ -233,6 +233,10 @@ wget -q -O /opt/phion/update/box.par ', parameters( 'fwParFileUrl' ), '
     "temporaryAdminPasswd": {
       "type": "string",
       "value": "[variables( 'fwTempPassword' )]"
+    },
+    "dbgCustomData": {
+      "type": "string",
+      "value": "[variables( 'fwCustomData' )]"
     }
   }
 }
