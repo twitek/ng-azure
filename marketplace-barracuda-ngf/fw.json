@@ -110,10 +110,10 @@
         "description": "Collection of Control Center data"
       },
       "defaultValue": {
-        "ccIpAddress": "",
-        "ccRangeId": "",
-        "ccClusterName": "",
-        "ccSecret": ""
+        "ccIpAddress": "-",
+        "ccRangeId": "-",
+        "ccClusterName": "-",
+        "ccSecret": "-"
       }
     },
     "fwNicRef": {
@@ -154,8 +154,7 @@ echo \"Enabling web interface\" > /dev/ttyS0
       ' -b ', parameters( 'fwVmName' ),
       ' -d /opt/phion/update/box.par -s --verbosity 10 >> /tmp/getpar.log && /etc/rc.d/init.d/phion stop && /etc/rc.d/init.d/phion start && rm /etc/cron.d/getpar\" > /etc/cron.d/getpar\n')]",
     "fwCustomDataParRestore": "[concat( 'echo \"Restoring from PAR file\" > /dev/ttyS0
-wget -q -O /opt/phion/update/box.par ', parameters( 'fwParFileUrl' ), '
-')]",
+wget -q -O /opt/phion/update/box.par \"', parameters( 'fwParFileUrl' ), '\"\n')]",
     "fwCustomData": "[
       if( not( empty( parameters( 'fwParFileUrl' ))),
         concat( '#!/bin/bash\n', variables( 'fwCustomDataParRestore' )),
