@@ -109,7 +109,12 @@
       "metadata": {
         "description": "Collection of Control Center data"
       },
-      "defaultValue": {}
+      "defaultValue": {
+        "ccIpAddress": "",
+        "ccRangeId": "",
+        "ccClusterName": "",
+        "ccSecret": ""
+      }
     },
     "fwNicRef": {
       "type": "string",
