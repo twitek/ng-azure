@@ -138,11 +138,13 @@ cp /opt/phion/config/configroot/boxother/ssh.conf /opt/phion/config/active/ssh.c
 /opt/phion/modules/box/boxother/ssh/bin/activate
 ",
     "fwCustomDataWebUi": "
-echo \"Enabling Web Interface\" > /dev/ttyS0
+echo \"Enabling web interface\" > /dev/ttyS0
 /opt/phion/bin/cloud-enable-webui
 ",
-    "fwCustomDataCC": "",
-    "fwCustomDataParRestore": "",
+    "fwCustomDataCC": "[concat( '(echo \"', parameters( 'fwCcData' ).ccSecret, '\" | /opt/phion/bin/getpar -a ', parameters('fwCcData').ccIpAddress, ' -r ', parameters( 'fwCcData' ).ccRangeId, ' -c ', parameters( 'fwCcData' ).ccClusterName, ' -b ', parameters( 'fwVmName' ), ' -d /opt/phion/update/box.par -s --verbosity 10 >> /tmp/getpar.log)' )]",
+    "fwCustomDataParRestore": "[concat( 'echo \"Restoring from PAR file\" > /dev/ttyS0
+wget -q -O /opt/phion/update/box.par ', parameters( 'fwParFileUrl' ), '
+')]",
     "fwCustomData1": "[if( parameters( 'fwSshEnable' ),
       concat( '#!/bin/bash', variables( 'fwCustomDataSsh' )),
       if( equals( parameters( 'fwMgmtType' ), 'webui' ), concat( '#!/bin/bash', variables( 'fwCustomDataWebUi' )),
