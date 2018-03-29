@@ -147,24 +147,19 @@ echo \"Enabling web interface\" > /dev/ttyS0
       ' -r ', parameters( 'fwCcData' ).ccRangeId,
       ' -c ', parameters( 'fwCcData' ).ccClusterName,
       ' -b ', parameters( 'fwVmName' ),
-      ' -d /opt/phion/update/box.par -s --verbosity 10 >> /tmp/getpar.log && /etc/rc.d/init.d/phion stop && /etc/rc.d/init.d/phion start && rm /etc/cron.d/getpar\" > /etc/cron.d/getpar\n')]",
+      ' -d /opt/phion/update/box.par -s --verbosity 10 >> /phion0/logs/box_Cloud_getpar.log && /etc/rc.d/init.d/phion stop && /etc/rc.d/init.d/phion start && rm /etc/cron.d/getpar\" > /etc/cron.d/getpar\n')]",
     "fwCustomDataParRestore": "[concat( 'echo \"Restoring from PAR file\" > /dev/ttyS0
 wget -q -O /opt/phion/update/box.par ', parameters( 'fwParFileUrl' ), '
 ')]",
-    "fwCustomData1": "[if( parameters( 'fwSshEnable' ),
-      concat( '#!/bin/bash', variables( 'fwCustomDataSsh' )),
-      if( equals( parameters( 'fwMgmtType' ), 'webui' ), concat( '#!/bin/bash', variables( 'fwCustomDataWebUi' )),
-      if( equals( parameters( 'fwMgmtType' ), 'ngcc' ), concat( '#!/bin/bash', variables( 'fwCustomDataCC' )),
-      '#!/bin/bash' )))]",
     "fwCustomData": "[
       if( not( empty( parameters( 'fwParFileUrl' ))),
-        concat( '#!/bin/bash', variables( 'fwCustomDataParRestore' )),
+        concat( '#!/bin/bash\n', variables( 'fwCustomDataParRestore' )),
         if ( equals( parameters( 'fwMgmtType' ), 'ngcc' ),
-          concat( '#!/bin/bash', variables( 'fwCustomDataCC' )),
+          concat( '#!/bin/bash\n', variables( 'fwCustomDataCC' )),
           if ( equals( parameters( 'fwMgmtType' ), 'webui' ),
-            concat( '#!/bin/bash', variables( 'fwCustomDataWebUi' )),
+            concat( '#!/bin/bash\n', variables( 'fwCustomDataWebUi' )),
             if ( parameters( 'fwSshEnable' ),
-              concat( '#!/bin/bash', variables( 'fwCustomDataSsh' )),
+              concat( '#!/bin/bash\n', variables( 'fwCustomDataSsh' )),
               '#!/bin/bash'
             )
           )
