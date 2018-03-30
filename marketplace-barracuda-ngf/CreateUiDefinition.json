@@ -290,7 +290,7 @@
             "toolTip": "",
             "constraints": {
               "required": "[and(empty( steps( 'ngfManagement' ).fwParFile), not( equals( steps( 'ngfManagement' ).fwMgmtType, 'ngcc' )))]",
-              "regex": "",
+              "regex": "^.{6,72}$",
               "validationMessage": ""
             },
             "options": {
