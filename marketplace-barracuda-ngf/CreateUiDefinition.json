@@ -67,95 +67,70 @@
        ],
       "steps": [
         {
-          "name": "storage",
-          "label": "Size and Storage",
-          "subLabel": {
-            "preValidation": "Size your firewall",
-            "postValidation": "Done"
-          },
-          "bladeTitle": "Size and Storage",
-          "elements": [
-            {
-              "name": "fwVmCores",
-              "type": "Microsoft.Common.DropDown",
-              "label": "Choose a firewall VM size",
-              "toolTip": "Choose the VM size to match your license. The recommended VM type is automatically selected, but can be overridden later in the Advanced configuration step.",
-              "defaultValue": "Small - Level 2 (1 core)",
-              "constraints": {
-                "required": true,
-                "allowedValues": [
-                  {
-                    "label": "Small - Level 2 (1 core)",
-                    "value": "1"
-                  },
-                  {
-                    "label": "Medium - Level 4 (2 cores)",
-                    "value": "2"
-                  },
-                  {
-                    "label": "Large - Level 6 (4 cores)",
-                    "value": "4"
-                  },
-                  {
-                    "label": "X-Large - Level 8 (8 cores)",
-                    "value": "8"
-                  }
-                ]
-              },
-              "visible": true
-            },
-            {
-              "name": "storageIsManaged",
-              "type": "Microsoft.Common.OptionsGroup",
-              "label": "Use managed disks",
-              "toolTip": "Enable this feature to have Azure automatically manage the availability of disks to provide data redundancy and fault tolerance, without creating and managing storage accounts on your own. Managed disks may not be available in all regions.",
-              "defaultValue": "Yes",
-              "constraints": {
-                "required": true,
-                "allowedValues": [
-                  {
-                    "label": "Yes",
-                    "value": "1"
-                  },
-                  {
-                    "label": "No",
-                    "value": "0"
-                  }
-                ]
-              }
-            },
-            {
-              "name": "storageAccount",
-              "type": "Microsoft.Storage.StorageAccountSelector",
-              "label": "Storage account",
-              "toolTip": "Storage account for the disk image of the Barracuda CloudGen Firewall.",
-              "defaultValue": {
-                "type": "Premium_LRS"
-              },
-              "constraints": {
-                "allowedTypes": [
-                  "Premium_LRS"
-                ],
-                "required": true
-              },
-              "options": {
-                "hideExisting": false
-              },
-              "visible": "[equals( steps('storage').storageIsManaged, '0' )]"
-            }
-
-
-          ]
-        },
-        {
-          "name": "network",
-          "label": "Networking",
+          "name": "sizeAndNetwork",
+          "label": "Size and Networking",
           "subLabel": {
             "preValidation": "",
             "postValidation": "Done"
           },
-          "bladeTitle": "Network",
+          "bladeTitle": "Size and Networking",
           "elements": [
+            {
+              "name": "storage",
+              "type": "Microsoft.Common.Section",
+              "label": "Size and Storage",
+              "elements": [
+                {
+                  "name": "fwVmCores",
+                  "type": "Microsoft.Common.DropDown",
+                  "label": "Choose a firewall VM size",
+                  "toolTip": "Choose the VM size to match your license. The recommended VM type is automatically selected, but can be overridden later in the Advanced configuration step.",
+                  "defaultValue": "Small - Level 2 (1 core)",
+                  "constraints": {
+                    "required": true,
+                    "allowedValues": [
+                      {
+                        "label": "Small - Level 2 (1 core)",
+                        "value": "1"
+                      },
+                      {
+                        "label": "Medium - Level 4 (2 cores)",
+                        "value": "2"
+                      },
+                      {
+                        "label": "Large - Level 6 (4 cores)",
+                        "value": "4"
+                      },
+                      {
+                        "label": "X-Large - Level 8 (8 cores)",
+                        "value": "8"
+                      }
+                    ]
+                  },
+                  "visible": true
+                },
+                {
+                  "name": "fwStorageType",
+                  "type": "Microsoft.Common.DropDown",
+                  "label": "VM disk type",
+                  "toolTip": "Use Premium SSD storage for better performance, use Standard HDD for low cost test setups. Only managed storage is supported at this time.",
+                  "defaultValue": "Premium SSD (P10)",
+                  "constraints": {
+                      "required": true,
+                      "allowedValues": [
+                        {
+                          "label": "Premium SSD (P10)",
+                          "value": "Premium_LRS"
+                        },
+                        {
+                          "label": "Standard HDD (S10)",
+                          "value": "Standard_LRS"
+                        }
+                      ]
+                  }
+                }
+              ]
+            },
             {
               "name": "netPrivate",
               "type": "Microsoft.Common.Section",
@@ -378,7 +353,7 @@
                 }
               }
             ],
-            "visible": "[equals( 'ngcc', steps( 'ngfManagement' ).fwMgmtType )]"
+            "visible": "[and( equals( 'ngcc', steps( 'ngfManagement' ).fwMgmtType ), empty( steps( 'ngfManagement' ).fwParFile))]"
           }
 
         ]
@@ -397,7 +372,7 @@
               "type": "Microsoft.Common.TextBox",
               "label": "Barracuda CloudGen Firewall private IP address",
               "toolTip": "Enter a static IP address from the subnet the firewall is deployed to. The first four and the last IP addresses in the subnet are reserved by Azure.",
-              "defaultValue": "[steps( 'network' ).netPrivate.virtualNetwork.subnets.fwSubnet.startAddress]",
+              "defaultValue": "[steps( 'sizeAndNetwork' ).netPrivate.virtualNetwork.subnets.fwSubnet.startAddress]",
               "constraints": {
                 "required": false,
                 "regex": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$",
@@ -410,10 +385,10 @@
               "label": "Custom firewall VM size",
               "toolTip": "Override the recommended firewall VM size selected in the Size and Storage configuration step.",
               "recommendedSizes": [
-                "[concat( 'Standard_F', steps( 'storage' ).fwVmCores, 's' )]",
-                "[concat( 'Standard_DS', string( div( int( steps( 'storage' ).fwVmCores), 2 )), '_v2' )]",
-                "[concat( 'Standard_F', steps( 'storage' ).fwVmCores, 's_v2' )]",
-                "[concat( 'Standard_DS', steps( 'storage' ).fwVmCores, '_v3' )]"
+                "[concat( 'Standard_F', steps( 'sizeAndNetwork' ).storage.fwVmCores, 's' )]",
+                "[concat( 'Standard_DS', string( div( int( steps( 'sizeAndNetwork' ).storage.fwVmCores), 2 )), '_v2' )]",
+                "[concat( 'Standard_F', steps( 'sizeAndNetwork' ).storage.fwVmCores, 's_v2' )]",
+                "[concat( 'Standard_DS', steps( 'sizeAndNetwork' ).storage.fwVmCores, '_v3' )]"
               ],
               "constraints": {
                 "allowedSizes": [
@@ -471,7 +446,7 @@
                   }
                 ]
               },
-              "visible": true
+              "visible": "[empty( steps( 'ngfManagement' ).fwParFile)]"
             },
             {
               "name": "fwSshKey",
@@ -508,15 +483,16 @@
         "fwVmSku": "[basics( 'fwVmSku' )]",
         "fwVmSize": "[steps( 'advanced' ).fwVmSize ]",
         "fwVmAddress": "[steps( 'advanced' ).fwVmAddress ]",
-        "publicIp": "[steps( 'network' ).netPublic.publicIp ]",
-        "newStorageAccount": "[steps( 'storage' ).storageAccount ]",
-        "vnet": "[steps( 'network' ).netPrivate.virtualNetwork ]",
+        "publicIp": "[steps( 'sizeAndNetwork' ).netPublic.publicIp ]",
+        "vnet": "[steps( 'sizeAndNetwork' ).netPrivate.virtualNetwork ]",
+        "fwStorageType": "[steps( 'sizeAndNetwork' ).storage.fwStorageType ]",
         "fwMgmtType": "[steps( 'ngfManagement' ).fwMgmtType ]",
         "fwCcData": "[steps( 'ngfManagement' ).ngcc ]",
         "fwParFileUrl": "[steps( 'ngfManagement' ).fwParFile ]",
         "fwSshEnable": "[steps( 'advanced' ).fwSshEnable ]",
         "fwSshKey": "[steps( 'advanced' ).fwSshKey ]",
         "fwPassword": "[steps( 'ngfManagement' ).fwPassword ]",
+        "fwAcl": "[steps( 'ngfManagement' ).fwAcl ]",
         "location": "[location()]"
       }
    }
