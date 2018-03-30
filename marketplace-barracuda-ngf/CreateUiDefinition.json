@@ -40,7 +40,7 @@
           "name": "fwVmVersion",
           "type": "Microsoft.Common.DropDown",
           "label": "Firmware version",
-          "toolTip": "Select your preferred firmware version. 'EA' stands for Early Availability - these releases are not recommended for critical deployments, 'LTS' stands for Long Term Support. Check [Barracuda EoS plan](https://campus.barracuda.com/doc/71860849/) and [Release Notes](https://campus.barracuda.com/doc/73723948/) for more details.",
+          "toolTip": "Select your preferred firmware version. 'EA' stands for Early Availability - these releases passed QA tests, but are not recommended for critical deployments, 'LTS' stands for Long Term Support. Check [Barracuda EoS plan](https://campus.barracuda.com/doc/71860849/) and [Release Notes](https://campus.barracuda.com/doc/73723948/) for more details.",
           "defaultValue": "7.2.0 (EA1)",
           "constraints": {
             "required": true,
@@ -52,10 +52,6 @@
               {
                 "label": "7.1.1 (LTS)",
                 "value": "7.1.105602"
-              },
-              {
-                "label": "7.0.4",
-                "value": "7.0.308701"
               },
               {
                 "label": "6.2.3",
@@ -134,7 +130,7 @@
             {
               "name": "netPrivate",
               "type": "Microsoft.Common.Section",
-              "label": "Private networking configuration",
+              "label": "Private networking",
               "elements": [
                 {
                   "name": "virtualNetwork",
@@ -189,7 +185,7 @@
             {
               "name": "netPublic",
               "type": "Microsoft.Common.Section",
-              "label": "Public networking configuration",
+              "label": "Public networking",
               "elements": [
                 {
                   "name": "publicIp",
@@ -386,7 +382,6 @@
               "toolTip": "Override the recommended firewall VM size selected in the Size and Storage configuration step.",
               "recommendedSizes": [
                 "[concat( 'Standard_F', steps( 'sizeAndNetwork' ).storage.fwVmCores, 's' )]",
-                "[concat( 'Standard_DS', string( div( int( steps( 'sizeAndNetwork' ).storage.fwVmCores), 2 )), '_v2' )]",
                 "[concat( 'Standard_F', steps( 'sizeAndNetwork' ).storage.fwVmCores, 's_v2' )]",
                 "[concat( 'Standard_DS', steps( 'sizeAndNetwork' ).storage.fwVmCores, '_v3' )]"
               ],
