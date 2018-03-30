@@ -85,6 +85,17 @@
       },
       "defaultValue": ""
     },
+    "fwStorageType": {
+      "type": "string",
+      "metadata": {
+        "description": "Storage type to use",
+      },
+      "allowedValues": [
+        "Premium_LRS",
+        "Standard_LRS"
+      ],
+      "defaultValue": "Premium_LRS"
+    },
     "fwMgmtType": {
       "type": "string",
       "metadata": {
@@ -193,7 +204,7 @@ wget -q -O /opt/phion/update/box.par \"', parameters( 'fwParFileUrl' ), '\"\n')]
               "caching": "ReadWrite",
               "createOption": "FromImage",
               "managedDisk": {
-                "storageAccountType": "Premium_LRS"
+                "storageAccountType": "[parameters( 'fwStorageType' )]"
               }
             }
           },
@@ -226,7 +237,7 @@ wget -q -O /opt/phion/update/box.par \"', parameters( 'fwParFileUrl' ), '\"\n')]
   "outputs": {
     "temporaryAdminPasswd": {
       "type": "string",
-      "value": "[if( empty( parameters( 'fwPassword' )), variables( 'fwTempPassword' ), 'n/a' )]"
+      "value": "[if( end( empty( parameters( 'fwPassword' )), empty( parameters( 'fwParFileUrl' ))), variables( 'fwTempPassword' ), 'n/a' )]"
     },
     "dbgCustomData": {
       "type": "string",
