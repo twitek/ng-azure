@@ -25,6 +25,12 @@
       "metadata": {
         "description": "Virtual Network object"
       }
+    },
+    "routeTableId": {
+      "type": "string",
+      "metadata": {
+        "description": "resource Id of route table to attach"
+      }
     }
   },
   "variables": {
@@ -38,7 +44,7 @@
       "properties": {
         "addressPrefix": "[parameters( 'vnet' ).subnets.clientSubnet.addressPrefix ]",
         "routeTable": {
-          "id": "[resourceId( 'Microsoft.Network/routeTables', concat( parameters( 'vnet' ).name, '-', parameters( 'vnet' ).subnets.clientSubnet.name, '-via-cuda' ))]"
+          "id": "[parameters( 'routeTableId' )]"
         },
         "networkSecurityGroup": "[ reference( variables( 'protectedSubnet' ), parameters( 'apiVersion' ).Network ).networkSecurityGroup ]",
         "serviceEndpoints": "[ reference( variables( 'protectedSubnet' ), parameters( 'apiVersion' ).Network ).serviceEndpoints ]"

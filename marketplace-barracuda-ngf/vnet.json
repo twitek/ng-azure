@@ -94,7 +94,7 @@
       "value": "[concat( resourceId( parameters( 'vnet' ).resourceGroup, 'Microsoft.Network/virtualNetworks', parameters( 'vnet' ).name ),
       '/subnets/', parameters( 'vnet' ).subnets.fwSubnet.name )]"
     },
-    "routeTableRef": {
+    "routeTableId": {
       "type": "string",
       "value": "[resourceId( 'Microsoft.Network/routeTables', variables( 'rtName' ))]"
     }
