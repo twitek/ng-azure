@@ -54,7 +54,7 @@
     }
   },
   "variables": {
-    "mgmtPortList": [ "8443", "807", "801", "22" ]
+    "mgmtPortList": [ "443", "807", "801", "22" ]
   },
   "resources": [
     {
