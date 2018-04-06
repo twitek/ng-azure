@@ -94,15 +94,10 @@
       "value": "[concat( resourceId( parameters( 'vnet' ).resourceGroup, 'Microsoft.Network/virtualNetworks', parameters( 'vnet' ).name ),
       '/subnets/', parameters( 'vnet' ).subnets.fwSubnet.name )]"
     },
-    "clientSubnetPreserveNSG": {
+    "clientSubnetObj": {
       "type": "object",
-      "value": "[if( equals( parameters( 'vnet' ).newOrExisting, 'existing' ), reference( concat( resourceId( parameters( 'vnet' ).resourceGroup, 'Microsoft.Network/virtualNetworks', parameters( 'vnet' ).name ),
-      '/subnets/', parameters( 'vnet' ).subnets.clientSubnet.name ), parameters( 'apiVersion' ).Network ).networkSecurityGroup, json(null))]"
-    },
-    "clientSubnetPreserveEndpoints": {
-      "type": "object",
-      "value": "[if( equals( parameters( 'vnet' ).newOrExisting, 'existing' ), reference( concat( resourceId( parameters( 'vnet' ).resourceGroup, 'Microsoft.Network/virtualNetworks', parameters( 'vnet' ).name ),
-      '/subnets/', parameters( 'vnet' ).subnets.clientSubnet.name ), parameters( 'apiVersion' ).Network ).serviceEndpoints, json(null))]"
+      "value": "[reference( concat( resourceId( parameters( 'vnet' ).resourceGroup, 'Microsoft.Network/virtualNetworks', parameters( 'vnet' ).name ),
+      '/subnets/', parameters( 'vnet' ).subnets.clientSubnet.name ), parameters( 'apiVersion' ).Network )]"
     },
     "routeTableId": {
       "type": "string",
