@@ -97,7 +97,7 @@
     "clientSubnetObj": {
       "type": "object",
       "value": "[reference( concat( resourceId( parameters( 'vnet' ).resourceGroup, 'Microsoft.Network/virtualNetworks', parameters( 'vnet' ).name ),
-      '/subnets/', parameters( 'vnet' ).subnets.clientSubnet.name ))]"
+      '/subnets/', parameters( 'vnet' ).subnets.clientSubnet.name ), parameters( 'apiVersion' ).Network )]"
     },
     "routeTableId": {
       "type": "string",
