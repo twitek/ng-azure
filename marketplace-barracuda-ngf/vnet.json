@@ -94,6 +94,11 @@
       "value": "[concat( resourceId( parameters( 'vnet' ).resourceGroup, 'Microsoft.Network/virtualNetworks', parameters( 'vnet' ).name ),
       '/subnets/', parameters( 'vnet' ).subnets.fwSubnet.name )]"
     },
+    "clientSubnetObj": {
+      "type": "object",
+      "value": "[reference( concat( resourceId( parameters( 'vnet' ).resourceGroup, 'Microsoft.Network/virtualNetworks', parameters( 'vnet' ).name ),
+      '/subnets/', parameters( 'vnet' ).subnets.clientSubnet.name ))]"
+    },
     "routeTableId": {
       "type": "string",
       "value": "[resourceId( 'Microsoft.Network/routeTables', variables( 'rtName' ))]"
