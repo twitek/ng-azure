@@ -1,0 +1,15 @@
+"tests": [
+  {
+    "13": {
+      "description": "Restore from PAR file",
+      "expect": "connect back to NGCC as 1/bam-t1/bam-test1"
+    }
+  },
+  {
+    "15": {
+      "description": "getpar from NGCC",
+      "expect": "connect back to NGCC as 1/bam-t1/bam-ngf2-t15",
+      "enabled": false
+    }
+  }
+]

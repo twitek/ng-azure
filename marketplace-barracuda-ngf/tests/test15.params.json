@@ -1,0 +1,82 @@
+{
+  "fwVmName": {
+    "value": "bam-ngf2-t15"
+  },
+  "fwVmVersion": {
+    "value": "7.2.015802"
+  },
+  "fwVmSku": {
+    "value": "byol"
+  },
+  "fwVmSize": {
+    "value": "Standard_B1ms"
+  },
+  "fwVmAddress": {
+    "value": "10.7.0.4"
+  },
+  "publicIp": {
+    "value": {
+      "name": "bam-t15-pip",
+      "resourceGroup": "bam-t15",
+      "domainNameLabel": "bam-t15",
+      "publicIPAllocationMethod": "Dynamic",
+      "newOrExistingOrNone": "new"
+    }
+  },
+  "vnet": {
+    "value": {
+      "vnetPickerData": {
+        "name": "newVirtualNetwork",
+        "addressSpace": "10.7.0.0/16",
+        "addressPrefixes": [
+          "10.7.0.0/16"
+        ],
+        "subnetName": "default",
+        "subnetAddressPrefix": "10.7.0.0/16"
+      },
+      "name": "newVirtualNetwork",
+      "resourceGroup": "bam-t15",
+      "addressPrefix": "10.7.0.0/16",
+      "addressPrefixes": [
+        "10.7.0.0/16"
+      ],
+      "newOrExisting": "new",
+      "subnets": {
+        "fwSubnet": {
+          "name": "FirewallSubnet",
+          "addressPrefix": "10.7.0.0/24",
+          "startAddress": "10.7.0.4"
+        },
+        "clientSubnet": {
+          "name": "ProtectedSubnet",
+          "addressPrefix": "10.7.1.0/24",
+          "startAddress": "10.7.1.4"
+        }
+      },
+      "isSubnetConfigured": true
+    }
+  },
+  "fwStorageType": {
+    "value": "Standard_LRS"
+  },
+  "fwMgmtType": {
+    "value": "ngcc"
+  },
+  "fwCcData": {
+    "value": {
+      "ccIpAddress": "52.166.120.93",
+      "ccRangeId": "1",
+      "ccClusterName": "bam-t1",
+      "ccSecret": "alamakota"
+    }
+  },
+  "fwSshEnable": {
+    "value": "0"
+  },
+  "fwAcl": {
+    "value": "0.0.0.0/0"
+  },
+  "location": {
+    "value": "westeurope"
+  }
+}

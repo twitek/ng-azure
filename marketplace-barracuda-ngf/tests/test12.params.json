@@ -1,0 +1,77 @@
+{
+  "fwVmName": {
+    "value": "bam-ngf2-t12"
+  },
+  "fwVmVersion": {
+    "value": "7.1.105602"
+  },
+  "fwVmSku": {
+    "value": "byol"
+  },
+  "fwVmSize": {
+    "value": "Standard_F2s"
+  },
+  "fwVmAddress": {
+    "value": "10.9.0.5"
+  },
+  "publicIp": {
+    "value": {
+      "name": "bam-test5",
+      "resourceGroup": "bam-t0",
+      "domainNameLabel": "bam-test5",
+      "publicIPAllocationMethod": "Dynamic",
+      "newOrExistingOrNone": "existing"
+    }
+  },
+  "vnet": {
+    "value": {
+      "vnetPickerData": {
+        "id": "/subscriptions/bde58b49-9951-466e-90e2-592c0920ce77/resourceGroups/bam-t0/providers/Microsoft.Network/virtualNetworks/bam-vnet5",
+        "name": "bam-vnet5",
+        "addressPrefixes": [
+          "10.9.0.0/16"
+        ],
+        "subnetName": "FirewallSubnet",
+        "subnetAddressPrefix": "10.9.0.0/24",
+        "location": "westeurope"
+      },
+      "name": "bam-vnet5",
+      "resourceGroup": "bam-t0",
+      "addressPrefixes": [
+        "10.9.0.0/16"
+      ],
+      "newOrExisting": "existing",
+      "subnets": {
+        "fwSubnet": {
+          "name": "FirewallSubnet",
+          "addressPrefix": "10.9.0.0/24",
+          "startAddress": "10.9.0.4"
+        },
+        "clientSubnet": {
+          "name": "ProtectedSubnet",
+          "addressPrefix": "10.9.1.0/24",
+          "startAddress": "10.9.1.5"
+        }
+      },
+      "isSubnetConfigured": true
+    }
+  },
+  "fwStorageType": {
+    "value": "Standard_LRS"
+  },
+  "fwMgmtType": {
+    "value": "ngadmin"
+  },
+  "fwSshEnable": {
+    "value": "0"
+  },
+  "fwPassword": {
+    "value": "3Fmqf2dMR-9tCXa"
+  },
+  "fwAcl": {
+    "value": "0.0.0.0/0"
+  },
+  "location": {
+    "value": "westeurope"
+  }
+}

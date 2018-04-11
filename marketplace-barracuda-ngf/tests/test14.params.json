@@ -1,0 +1,78 @@
+{
+  "fwVmName": {
+    "value": "bam-ngf2-t14"
+  },
+  "fwVmVersion": {
+    "value": "7.2.015802"
+  },
+  "fwVmSku": {
+    "value": "hourly"
+  },
+  "fwVmSize": {
+    "value": "Standard_F1s"
+  },
+  "fwVmAddress": {
+    "value": "10.11.0.4"
+  },
+  "publicIp": {
+    "value": {
+      "name": "bam-t14-pip",
+      "resourceGroup": "bam-t14",
+      "domainNameLabel": "bam-t14",
+      "publicIPAllocationMethod": "Dynamic",
+      "newOrExistingOrNone": "new"
+    }
+  },
+  "vnet": {
+    "value": {
+      "vnetPickerData": {
+        "name": "VirtualNetwork3",
+        "addressSpace": "10.11.0.0/16",
+        "addressPrefixes": [
+          "10.11.0.0/16"
+        ],
+        "subnetName": "default",
+        "subnetAddressPrefix": "10.11.0.0/16",
+        "location": "westeurope"
+      },
+      "name": "VirtualNetwork3",
+      "resourceGroup": "bam-t14",
+      "addressPrefix": "10.11.0.0/16",
+      "addressPrefixes": [
+        "10.11.0.0/16"
+      ],
+      "newOrExisting": "new",
+      "subnets": {
+        "fwSubnet": {
+          "name": "FirewallSubnet3",
+          "addressPrefix": "10.11.0.0/24",
+          "startAddress": "10.11.0.4"
+        },
+        "clientSubnet": {
+          "name": "ProtectedSubnet3",
+          "addressPrefix": "10.11.1.0/24",
+          "startAddress": "10.11.1.4"
+        }
+      },
+      "isSubnetConfigured": true
+    }
+  },
+  "fwStorageType": {
+    "value": "Standard_LRS"
+  },
+  "fwMgmtType": {
+    "value": "ngadmin"
+  },
+  "fwSshEnable": {
+    "value": "0"
+  },
+  "fwPassword": {
+    "value": "9TK%iCfY?Bc--c6!7Vvr=22w"
+  },
+  "fwAcl": {
+    "value": "0.0.0.0/0"
+  },
+  "location": {
+    "value": "westeurope"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "fwVmName": {
+    "value": "bam-test1"
+  },
+  "fwVmVersion": {
+    "value": "7.2.015802"
+  },
+  "fwVmSku": {
+    "value": "byol"
+  },
+  "fwVmSize": {
+    "value": "Standard_F1s"
+  },
+  "fwVmAddress": {
+    "value": "10.11.0.4"
+  },
+  "publicIp": {
+    "value": {
+      "name": "bam-t13-pip",
+      "resourceGroup": "bam-t13",
+      "domainNameLabel": "bam-t13",
+      "publicIPAllocationMethod": "Static",
+      "newOrExistingOrNone": "new"
+    }
+  },
+  "vnet": {
+    "value": {
+      "vnetPickerData": {
+        "name": "VirtualNetwork1",
+        "addressSpace": "10.11.0.0/16",
+        "addressPrefixes": [
+          "10.11.0.0/16"
+        ],
+        "subnetName": "default",
+        "subnetAddressPrefix": "10.11.0.0/16",
+        "location": "westeurope"
+      },
+      "name": "VirtualNetwork1",
+      "resourceGroup": "bam-t13",
+      "addressPrefix": "10.11.0.0/16",
+      "addressPrefixes": [
+        "10.11.0.0/16"
+      ],
+      "newOrExisting": "new",
+      "subnets": {
+        "fwSubnet": {
+          "name": "FirewallSubnet1",
+          "addressPrefix": "10.11.0.0/24",
+          "startAddress": "10.11.0.4"
+        },
+        "clientSubnet": {
+          "name": "ProtectedSubnet1",
+          "addressPrefix": "10.11.1.0/24",
+          "startAddress": "10.11.1.4"
+        }
+      },
+      "isSubnetConfigured": true
+    }
+  },
+  "fwStorageType": {
+    "value": "Standard_LRS"
+  },
+  "fwParFileUrl": {
+    "value": "https://iaasv2tempstorageam.blob.core.windows.net/vmextensionstemporary-10037ffe91ae63d9-20180411112950861/box_bam-test1.par"
+  },
+  "fwAcl": {
+    "value": "0.0.0.0/0"
+  },
+  "location": {
+    "value": "westeurope"
+  }
+}
