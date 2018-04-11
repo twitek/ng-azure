@@ -197,7 +197,7 @@ wget -q -O /opt/phion/update/box.par \"', parameters( 'fwParFileUrl' ), '\"\n')]
               "publisher": "barracudanetworks",
               "offer": "barracuda-ng-firewall",
               "sku": "[parameters( 'fwVmSku' )]",
-              "version": "[if( and( equals( parameters( 'fwVmVersion' ), '7.2.015802' ), equals( 'fwVmSku' ), 'hourly' ), '7.2.015801', parameters( 'fwVmVersion' ))]"
+              "version": "[parameters( 'fwVmVersion' )]"
             },
             "osDisk": {
               "osType": "Linux",
