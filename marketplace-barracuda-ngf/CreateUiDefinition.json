@@ -227,36 +227,6 @@
           "bladeTitle": "Firewall Management",
           "elements": [
             {
-              "name": "fwParFile",
-              "type": "Microsoft.Common.FileUpload",
-              "label": "Configuration backup PAR file",
-              "toolTip": "Restore the firewall configuration from an unencrypted configuration backup (PAR or PGZ file) of a Barracuda CloudGen Firewall. If you are using static IP addresses in the firewall configuration, verify that the private IP address of the firewall VM is also used in the PAR file.",
-              "constraints": {
-                "required": false,
-                "accept": ".par,.pgz"
-              },
-              "options": {
-                "multiple": false,
-                "uploadMode": "url",
-                "openMode": "binary",
-                "encoding": "UTF-8"
-              },
-              "visible": true
-            },
-            {
-              "name": "fwAcl",
-              "type": "Microsoft.Common.TextBox",
-              "label": "Management ACL",
-              "defaultValue": "0.0.0.0/0",
-              "toolTip": "Introduces a Network Security Group restricting access to management ports of the firewall. Enter 0.0.0.0/0 to allow access from any network and to skip creating a Network Security Group.",
-              "constraints": {
-                "required": true,
-                "regex": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$",
-                "validationMessage": "Enter a subnet address in CIDR notation."
-              },
-              "visible": true
-            },
-            {
               "name": "fwMgmtType",
               "type": "Microsoft.Common.DropDown",
               "label": "Firewall management interface",
@@ -278,8 +248,38 @@
                   }
                 ]
               },
-            "visible": "[empty( steps( 'ngfManagement' ).fwParFile )]"
+            "visible": true
           },
+            {
+              "name": "fwParFile",
+              "type": "Microsoft.Common.FileUpload",
+              "label": "Configuration backup PAR file",
+              "toolTip": "Restore the firewall configuration from an unencrypted configuration backup (PAR or PGZ file) of a Barracuda CloudGen Firewall. If you are using static IP addresses in the firewall configuration, verify that the private IP address of the firewall VM is also used in the PAR file.",
+              "constraints": {
+                "required": false,
+                "accept": ".par,.pgz"
+              },
+              "options": {
+                "multiple": false,
+                "uploadMode": "url",
+                "openMode": "binary",
+                "encoding": "UTF-8"
+              },
+              "visible": "[not( equal( steps( 'ngfManagement' ).fwMgmtType, 'webui' )]"
+            },
+            {
+              "name": "fwAcl",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Management ACL",
+              "defaultValue": "0.0.0.0/0",
+              "toolTip": "Introduces a Network Security Group restricting access to management ports of the firewall. Enter 0.0.0.0/0 to allow access from any network and to skip creating a Network Security Group.",
+              "constraints": {
+                "required": true,
+                "regex": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$",
+                "validationMessage": "Enter a subnet address in CIDR notation."
+              },
+              "visible": true
+            },
           {
             "name": "fwPassword",
             "type": "Microsoft.Common.PasswordBox",
@@ -468,7 +468,7 @@
                   }
                 ]
               },
-              "visible": "[and( empty( steps( 'ngfManagement' ).fwParFile, equals( steps( 'ngfManagement' ).fwMgmtType, 'ngadmin' )))]"
+              "visible": "[and( empty( steps( 'ngfManagement' ).fwParFile ), equals( steps( 'ngfManagement' ).fwMgmtType, 'ngadmin' ))]"
             },
             {
               "name": "fwSshKey",
