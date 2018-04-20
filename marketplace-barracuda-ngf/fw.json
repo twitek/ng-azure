@@ -153,12 +153,20 @@ cp /opt/phion/config/configroot/boxother/ssh.conf /opt/phion/config/active/ssh.c
 echo \"Enabling web interface\" > /dev/ttyS0
 /opt/phion/bin/cloud-enable-webui
 ",
-    "fwCustomDataCC": "[if( not(empty( parameters( 'fwCcData' ))), concat( 'echo \"*/2 * * * * root echo \\\"', parameters( 'fwCcData' ).ccSecret,
+    "fwCustomDataCCBYOL": "[if( not(empty( parameters( 'fwCcData' ))), concat( 'echo \"*/2 * * * * root echo \\\"', parameters( 'fwCcData' ).ccSecret,
       '\\\" | /opt/phion/bin/getpar -a ', parameters( 'fwCcData' ).ccIpAddress,
       ' -r ', parameters( 'fwCcData' ).ccRangeId,
       ' -c ', parameters( 'fwCcData' ).ccClusterName,
       ' -b ', parameters( 'fwVmName' ),
       ' -d /opt/phion/update/box.par -s --verbosity 10 >> /tmp/getpar.log && /etc/rc.d/init.d/phion stop && /etc/rc.d/init.d/phion start && rm /etc/cron.d/getpar\" > /etc/cron.d/getpar\n'), '' )]",
+    "fwCustomDataCCPAYG": "[if( not(empty( parameters( 'fwCcData' ))), concat( 'echo \"*/2 * * * * root echo \\\"', parameters( 'fwCcData' ).ccAdminPass,
+      '\\\" | /opt/phion/bin/getpar -a ', parameters( 'fwCcData' ).ccIpAddress,
+      ' -u ', parameters( 'fwCcData' ).ccAdminName,
+      ' -r ', parameters( 'fwCcData' ).ccRangeId,
+      ' -c ', parameters( 'fwCcData' ).ccClusterName,
+      ' -b ', parameters( 'fwVmName' ),
+      ' -d /opt/phion/update/box.par -s --verbosity 10 >> /tmp/getpar.log && /etc/rc.d/init.d/phion stop && /etc/rc.d/init.d/phion start && rm /etc/cron.d/getpar\" > /etc/cron.d/getpar\n'), '' )]",
+    "fwCustomDataCC": "[if( equals( parameters( 'fwVmSku' ), 'byol' ), variables( 'fwCustomDataCCBYOL' ), variables( 'fwCustomDataCCPAYG' ))]",
     "fwCustomDataParRestore": "[concat( 'echo \"Restoring from PAR file\" > /dev/ttyS0
 wget -q -O /tmp/box.par \"', parameters( 'fwParFileUrl' ), '\" && cp /tmp/box.par /opt/phion/update/\n')]",
     "fwCustomData": "[
