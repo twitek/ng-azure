@@ -265,7 +265,7 @@
                 "openMode": "binary",
                 "encoding": "UTF-8"
               },
-              "visible": "[not( equal( steps( 'ngfManagement' ).fwMgmtType, 'webui' )]"
+              "visible": "[not( equals( steps( 'ngfManagement' ).fwMgmtType, 'webui' ))]"
             },
             {
               "name": "fwAcl",
