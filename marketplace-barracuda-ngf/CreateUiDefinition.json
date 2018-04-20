@@ -221,7 +221,7 @@
           "name": "ngfManagement",
           "label": "Firewall Management",
           "subLabel": {
-            "preValidation": "",
+            "preValidation": "Management tool & bootstrapping",
             "postValidation": "Done"
           },
           "bladeTitle": "Firewall Management",
@@ -301,7 +301,7 @@
           {
             "name": "ngcc",
             "type": "Microsoft.Common.Section",
-            "label": "Control Center point of entry IP address",
+            "label": "Control Center binding",
             "elements": [
               {
                 "name": "ccIpAddress",
@@ -385,7 +385,7 @@
           "name": "advanced",
           "label": "Advanced",
           "subLabel": {
-            "preValidation": "",
+            "preValidation": "Additional settings",
             "postValidation": "Done"
           },
           "bladeTitle": "Advanced Settings",
