@@ -344,6 +344,7 @@
                 "constraints": {
                   "required": "[equals( basics( 'fwVmSku' ), 'byol' )]"
                 },
+                "defaultValue": "",
                 "options": {
                   "hideConfirmation": true
                 },
@@ -357,6 +358,7 @@
                 "constraints": {
                   "required": "[equals( basics( 'fwVmSku' ), 'hourly' )]"
                 },
+                "defaultValue": "",
                 "options": {
                   "hideConfirmation": true
                 },
@@ -364,8 +366,10 @@
               },
               {
                 "name": "ccAdminPass",
-                "type": "Microsoft.Common.TextBox",
-                "label": "Control Center administrator password",
+                "type": "Microsoft.Common.PasswordBox",
+                "label": {
+                  "password": "Control Center administrator password"
+                },
                 "toolTip": "Password of the Firewall Control Center administrator",
                 "constraints": {
                   "required": "[equals( basics( 'fwVmSku' ), 'hourly' )]"
