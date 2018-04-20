@@ -342,14 +342,41 @@
                 "label": "PAR file retrieval key",
                 "toolTip": "Shared secret configured on the Control Center to authenticate the firewall VM when retrieving the PAR file. Go to Box Properties > Operational settings page and switch to Advanced view to enter the passphrase.",
                 "constraints": {
-                  "required": true
+                  "required": "[equals( basics( 'fwVmSku' ), 'byol' )]"
                 },
                 "options": {
                   "hideConfirmation": true
-                }
+                },
+                "visible": "[equals( basics( 'fwVmSku' ), 'byol' )]"
+              },
+              {
+                "name": "ccAdminName",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Control Center administrator username",
+                "toolTip": "Username of the Firewall Control Center administrator to retrieve the configuration",
+                "constraints": {
+                  "required": "[equals( basics( 'fwVmSku' ), 'hourly' )]"
+                },
+                "options": {
+                  "hideConfirmation": true
+                },
+                "visible": "[equals( basics( 'fwVmSku' ), 'hourly' )]"
+              },
+              {
+                "name": "ccAdminPass",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Control Center administrator password",
+                "toolTip": "Password of the Firewall Control Center administrator",
+                "constraints": {
+                  "required": "[equals( basics( 'fwVmSku' ), 'hourly' )]"
+                },
+                "options": {
+                  "hideConfirmation": true
+                },
+                "visible": "[equals( basics( 'fwVmSku' ), 'hourly' )]"
               }
             ],
-            "visible": "[and( equals( 'ngcc', steps( 'ngfManagement' ).fwMgmtType ), empty( steps( 'ngfManagement' ).fwParFile))]"
+            "visible": "[and( equals( 'ngcc', steps( 'ngfManagement' ).fwMgmtType ), empty( steps( 'ngfManagement' ).fwParFile ))]"
           }
 
         ]
@@ -441,7 +468,7 @@
                   }
                 ]
               },
-              "visible": "[empty( steps( 'ngfManagement' ).fwParFile)]"
+              "visible": "[and( empty( steps( 'ngfManagement' ).fwParFile, equals( steps( 'ngfManagement' ).fwMgmtType, 'ngadmin' )))]"
             },
             {
               "name": "fwSshKey",
