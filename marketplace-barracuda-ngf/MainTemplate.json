@@ -82,20 +82,6 @@
       },
       "defaultValue": {}
     },
-    "fwCcAdminUser": {
-      "type": "string",
-      "metadata": {
-        "description": "getpar admin user"
-      },
-      "defautValue": "."
-    },
-    "fwCcKey": {
-      "type": "string",
-      "metadata": {
-        "description": "getpar admin password concatenated with shared secret"
-      },
-      "defaultValue": ""
-    },
     "fwParFileUrl": {
       "type": "string",
       "metadata": {
@@ -372,7 +358,7 @@
             "value": "[parameters( 'fwCcData' )]"
           },
           "fwCcAdminUser": {
-            "value": "[skip( parameters( 'fwCcAdminUser' ), 1 )]"
+            "value": "[if( empty( parameters( 'fwCcData' ).ccAdminUser ), '', parameters( 'fwCcData' ).ccAdminUser )]"
           },
           "fwCcKey": {
             "value": "[if( equals( parameters( 'fwVmSku' ), 'byol' ), parameters( 'fwCcData' ).ccSecret, parameters( 'fwCcData' ).ccAdminPass )]"
