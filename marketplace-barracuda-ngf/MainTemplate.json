@@ -80,7 +80,14 @@
       "metadata": {
         "description": "Collection of Control Center data"
       },
-      "defaultValue": {}
+      "defaultValue": {
+        "ccIpAddress": "",
+        "ccRangeId": "",
+        "ccClusterName": "",
+        "ccSecret": "",
+        "ccAdminUser": "",
+        "ccAdminPass": ""
+      }
     },
     "fwParFileUrl": {
       "type": "string",
