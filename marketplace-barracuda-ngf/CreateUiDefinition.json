@@ -374,7 +374,6 @@
                 "constraints": {
                   "required": "[equals( basics( 'fwVmSku' ), 'hourly' )]"
                 },
-                "defaultValue": " ",
                 "options": {
                   "hideConfirmation": true
                 },

@@ -375,7 +375,7 @@
             "value": "[skip( parameters( 'fwCcAdminUser' ), 1 )]"
           },
           "fwCcKey": {
-            "value": "[parameters( 'fwCcKey' )]"
+            "value": "[if( equals( parameters( 'fwVmSku' ), 'byol' ), parameters( 'fwCcData' ).ccSecret, parameters( 'fwCcData' ).ccAdminPass )]"
           },
           "fwNicRef": {
             "value": "[reference( 'firewallNic', variables( 'apiVersion' ).Resources ).outputs.selfLink.value]"
