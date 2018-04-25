@@ -351,7 +351,7 @@
                 "visible": "[equals( basics( 'fwVmSku' ), 'byol' )]"
               },
               {
-                "name": "ccAdminName",
+                "name": "ccAdminUser",
                 "type": "Microsoft.Common.TextBox",
                 "label": "Control Center administrator username",
                 "toolTip": "Username of the Firewall Control Center administrator to retrieve the configuration",
@@ -514,6 +514,8 @@
         "fwStorageType": "[steps( 'sizeAndNetwork' ).storage.fwStorageType ]",
         "fwMgmtType": "[steps( 'ngfManagement' ).fwMgmtType ]",
         "fwCcData": "[steps( 'ngfManagement' ).ngcc ]",
+        "fwCcKey": "[concat( steps( 'ngfManagement' ).ngcc.ccSecret, steps( 'ngfManagement' ).ngcc.ccAdminPass )]",
+        "fwCcAdminUser": "[concat( '.', steps( 'ngfManagement' ).ngcc.ccAdminUser )]",
         "fwParFileUrl": "[steps( 'ngfManagement' ).fwParFile ]",
         "fwSshEnable": "[steps( 'advanced' ).fwSshEnable ]",
         "fwSshKey": "[steps( 'advanced' ).fwSshKey ]",

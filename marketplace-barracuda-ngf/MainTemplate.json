@@ -82,6 +82,20 @@
       },
       "defaultValue": {}
     },
+    "fwCcAdminUser": {
+      "type": "string",
+      "metadata": {
+        "description": "getpar admin user"
+      },
+      "defautValue": "."
+    },
+    "fwCcKey": {
+      "type": "string",
+      "metadata": {
+        "description": "getpar admin password concatenated with shared secret"
+      },
+      "defaultValue": ""
+    },
     "fwParFileUrl": {
       "type": "string",
       "metadata": {
@@ -356,6 +370,12 @@
           },
           "fwCcData": {
             "value": "[parameters( 'fwCcData' )]"
+          },
+          "fwCcAdminUser": {
+            "value": "[skip( parameters( 'fwCcAdminUser' ), 1 )]"
+          },
+          "fwCcKey": {
+            "value": "[parameters( 'fwCcKey' )]"
           },
           "fwNicRef": {
             "value": "[reference( 'firewallNic', variables( 'apiVersion' ).Resources ).outputs.selfLink.value]"
