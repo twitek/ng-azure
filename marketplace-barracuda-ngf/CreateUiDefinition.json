@@ -344,7 +344,7 @@
                 "constraints": {
                   "required": "[equals( basics( 'fwVmSku' ), 'byol' )]"
                 },
-                "defaultValue": "",
+                "defaultValue": " ",
                 "options": {
                   "hideConfirmation": true
                 },
@@ -358,7 +358,7 @@
                 "constraints": {
                   "required": "[equals( basics( 'fwVmSku' ), 'hourly' )]"
                 },
-                "defaultValue": "",
+                "defaultValue": "admin",
                 "options": {
                   "hideConfirmation": true
                 },
@@ -374,6 +374,7 @@
                 "constraints": {
                   "required": "[equals( basics( 'fwVmSku' ), 'hourly' )]"
                 },
+                "defaultValue": " ",
                 "options": {
                   "hideConfirmation": true
                 },
