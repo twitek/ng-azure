@@ -259,7 +259,7 @@ wget -q -O /tmp/box.par \"', parameters( 'fwParFileUrl' ), '\" && cp /tmp/box.pa
   "outputs": {
     "temporaryAdminPasswd": {
       "type": "string",
-      "value": "[if( and( empty( parameters( 'fwPassword' )), empty( parameters( 'fwParFileUrl' ))), variables( 'fwTempPassword' ), 'n/a' )]"
+      "value": "[if( empty( parameters( 'fwPassword' )), variables( 'fwTempPassword' ), 'n/a' )]"
     },
     "dbgCustomData": {
       "type": "string",
