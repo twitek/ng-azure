@@ -191,25 +191,27 @@
                   "name": "publicIp",
                   "type": "Microsoft.Network.PublicIpAddressCombo",
                   "label": {
-                "publicIpAddress": "Public IP address name",
-                "domainNameLabel": "Domain name label"
-              },
+                    "publicIpAddress": "Public IP address name",
+                    "domainNameLabel": "Domain name label"
+                  },
                   "toolTip": {
-                "publicIpAddress": "Name for the public IP address resource.",
-                "domainNameLabel": "Prefix to use for public IP address DNS name (e.g. [prefix].region.cloudapp.azure.com)"
-              },
+                    "publicIpAddress": "Name for the public IP address resource.",
+                    "domainNameLabel": "Prefix to use for public IP address DNS name (e.g. [prefix].region.cloudapp.azure.com)"
+                  },
                   "defaultValue": {
-                "publicIpAddress": "[concat( basics( 'fwVmName' ), '-pip' )]",
-                "domainNameLabel": ""
-              },
+                    "publicIpAddressName": "[concat( basics( 'fwVmName' ), '-pip' )]",
+                    "domainNameLabel": "[basics( 'fwVmName' )]"
+                  },
                   "options": {
-                "hideNone": false,
-                "hideDomainNameLabel": false,
-                "hideExisting": false
-              },
+                    "hideNone": true,
+                    "hideDomainNameLabel": false,
+                    "hideExisting": false
+                  },
                   "constraints": {
-                "required": false
-              },
+                    "required": {
+                      "domainNameLabel": true
+                    }
+                  },
                   "visible": true
                 }
               ]
