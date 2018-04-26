@@ -76,7 +76,7 @@
       "defaultValue": "ngadmin"
     },
     "fwCcData": {
-      "type": "object",
+      "type": "secureObject",
       "metadata": {
         "description": "Collection of Control Center data"
       },
