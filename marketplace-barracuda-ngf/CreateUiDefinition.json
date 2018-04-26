@@ -344,7 +344,7 @@
                 "constraints": {
                   "required": "[equals( basics( 'fwVmSku' ), 'byol' )]"
                 },
-                "defaultValue": " ",
+                "defaultValue": "",
                 "options": {
                   "hideConfirmation": true
                 },
