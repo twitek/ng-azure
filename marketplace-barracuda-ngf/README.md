@@ -14,3 +14,4 @@ If you're testing deployment with uploaded PAR file, your file will not be reall
 * if deployed into existing VNet, during rollback, routing table for Protected Subnet must be changed manually
 
 # Known issues #
+* selecting Standard SKU for Public IP address is not effective. UI definition is not providing this data as output (blame MS)
