@@ -1,6 +1,6 @@
 {
   "fwVmName": {
-    "value": "bam-ngf2-t14"
+    "value": "bam-t14"
   },
   "fwVmVersion": {
     "value": "7.2.015802"
@@ -12,7 +12,7 @@
     "value": "Standard_F1s"
   },
   "fwVmAddress": {
-    "value": "10.11.0.4"
+    "value": "10.13.0.4"
   },
   "publicIp": {
     "value": {
@@ -26,48 +26,54 @@
   "vnet": {
     "value": {
       "vnetPickerData": {
-        "name": "VirtualNetwork3",
-        "addressSpace": "10.11.0.0/16",
+        "name": "newVirtualNetwork",
+        "addressSpace": "10.13.0.0/16",
         "addressPrefixes": [
-          "10.11.0.0/16"
+          "10.13.0.0/16"
         ],
         "subnetName": "default",
-        "subnetAddressPrefix": "10.11.0.0/16",
-        "location": "westeurope"
+        "subnetAddressPrefix": "10.13.0.0/16"
       },
-      "name": "VirtualNetwork3",
+      "name": "newVirtualNetwork",
       "resourceGroup": "bam-t14",
-      "addressPrefix": "10.11.0.0/16",
+      "addressPrefix": "10.13.0.0/16",
       "addressPrefixes": [
-        "10.11.0.0/16"
+        "10.13.0.0/16"
       ],
       "newOrExisting": "new",
       "subnets": {
         "fwSubnet": {
-          "name": "FirewallSubnet3",
-          "addressPrefix": "10.11.0.0/24",
-          "startAddress": "10.11.0.4"
+          "name": "FirewallSubnet",
+          "addressPrefix": "10.13.0.0/24",
+          "startAddress": "10.13.0.4"
         },
         "clientSubnet": {
-          "name": "ProtectedSubnet3",
-          "addressPrefix": "10.11.1.0/24",
-          "startAddress": "10.11.1.4"
+          "name": "ProtectedSubnet",
+          "addressPrefix": "10.13.1.0/24",
+          "startAddress": "10.13.1.4"
         }
       },
       "isSubnetConfigured": true
     }
   },
   "fwStorageType": {
-    "value": "Standard_LRS"
+    "value": "Premium_LRS"
   },
   "fwMgmtType": {
     "value": "ngadmin"
   },
   "fwSshEnable": {
-    "value": "0"
+    "value": "1"
+  },
+  "fwSshKey": {
+    "value": {
+      "password": null,
+      "sshPublicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCGmEp3wAS6DVge+Koab2kRI3Yfjj3zK8jsG2Sbh43ACov5Rn8283IxgR+grOyw82Z8lQSB9ZqZBZqCPQR477Ldc2WRLy+Mf+1tslmUcfPsGc5uVm95fTHDhV45F+0ni96qKqrilv3iooMSQbZZccnySUqtAncPGNOce67FX7pJcpbOXpRq/qF0vjft7ftWSvhQhn6wNwe9rDTugw936yDrD8VkNY4KHjRytedYpd7XvoQ3iFazLYiksj0yI0KNiELsbeGXtLqTYx/2zSDDm6HVz/zEJWGsquB3td/nez/SrVJScm8nAQEk79MnLArqV2598YH5bUwD3+dTRxik/XT9",
+      "authenticationType": "sshPublicKey"
+    }
   },
   "fwPassword": {
-    "value": "9TK%iCfY?Bc--c6!7Vvr=22w"
+    "value": "Pl&JhYd'=lv%9"
   },
   "fwAcl": {
     "value": "0.0.0.0/0"

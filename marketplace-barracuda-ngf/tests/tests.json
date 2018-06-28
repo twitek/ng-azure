@@ -1,15 +1,92 @@
-"tests": [
+{
+
+  "tests": [
   {
-    "13": {
-      "description": "Restore from PAR file",
-      "expect": "connect back to NGCC as 1/bam-t1/bam-test1"
-    }
+      "indx": "11",
+      "description": "Deploy 7.2. BYOL standalone, new vnet",
+      "expect": "box runs",
+      "run": false
   },
   {
-    "15": {
-      "description": "getpar from NGCC",
-      "expect": "connect back to NGCC as 1/bam-t1/bam-ngf2-t15",
-      "enabled": false
-    }
+    "indx": "12",
+    "description": "7.1 BYOL + existing VNet + existing PIP",
+    "expect": "external subnet routes via new instance",
+    "expectCmd": "(get-azurermvirtualnetworksubnetconfig -name ProtectedSubnet -VirtualNetwork (get-azurermvirtualnetwork -name bam-vnet5 -ResourceGroupName bam-t0)).RouteTable.Id",
+    "expectTest": "/subscriptions/bde58b49-9951-466e-90e2-592c0920ce77/resourceGroups/bam-t12/providers/Microsoft.Network/routeTables/bam-vnet5-ProtectedSubnet-via-cuda",
+    "run": true
+  },
+  {
+      "indx": "13",
+      "description": "Restore from PAR file (7.2) + BYOL",
+      "expect": "connected back to NGCC as 1/bam-t1/bam-test1",
+      "expectCmd": "(Invoke-RestMethod -Uri 'http://52.166.120.93:8080/rest/cc/v1/ranges/1/clusters/bam-t1/statusmap' -ContentType 'application/json' -Headers @{\"X-API-Token\"=\"ogf1UzOI5gUvaEnflCH0Ea04Oaoj2BMr\"}).'bam-test1'.netState",
+      "expectTest": "ok",
+      "run": true
+  },
+  {
+    "indx": "14",
+    "description": "7.2.0 hourly image deployment + SSH",
+    "expect": "box available",
+    "run": false
+  },
+  {
+    "indx": "15",
+      "description": "getpar from NGCC (7.2) + BYOL",
+      "expect": "connect back to NGCC as 1/bam-t1/bam-test1",
+      "expectCmd": "(Invoke-RestMethod -Uri 'http://52.166.120.93:8080/rest/cc/v1/ranges/1/clusters/bam-t1/statusmap' -ContentType 'application/json' -Headers @{\"X-API-Token\"=\"ogf1UzOI5gUvaEnflCH0Ea04Oaoj2BMr\"}).'bam-test1'.netState",
+      "expectTest": "ok",
+      "run": true
+
+  },
+  {
+      "indx": "16",
+      "description": "enable web ui (7.2)",
+      "expect": "call to web ui returns login page of length 14854",
+      "expectCmd": "(Invoke-WebRequest -Uri 'https://bam-t16.westeurope.cloudapp.azure.com/cgi-mod/index.cgi').RawContentLength",
+      "expectTest": "14854",
+      "run": true
+  },
+  {
+    "indx": "17",
+    "description": "deploy with ACL",
+    "expect": "call to web ui fails (no idea how to test it, this test should actually fail)",
+    "expectCmd": "(Invoke-WebRequest -Uri 'https://bam-t17.westeurope.cloudapp.azure.com/cgi-mod/index.cgi').RawContentLength",
+    "expectTest": "14854",
+    "run": true
+
+  },
+  {
+    "indx": "18",
+    "description": "7.1.1 hourly standalone",
+    "expect": "connected to TCP 807",
+    "expectCmd": "(Test-NetConnection -Port 807 -ErrorAction silentlycontinue bam-t18.westeurope.cloudapp.azure.com).TcpTestSucceeded",
+    "expectTest": "True",
+    "run": true
+  },
+  {
+      "indx": "19",
+      "description": "getpar (7.2) + hourly",
+      "expect": "connected back to NGCC as 1/bam-t1/bam-test1",
+      "expectCmd": "(Invoke-RestMethod -Uri 'http://52.166.120.93:8080/rest/cc/v1/ranges/1/clusters/bam-t1/statusmap' -ContentType 'application/json' -Headers @{\"X-API-Token\"=\"ogf1UzOI5gUvaEnflCH0Ea04Oaoj2BMr\"}).'bam-test1'.netState",
+      "expectTest": "ok",
+      "run": true
+  },
+  {
+    "indx": "20",
+    "description": "7.0.3 BYOL standalone",
+    "expect": "connected to TCP 807",
+    "expectCmd": "(Test-NetConnection -Port 807 -ErrorAction silentlycontinue bam-t20.westeurope.cloudapp.azure.com).TcpTestSucceeded",
+    "expectTest": "True",
+    "run": true
+  },
+  {
+    "indx": "21",
+    "description": "7.0.3 hourly standalone + SSH",
+    "expect": "connected to TCP 22",
+    "expectCmd": "(Test-NetConnection -Port 22 -ErrorAction silentlycontinue bam-t21.westeurope.cloudapp.azure.com).TcpTestSucceeded",
+    "run": true,
+    "expectTest": "True"
   }
+
 ]
+}

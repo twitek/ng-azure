@@ -1,6 +1,6 @@
 {
   "fwVmName": {
-    "value": "bam-test1"
+    "value": "bam-t13"
   },
   "fwVmVersion": {
     "value": "7.2.015802"
@@ -9,49 +9,48 @@
     "value": "byol"
   },
   "fwVmSize": {
-    "value": "Standard_F1s"
+    "value": "Standard_F2s"
   },
   "fwVmAddress": {
-    "value": "10.11.0.4"
+    "value": "10.12.0.4"
   },
   "publicIp": {
     "value": {
       "name": "bam-t13-pip",
       "resourceGroup": "bam-t13",
       "domainNameLabel": "bam-t13",
-      "publicIPAllocationMethod": "Static",
+      "publicIPAllocationMethod": "Dynamic",
       "newOrExistingOrNone": "new"
     }
   },
   "vnet": {
     "value": {
       "vnetPickerData": {
-        "name": "VirtualNetwork1",
-        "addressSpace": "10.11.0.0/16",
+        "name": "newVirtualNetwork",
+        "addressSpace": "10.12.0.0/16",
         "addressPrefixes": [
-          "10.11.0.0/16"
+          "10.12.0.0/16"
         ],
         "subnetName": "default",
-        "subnetAddressPrefix": "10.11.0.0/16",
-        "location": "westeurope"
+        "subnetAddressPrefix": "10.12.0.0/16"
       },
-      "name": "VirtualNetwork1",
+      "name": "newVirtualNetwork",
       "resourceGroup": "bam-t13",
-      "addressPrefix": "10.11.0.0/16",
+      "addressPrefix": "10.12.0.0/16",
       "addressPrefixes": [
-        "10.11.0.0/16"
+        "10.12.0.0/16"
       ],
       "newOrExisting": "new",
       "subnets": {
         "fwSubnet": {
-          "name": "FirewallSubnet1",
-          "addressPrefix": "10.11.0.0/24",
-          "startAddress": "10.11.0.4"
+          "name": "FirewallSubnet",
+          "addressPrefix": "10.12.0.0/24",
+          "startAddress": "10.12.0.4"
         },
         "clientSubnet": {
-          "name": "ProtectedSubnet1",
-          "addressPrefix": "10.11.1.0/24",
-          "startAddress": "10.11.1.4"
+          "name": "ProtectedSubnet",
+          "addressPrefix": "10.12.1.0/24",
+          "startAddress": "10.12.1.4"
         }
       },
       "isSubnetConfigured": true
@@ -60,8 +59,11 @@
   "fwStorageType": {
     "value": "Standard_LRS"
   },
+  "fwMgmtType": {
+    "value": "ngadmin"
+  },
   "fwParFileUrl": {
-    "value": "https://iaasv2tempstorageam.blob.core.windows.net/vmextensionstemporary-10037ffe91ae63d9-20180411112950861/box_bam-test1.par"
+    "value": "https://doc-08-bk-docs.googleusercontent.com/docs/securesc/ha0ro937gcuc7l7deffksulhg5h7mbp1/bha7dg85tv7vf6me3sm9tfa9cecm8m21/1524736800000/04608187465779327466/*/1HB4d9AoI2sUSBo96turUohi6JGcLRkuD?e=download"
   },
   "fwAcl": {
     "value": "0.0.0.0/0"

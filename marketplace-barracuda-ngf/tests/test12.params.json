@@ -1,6 +1,6 @@
 {
   "fwVmName": {
-    "value": "bam-ngf2-t12"
+    "value": "bam-t12"
   },
   "fwVmVersion": {
     "value": "7.1.105602"
@@ -9,10 +9,10 @@
     "value": "byol"
   },
   "fwVmSize": {
-    "value": "Standard_F2s"
+    "value": "Standard_F1s"
   },
   "fwVmAddress": {
-    "value": "10.9.0.5"
+    "value": "10.9.0.4"
   },
   "publicIp": {
     "value": {
@@ -57,7 +57,7 @@
     }
   },
   "fwStorageType": {
-    "value": "Standard_LRS"
+    "value": "Premium_LRS"
   },
   "fwMgmtType": {
     "value": "ngadmin"
@@ -66,7 +66,7 @@
     "value": "0"
   },
   "fwPassword": {
-    "value": "3Fmqf2dMR-9tCXa"
+    "value": "E!jxRKAyUsnJb8xmhxugaN1z5E!LOMop"
   },
   "fwAcl": {
     "value": "0.0.0.0/0"
