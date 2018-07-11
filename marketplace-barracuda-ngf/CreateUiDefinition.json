@@ -344,13 +344,13 @@
                 "label": "PAR file retrieval key",
                 "toolTip": "Shared secret configured on the Control Center to authenticate the firewall VM when retrieving the PAR file. Go to Box Properties > Operational settings page and switch to Advanced view to enter the passphrase.",
                 "constraints": {
-                  "required": "[or( equals( basics( 'fwVmSku' ), 'byol' ), equals( basics( 'fwVmVersion' ), '7.2.1 (EA2)' ))]"
+                  "required": "[or( equals( basics( 'fwVmSku' ), 'byol' ), equals( basics( 'fwVmVersion' ), '7.2.112901' ))]"
                 },
                 "defaultValue": "",
                 "options": {
                   "hideConfirmation": true
                 },
-                "visible": "[or( equals( basics( 'fwVmSku' ), 'byol' ), equals( basics( 'fwVmVersion' ), '7.2.1 (EA2)' ))]"
+                "visible": "[or( equals( basics( 'fwVmSku' ), 'byol' ), equals( basics( 'fwVmVersion' ), '7.2.112901' ))]"
               },
               {
                 "name": "ccAdminUser",
@@ -358,13 +358,13 @@
                 "label": "Control Center administrator username",
                 "toolTip": "Username of the Firewall Control Center administrator to retrieve the configuration",
                 "constraints": {
-                  "required": "[and( equals( basics( 'fwVmSku' ), 'hourly' ), not( equals( basics( 'fwVmVersion' ), '7.2.1 (EA2)' )))]"
+                  "required": "[and( equals( basics( 'fwVmSku' ), 'hourly' ), not( equals( basics( 'fwVmVersion' ), '7.2.112901' )))]"
                 },
                 "defaultValue": "admin",
                 "options": {
                   "hideConfirmation": true
                 },
-                "visible": "[and( equals( basics( 'fwVmSku' ), 'hourly' ), not( equals( basics( 'fwVmVersion' ), '7.2.1 (EA2)' )))]"
+                "visible": "[and( equals( basics( 'fwVmSku' ), 'hourly' ), not( equals( basics( 'fwVmVersion' ), '7.2.112901' )))]"
               },
               {
                 "name": "ccAdminPass",
@@ -374,12 +374,12 @@
                 },
                 "toolTip": "Password of the Firewall Control Center administrator",
                 "constraints": {
-                  "required": "[and( equals( basics( 'fwVmSku' ), 'hourly' ), not( equals( basics( 'fwVmVersion' ), '7.2.1 (EA2)' )))]"
+                  "required": "[and( equals( basics( 'fwVmSku' ), 'hourly' ), not( equals( basics( 'fwVmVersion' ), '7.2.112901' )))]"
                 },
                 "options": {
                   "hideConfirmation": true
                 },
-                "visible": "[and( equals( basics( 'fwVmSku' ), 'hourly' ), not( equals( basics( 'fwVmVersion' ), '7.2.1 (EA2)' )))]"
+                "visible": "[and( equals( basics( 'fwVmSku' ), 'hourly' ), not( equals( basics( 'fwVmVersion' ), '7.2.112901' )))]"
               }
             ],
             "visible": "[and( equals( 'ngcc', steps( 'ngfManagement' ).fwMgmtType ), empty( steps( 'ngfManagement' ).fwParFile ))]"
