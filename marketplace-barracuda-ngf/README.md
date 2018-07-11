@@ -6,7 +6,7 @@ Use the link below to run the UI part in your browser. in the last step, open JS
 
 If you're testing deployment with uploaded PAR file, your file will not be really uploaded anywhere. You need to upload it somewhere (not github) manually and change the URL in parameters file.
 
-[test ui](https://portal.azure.com/#blade/Microsoft_Azure_Compute/CreateMultiVmWizardBlade/internal_bladeCallId/anything/internal_bladeCallerParams/{"initialData":{},"providerConfig":{"createUiDefinition":"https%3A%2F%2Fraw.githubusercontent.com%2Fbartekmo%2Fng-azure%2Fngf2%2Fmarketplace-barracuda-ngf%2FCreateUiDefinition.json"}})
+[test ui](https://portal.azure.com/#blade/Microsoft_Azure_Compute/CreateMultiVmWizardBlade/internal_bladeCallId/anything/internal_bladeCallerParams/{"initialData":{},"providerConfig":{"createUiDefinition":"https%3A%2F%2Fraw.githubusercontent.com%2Fbartekmo%2Fng-azure%2Fngf2-7.2.1%2Fmarketplace-barracuda-ngf%2FCreateUiDefinition.json"}})
 
 
 # Notes #
