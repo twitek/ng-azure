@@ -41,21 +41,21 @@
           "type": "Microsoft.Common.DropDown",
           "label": "Firmware version",
           "toolTip": "Select your preferred firmware version. 'EA' stands for Early Availability - these releases passed QA tests, but are not recommended for critical deployments, 'LTS' stands for Long Term Support. Check [Barracuda EoS plan](https://campus.barracuda.com/doc/71860849/) and [Release Notes](https://campus.barracuda.com/doc/73723948/) for more details.",
-          "defaultValue": "7.2.0 (EA1)",
+          "defaultValue": "7.2.1 (EA2)",
           "constraints": {
             "required": true,
             "allowedValues": [
               {
-                "label": "7.2.0 (EA1)",
-                "value": "7.2.015802"
+                "label": "7.2.1 (EA2)",
+                "value": "7.2.112901"
               },
               {
-                "label": "7.1.1 (LTS)",
-                "value": "7.1.105602"
+                "label": "7.1.2 (LTS)",
+                "value": "7.1.210401"
               },
               {
-                "label": "7.0.3",
-                "value": "7.0.308701"
+                "label": "7.0.4",
+                "value": "7.0.407401"
               }
             ]
           }
@@ -81,12 +81,12 @@
                   "type": "Microsoft.Common.DropDown",
                   "label": "Choose a firewall VM size",
                   "toolTip": "Choose the VM size to match your license. The recommended VM type is automatically selected, but can be overridden later in the Advanced configuration step.",
-                  "defaultValue": "Small - Level 2 (1 core)",
+                  "defaultValue": "Small - Level 1/Level 2 (1 core)",
                   "constraints": {
                     "required": true,
                     "allowedValues": [
                       {
-                        "label": "Small - Level 2 (1 core)",
+                        "label": "Small - Level 1/Level 2 (1 core)",
                         "value": "1"
                       },
                       {
@@ -344,13 +344,13 @@
                 "label": "PAR file retrieval key",
                 "toolTip": "Shared secret configured on the Control Center to authenticate the firewall VM when retrieving the PAR file. Go to Box Properties > Operational settings page and switch to Advanced view to enter the passphrase.",
                 "constraints": {
-                  "required": "[equals( basics( 'fwVmSku' ), 'byol' )]"
+                  "required": "[or( equals( basics( 'fwVmSku' ), 'byol' ), equals( basics( 'fwVmVersion' ), '7.2.1 (EA2)' ))]"
                 },
                 "defaultValue": "",
                 "options": {
                   "hideConfirmation": true
                 },
-                "visible": "[equals( basics( 'fwVmSku' ), 'byol' )]"
+                "visible": "[or( equals( basics( 'fwVmSku' ), 'byol' ), equals( basics( 'fwVmVersion' ), '7.2.1 (EA2)' ))]"
               },
               {
                 "name": "ccAdminUser",
@@ -358,13 +358,13 @@
                 "label": "Control Center administrator username",
                 "toolTip": "Username of the Firewall Control Center administrator to retrieve the configuration",
                 "constraints": {
-                  "required": "[equals( basics( 'fwVmSku' ), 'hourly' )]"
+                  "required": "[and( equals( basics( 'fwVmSku' ), 'hourly' ), not( equals( basics( 'fwVmVersion' ), '7.2.1 (EA2)' )))]"
                 },
                 "defaultValue": "admin",
                 "options": {
                   "hideConfirmation": true
                 },
-                "visible": "[equals( basics( 'fwVmSku' ), 'hourly' )]"
+                "visible": "[and( equals( basics( 'fwVmSku' ), 'hourly' ), not( equals( basics( 'fwVmVersion' ), '7.2.1 (EA2)' )))]"
               },
               {
                 "name": "ccAdminPass",
@@ -374,12 +374,12 @@
                 },
                 "toolTip": "Password of the Firewall Control Center administrator",
                 "constraints": {
-                  "required": "[equals( basics( 'fwVmSku' ), 'hourly' )]"
+                  "required": "[and( equals( basics( 'fwVmSku' ), 'hourly' ), not( equals( basics( 'fwVmVersion' ), '7.2.1 (EA2)' )))]"
                 },
                 "options": {
                   "hideConfirmation": true
                 },
-                "visible": "[equals( basics( 'fwVmSku' ), 'hourly' )]"
+                "visible": "[and( equals( basics( 'fwVmSku' ), 'hourly' ), not( equals( basics( 'fwVmVersion' ), '7.2.1 (EA2)' )))]"
               }
             ],
             "visible": "[and( equals( 'ngcc', steps( 'ngfManagement' ).fwMgmtType ), empty( steps( 'ngfManagement' ).fwParFile ))]"
