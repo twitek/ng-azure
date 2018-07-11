@@ -368,7 +368,7 @@
             "value": "[if( empty( parameters( 'fwCcData' ).ccAdminUser ), '', parameters( 'fwCcData' ).ccAdminUser )]"
           },
           "fwCcKey": {
-            "value": "[if( equals( parameters( 'fwVmSku' ), 'byol' ), parameters( 'fwCcData' ).ccSecret, parameters( 'fwCcData' ).ccAdminPass )]"
+            "value": "[if( not( empty( parameters( 'fwCcData' ).ccSecret )), parameters( 'fwCcData' ).ccSecret, parameters( 'fwCcData' ).ccAdminPass )]"
           },
           "fwNicRef": {
             "value": "[reference( 'firewallNic', variables( 'apiVersion' ).Resources ).outputs.selfLink.value]"
