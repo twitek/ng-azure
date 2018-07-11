@@ -141,7 +141,7 @@
         "description": "The base URL for dependent assets",
         "artifactsBaseUrl": ""
       },
-      "defaultValue": "https://raw.githubusercontent.com/bartekmo/ng-azure/ngf2/marketplace-barracuda-ngf"
+      "defaultValue": "https://raw.githubusercontent.com/bartekmo/ng-azure/ngf2-7.2.1/marketplace-barracuda-ngf"
     }
   },
   "variables": {
@@ -332,7 +332,7 @@
             "value": "[parameters( 'fwVmName' )]"
           },
           "fwVmVersion": {
-            "value": "[if( and( equals( parameters( 'fwVmVersion' ), '7.2.015802' ), equals( parameters( 'fwVmSku' ), 'hourly' )), '7.2.015801', parameters( 'fwVmVersion' ))]"
+            "value": "[parameters( 'fwVmVersion' )]"
           },
           "fwVmSku": {
             "value": "[parameters( 'fwVmSku' )]"
