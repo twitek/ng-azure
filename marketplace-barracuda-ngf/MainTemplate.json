@@ -378,6 +378,19 @@
           }
         }
       }
+    },
+    {
+      "name": "pid-7a9afd42-3127-440e-8a50-6be26b6fc95d",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables( 'apiVersion' ).Resources ]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
     }
   ],
   "outputs": {
