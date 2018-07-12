@@ -1,0 +1,128 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "0.1",
+  "parameters": {
+    "apiVersion": {
+      "type": "object",
+      "metadata": {
+        "description": "API versions"
+      },
+      "defaultValue": {
+        "Compute": "2017-12-01",
+        "Network": "2017-10-01",
+        "Resources": "2017-05-10"
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Azure region to deploy"
+      },
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "nsgName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name for ACL Network Security Group"
+      }
+    },
+    "fwAcl": {
+      "type": "string",
+      "metadata": {
+        "description": "Subnet allowed to connect to management ports"
+      },
+      "defaultValue": "0.0.0.0/0"
+    },
+    "fwMgmtType": {
+      "type": "string",
+      "metadata": {
+        "description": "how do you manage your firewall?"
+      },
+      "allowedValues": [
+        "ngadmin",
+        "webui",
+        "ngcc"
+      ],
+      "defaultValue": "ngadmin"
+    },
+    "fwSshEnable": {
+      "type": "string",
+      "metadata": {
+        "description": "SSH management access enabled"
+      },
+      "defaultValue": "0"
+    }
+  },
+  "variables": {
+    "mgmtPortList": [ "443", "807", "801", "22" ]
+  },
+  "resources": [
+    {
+      "name": "[parameters( 'nsgName' )]",
+      "condition": "[not( equals( parameters( 'fwAcl' ), '0.0.0.0/0' ))]",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "[parameters( 'apiVersion' ).Network ]",
+      "location": "[parameters( 'location' )]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "firewallAllowAll",
+            "properties": {
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 1000,
+              "direction": "Inbound",
+              "sourcePortRanges": [],
+              "destinationPortRanges": [],
+              "sourceAddressPrefixes": [],
+              "destinationAddressPrefixes": []
+            }
+          },
+          {
+            "name": "firewallMgmtAcl-Allow",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "[parameters( 'fwAcl' )]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 900,
+              "direction": "Inbound",
+              "sourcePortRanges": [],
+              "destinationPortRanges": "[variables( 'mgmtPortList' )]",
+              "sourceAddressPrefixes": [],
+              "destinationAddressPrefixes": []
+            }
+          },
+          {
+            "name": "firewallMgmtAcl-Deny",
+            "properties": {
+              "protocol": "TCP",
+              "sourcePortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "*",
+              "access": "Deny",
+              "priority": 901,
+              "direction": "Inbound",
+              "sourcePortRanges": [],
+              "destinationPortRanges": "[variables( 'mgmtPortList' )]",
+              "sourceAddressPrefixes": [],
+              "destinationAddressPrefixes": []
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "selfLink": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters( 'nsgName' ))]"
+    }
+
+  }
+}

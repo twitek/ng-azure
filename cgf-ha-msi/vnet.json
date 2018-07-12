@@ -1,0 +1,107 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "0.0.1",
+  "parameters": {
+    "apiVersion": {
+      "type": "object",
+      "metadata": {
+        "description": "API versions"
+      },
+      "defaultValue": {
+        "Compute": "2017-12-01",
+        "Network": "2017-10-01",
+        "Resources": "2017-05-10"
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Azure region to deploy"
+      },
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "vnet": {
+      "type": "object",
+      "metadata": {
+        "description": "Virtual Network object"
+      }
+    },
+    "fwVmAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "Next hop for routing table"
+      }
+    }
+  },
+  "variables": {
+    "rtName": "[concat( parameters( 'vnet' ).name, '-', parameters( 'vnet' ).subnets.clientSubnet.name, '-via-cuda' )]"
+  },
+  "resources": [
+    {
+      "name": "[parameters( 'vnet' ).name ]",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "[parameters( 'apiVersion' ).Network ]",
+      "location": "[parameters( 'location' )]",
+      "condition": "[equals( parameters( 'vnet' ).newOrExisting , 'new' )]",
+      "dependsOn": [
+        "[variables( 'rtName' )]"
+      ],
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": "[parameters( 'vnet' ).addressPrefixes]"
+        },
+        "subnets": [
+          {
+            "name": "[parameters( 'vnet' ).subnets.fwSubnet.name]",
+            "properties": {
+              "addressPrefix": "[parameters( 'vnet' ).subnets.fwSubnet.addressPrefix]"
+            }
+          },
+          {
+            "name": "[parameters( 'vnet' ).subnets.clientSubnet.name]",
+            "properties": {
+              "addressPrefix": "[parameters( 'vnet' ).subnets.clientSubnet.addressPrefix]",
+              "routeTable": {
+                "id": "[resourceId( 'Microsoft.Network/routeTables', variables( 'rtName' ))]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "[variables( 'rtName' )]",
+      "type": "Microsoft.Network/routeTables",
+      "apiVersion": "[parameters( 'apiVersion' ).Network ]",
+      "location": "[parameters( 'location' )]",
+      "properties": {
+        "routes": [
+          {
+            "name": "default-via-cuda",
+            "properties": {
+              "addressPrefix": "0.0.0.0/0",
+              "nextHopType": "VirtualAppliance",
+              "nextHopIpAddress": "[parameters( 'fwVmAddress' )]"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "fwSubnetRef": {
+      "type": "string",
+      "value": "[concat( resourceId( parameters( 'vnet' ).resourceGroup, 'Microsoft.Network/virtualNetworks', parameters( 'vnet' ).name ),
+      '/subnets/', parameters( 'vnet' ).subnets.fwSubnet.name )]"
+    },
+    "clientSubnetObj": {
+      "type": "object",
+      "value": "[reference( concat( resourceId( parameters( 'vnet' ).resourceGroup, 'Microsoft.Network/virtualNetworks', parameters( 'vnet' ).name ),
+      '/subnets/', parameters( 'vnet' ).subnets.clientSubnet.name ), parameters( 'apiVersion' ).Network )]"
+    },
+    "routeTableId": {
+      "type": "string",
+      "value": "[resourceId( 'Microsoft.Network/routeTables', variables( 'rtName' ))]"
+    }
+  }
+}

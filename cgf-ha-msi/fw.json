@@ -1,0 +1,264 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "0.0.1",
+  "parameters": {
+    "apiVersion": {
+      "type": "object",
+      "metadata": {
+        "description": "API versions"
+      },
+      "defaultValue": {
+        "Compute": "2017-12-01",
+        "Network": "2017-10-01",
+        "Resources": "2017-05-10"
+      }
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Azure region to deploy"
+      },
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "fwVmName": {
+      "type": "string",
+      "metadata": {
+        "description": "Firewall name"
+      }
+    },
+    "fwVmVersion": {
+      "type": "string",
+      "metadata": {
+        "description": "Firmware version"
+      }
+    },
+    "fwVmSku": {
+      "type": "string",
+      "metadata": {
+        "description": "Licensing scheme"
+      },
+      "allowedValues": [
+        "byol",
+        "hourly"
+      ],
+      "defaultValue": "byol"
+    },
+    "fwVmSize": {
+      "type": "string",
+      "metadata": {
+        "description": "Firewall VM size"
+      },
+      "defaultValue": "Standard_F1s"
+    },
+    "fwPassword": {
+      "type": "secureString",
+      "metadata": {
+        "description": "Root password"
+      },
+      "defaultValue": ""
+    },
+    "fwBootDiagnosticsStorage": {
+      "type": "string",
+      "metadata": {
+        "description": "Storage account for boot diagnostics"
+      },
+      "defaultValue": ""
+    },
+    "fwBootDiagnosticsEnabled": {
+      "type": "bool",
+      "metadata": {
+        "description": "Enable boot diagnostics"
+      },
+      "defaultValue": false
+    },
+    "fwSshEnable": {
+      "type": "bool",
+      "metadata": {
+        "description": "Enable SSH access"
+      },
+      "defaultValue": false
+    },
+    "fwSshKey": {
+      "type": "secureObject",
+      "metadata": {
+        "description": "SSH key"
+      },
+      "defaultValue": ""
+    },
+    "fwStorageType": {
+      "type": "string",
+      "metadata": {
+        "description": "Storage type to use",
+      },
+      "allowedValues": [
+        "Premium_LRS",
+        "Standard_LRS"
+      ],
+      "defaultValue": "Premium_LRS"
+    },
+    "fwMgmtType": {
+      "type": "string",
+      "metadata": {
+        "description": "how do you manage your firewall?"
+      },
+      "allowedValues": [
+        "ngadmin",
+        "webui",
+        "ngcc"
+      ],
+      "defaultValue": "ngadmin"
+    },
+    "fwParFileUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "URL for PAR file to restore configuration from"
+      },
+      "defaultValue": ""
+    },
+    "fwCcData": {
+      "type": "secureObject",
+      "metadata": {
+        "description": "Collection of Control Center data"
+      },
+      "defaultValue": {}
+    },
+    "fwCcAdminUser": {
+      "type": "string",
+      "metadata": {
+        "description": "getpar admin user"
+      },
+      "defaultValue": ""
+    },
+    "fwCcKey": {
+      "type": "string",
+      "metadata": {
+        "description": "getpar admin password concatenated with shared secret"
+      },
+      "defaultValue": ""
+    },
+    "fwNicRef": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource id for primary NIC"
+      }
+    }
+  },
+  "variables": {
+    "adminUsername": "dummy",
+    "fwTempPassword": "[concat( '1TimePwd-', uniqueString(resourceGroup().id))]",
+    "sshKeySection": {
+      "disablePasswordAuthentication": false,
+      "ssh": {
+        "publicKeys": [
+          {
+            "path": "[concat( '/home/', variables( 'adminUsername' ), '/.ssh/authorized_keys')]",
+            "keyData": "[parameters( 'fwSshKey' ).sshPublicKey]"
+          }
+        ]
+      }
+    },
+    "fwCcKeyEscaped": "[replace( replace( parameters( 'fwCcKey' ), '%', '\\%' ), '\"', '\\\"' )]",
+    "fwCustomDataSsh": "
+echo \"Enabling SSH access\" > /dev/ttyS0
+sed -i -- 's/PROOT\\s*=\\s*no/PROOT = without-password/g' /opt/phion/config/configroot/boxother/ssh.conf
+cp /opt/phion/config/configroot/boxother/ssh.conf /opt/phion/config/active/ssh.conf
+/opt/phion/modules/box/boxother/ssh/bin/activate
+",
+    "fwCustomDataWebUi": "
+echo \"Enabling web interface\" > /dev/ttyS0
+/opt/phion/bin/cloud-enable-webui
+",
+    "fwCustomDataCCUser": "[if( empty( parameters( 'fwCcData' ).ccSecret ), concat( ' -u ', parameters( 'fwCcAdminUser' )), '' )]",
+    "fwCustomDataCC": "[concat( 'echo \"*/2 * * * * root echo \\\"', variables( 'fwCcKeyEscaped' ),
+      '\\\" | /opt/phion/bin/getpar -a ', parameters( 'fwCcData' ).ccIpAddress,
+      ' -r ', parameters( 'fwCcData' ).ccRangeId,
+      ' -c ', parameters( 'fwCcData' ).ccClusterName,
+      ' -b ', parameters( 'fwVmName' ),
+      variables( 'fwCustomDataCCUser' ),
+      ' -d /opt/phion/update/box.par -s --verbosity 10 >> /tmp/getpar.log && /etc/rc.d/init.d/phion stop && /etc/rc.d/init.d/phion start && rm /etc/cron.d/getpar\" > /etc/cron.d/getpar\n')]",
+    "fwCustomDataParRestore": "[concat( 'echo \"Restoring from PAR file\" > /dev/ttyS0
+wget -q -O /tmp/box.par \"', parameters( 'fwParFileUrl' ), '\" && cp /tmp/box.par /opt/phion/update/\n')]",
+    "fwCustomData": "[
+      if( not( empty( parameters( 'fwParFileUrl' ))),
+        concat( '#!/bin/bash\n', variables( 'fwCustomDataParRestore' )),
+        if ( equals( parameters( 'fwMgmtType' ), 'ngcc' ),
+          concat( '#!/bin/bash\n', variables( 'fwCustomDataCC' )),
+          if ( equals( parameters( 'fwMgmtType' ), 'webui' ),
+            concat( '#!/bin/bash\n', variables( 'fwCustomDataWebUi' )),
+            if ( parameters( 'fwSshEnable' ),
+              concat( '#!/bin/bash\n', variables( 'fwCustomDataSsh' )),
+              '#!/bin/bash'
+            )
+          )
+        )
+      )]"
+  },
+  "resources": [
+    {
+        "name": "[parameters( 'fwVmName' )]",
+        "type": "Microsoft.Compute/virtualMachines",
+        "apiVersion": "[parameters( 'apiVersion' ).Compute ]",
+        "location": "[parameters( 'location' )]",
+        "tags": {},
+        "plan": {
+          "name": "[parameters( 'fwVmSku' )]",
+          "publisher": "barracudanetworks",
+          "product": "barracuda-ng-firewall"
+        },
+        "properties": {
+          "hardwareProfile": {
+            "vmSize": "[parameters( 'fwVmSize' )]"
+          },
+          "storageProfile": {
+            "imageReference": {
+              "publisher": "barracudanetworks",
+              "offer": "barracuda-ng-firewall",
+              "sku": "[parameters( 'fwVmSku' )]",
+              "version": "[parameters( 'fwVmVersion' )]"
+            },
+            "osDisk": {
+              "osType": "Linux",
+              "caching": "ReadWrite",
+              "createOption": "FromImage",
+              "managedDisk": {
+                "storageAccountType": "[parameters( 'fwStorageType' )]"
+              }
+            }
+          },
+          "osProfile": {
+            "computerName": "[parameters( 'fwVmName' )]",
+            "adminUsername": "[variables('adminUsername')]",
+            "adminPassword": "[if( not( empty( parameters( 'fwPassword' ))), parameters( 'fwPassword' ), variables( 'fwTempPassword' ))]",
+            "customData": "[base64( variables( 'fwCustomData' ))]",
+            "linuxConfiguration": "[if( parameters( 'fwSshEnable' ), variables( 'sshKeySection' ), json( 'null' ))]"
+          },
+          "networkProfile": {
+            "networkInterfaces": [
+              {
+                "id": "[parameters( 'fwNicRef' )]",
+                "properties": {
+                  "primary": true
+                }
+              }
+            ]
+          },
+          "diagnosticsProfile": {
+            "bootDiagnostics": {
+              "enabled": "[parameters( 'fwBootDiagnosticsEnabled' )]",
+              "storageUri": "[parameters( 'fwBootDiagnosticsStorage' )]"
+            }
+          },
+        }
+      }
+  ],
+  "outputs": {
+    "temporaryAdminPasswd": {
+      "type": "string",
+      "value": "[if( empty( parameters( 'fwPassword' )), variables( 'fwTempPassword' ), 'n/a' )]"
+    },
+    "dbgCustomData": {
+      "type": "string",
+      "value": "[variables( 'fwCustomData' )]"
+    }
+  }
+}

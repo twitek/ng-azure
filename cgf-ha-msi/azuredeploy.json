@@ -1,0 +1,43 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "0.0.1",
+  "parameters": {},
+  "variables": {
+    "apiVersions": {
+      "Compute": "2017-12-01",
+      "Network": "2017-10-01",
+      "Resources": "2017-05-10"
+    }
+  },
+  "resources": [
+    {
+      "name": "bam-vnet",
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "[variables( 'apiVersions' ).Network ]",
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": "10.0.0.0/16"
+        },
+        "subnets": [
+          {
+            "name": "bam-subnet1",
+            "properties": {
+              "addressPrefix": "10.0.0.0/24"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "bam-fw",
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "[variables( 'apiVersions' ).Compute ]",
+      "properties": {
+        "identity": {
+          "type": "systemAssigned"
+        }
+      }
+    }
+  ],
+  "outputs": {}
+}

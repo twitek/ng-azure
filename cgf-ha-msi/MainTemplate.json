@@ -1,0 +1,406 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "0.2.0",
+  "parameters": {
+    "fwVmName": {
+      "type": "string",
+      "metadata": {
+        "description": "Firewall Name"
+      }
+    },
+    "fwVmVersion": {
+      "type": "string",
+      "metadata": {
+        "description": "Firmware version"
+      },
+      "defaultValue": "latest"
+    },
+    "fwVmSku": {
+      "type": "string",
+      "metadata": {
+        "description": "License scheme"
+      },
+      "defaultValue": "hourly"
+    },
+    "fwVmSize": {
+      "type": "string",
+      "metadata": {
+        "description": "firewall VM size"
+      }
+    },
+    "fwVmAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "Barracuda CloudGen Firewall private IP address"
+      }
+    },
+    "publicIp": {
+      "type": "object",
+      "metadata": {
+        "description": "Public IP object"
+      }
+    },
+    "newStorageAccount": {
+      "type": "object",
+      "metadata": {
+        "description": "New storage account object"
+      },
+      "defaultValue": {}
+    },
+    "vnet": {
+      "type": "object",
+      "metadata": {
+        "description": "VNet and subnet object"
+      }
+    },
+    "fwStorageType": {
+      "type": "string",
+      "metadata": {
+        "description": "Type of managed storage to use"
+      },
+      "allowedValues": [
+        "Premium_LRS",
+        "Standard_LRS"
+      ]
+    },
+    "fwMgmtType": {
+      "type": "string",
+      "metadata": {
+        "description": "how do you manage your firewall?"
+      },
+      "allowedValues": [
+        "ngadmin",
+        "webui",
+        "ngcc"
+      ],
+      "defaultValue": "ngadmin"
+    },
+    "fwCcData": {
+      "type": "secureObject",
+      "metadata": {
+        "description": "Collection of Control Center data"
+      },
+      "defaultValue": {
+        "ccIpAddress": "",
+        "ccRangeId": "",
+        "ccClusterName": "",
+        "ccSecret": "",
+        "ccAdminUser": "",
+        "ccAdminPass": ""
+      }
+    },
+    "fwParFileUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "Configuration backup PAR file"
+      },
+      "defaultValue": ""
+    },
+    "fwSshEnable": {
+      "type": "string",
+      "metadata": {
+        "description": "SSH management access enabled"
+      },
+      "defaultValue": "0"
+    },
+    "fwSshKey": {
+      "type": "secureObject",
+      "metadata": {
+        "description": "SSH public key"
+      },
+      "defaultValue": {
+        "password": null,
+        "sshPublicKey": "",
+        "authenticationType": "sshPublicKey"
+      }
+    },
+    "fwPassword": {
+      "type": "secureString",
+      "metadata": {
+        "description": "Root password"
+      },
+      "defaultValue": ""
+    },
+    "fwAcl": {
+      "type": "string",
+      "metadata": {
+        "description": "If not default, this will create a NSG to block undesired connections on management ports"
+      },
+      "defaultValue": "0.0.0.0/0"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "Azure region to deploy"
+      },
+      "defaultValue": "[resourceGroup().location]"
+    },
+    "baseUrl": {
+      "type": "string",
+      "metadata": {
+        "description": "The base URL for dependent assets",
+        "artifactsBaseUrl": ""
+      },
+      "defaultValue": "https://raw.githubusercontent.com/bartekmo/ng-azure/ngf2-7.2.1/marketplace-barracuda-ngf"
+    }
+  },
+  "variables": {
+    "apiVersion": {
+      "Compute": "2017-12-01",
+      "Network": "2017-10-01",
+      "Resources": "2017-05-10"
+    },
+    "fwSubnetRefFromParam": "[concat( resourceId( parameters( 'vnet' ).resourceGroup, 'Microsoft.Network/virtualNetworks', parameters( 'vnet' ).name ), '/subnets/', parameters( 'vnet' ).subnets.fwSubnet.name )]",
+    "protectedSubnet": "[concat( resourceId( parameters( 'vnet' ).resourceGroup, 'Microsoft.Network/virtualNetworks', parameters( 'vnet' ).name ), '/subnets/', parameters( 'vnet' ).subnets.clientSubnet.name )]"
+  },
+  "resources": [
+    {
+      "name": "vNet",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables( 'apiVersion' ).Resources ]",
+      "condition": true,
+      "properties": {
+        "templateLink": {
+          "uri": "[concat( parameters( 'baseUrl'), '/vnet.json' )]"
+        },
+        "mode": "[deployment().properties.mode]",
+        "parameters": {
+            "apiVersion": {
+              "value": "[variables( 'apiVersion' )]"
+            },
+            "location": {
+              "value": "[parameters( 'location' )]"
+            },
+            "vnet": {
+              "value": "[parameters( 'vnet' )]"
+            },
+            "fwVmAddress": {
+              "value": "[parameters( 'fwVmAddress' )]"
+            }
+        }
+      }
+    },
+    {
+      "name": "publicIp",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables( 'apiVersion' ).Resources ]",
+      "condition": "[not( equals( parameters( 'publicIp' ).newOrExistingOrNone, 'none' ))]",
+      "properties": {
+        "templateLink": {
+          "uri": "[concat( parameters( 'baseUrl'), '/pip.json' )]"
+        },
+        "mode": "[deployment().properties.mode]",
+        "parameters": {
+            "apiVersion": {
+              "value": "[variables( 'apiVersion' )]"
+            },
+            "location": {
+              "value": "[parameters( 'location' )]"
+            },
+            "pip": {
+              "value": "[parameters( 'publicIp' )]"
+            }
+        }
+      }
+    },
+    {
+      "name": "managementACL",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables( 'apiVersion' ).Resources ]",
+      "condition": "[not( equals( parameters( 'fwAcl' ), '0.0.0.0/0' ))]",
+      "properties": {
+        "templateLink": {
+          "uri": "[concat( parameters( 'baseUrl'), '/acl.json' )]"
+        },
+        "mode": "[deployment().properties.mode]",
+        "parameters": {
+          "apiVersion": {
+            "value": "[variables( 'apiVersion' )]"
+          },
+          "location": {
+            "value": "[parameters( 'location' )]"
+          },
+          "nsgName": {
+            "value": "[concat( parameters( 'fwVmName' ), '-ACL' )]"
+          },
+          "fwAcl": {
+            "value": "[parameters( 'fwAcl' )]"
+          },
+          "fwMgmtType": {
+            "value": "[parameters( 'fwMgmtType' )]"
+          },
+          "fwSshEnable": {
+            "value": "[parameters( 'fwSshEnable' )]"
+          }
+        }
+      }
+    },
+    {
+      "name": "firewallNic",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables( 'apiVersion' ).Resources ]",
+      "condition": true,
+      "dependsOn": [
+        "vNet",
+        "publicIp",
+        "managementACL"
+      ],
+      "properties": {
+        "templateLink": {
+          "uri": "[concat( parameters( 'baseUrl'), '/nic.json' )]"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "apiVersion": {
+            "value": "[variables( 'apiVersion' )]"
+          },
+          "location": {
+            "value": "[parameters( 'location' )]"
+          },
+          "nicName": {
+            "value": "[concat( parameters( 'fwVmName' ), '-nic0' )]"
+          },
+          "publicIpRef": {
+            "value": "[if( not( equals( parameters( 'publicIp').newOrExistingOrNone, 'none' )), reference( 'publicIp', variables( 'apiVersion' ).Resources ).outputs.selfLink.value, '' )]"
+          },
+          "fwVmAddress": {
+            "value": "[parameters( 'fwVmAddress' )]"
+          },
+          "fwSubnetRef": {
+            "value": "[if( equals( parameters( 'vnet' ).newOrExisting, 'existing' ), variables( 'fwSubnetRefFromParam' ), reference( 'vnet' , variables( 'apiVersion' ).Resources ).outputs.fwSubnetRef.value )]"
+          },
+          "aclObjString": {
+            "value": "[if( equals( parameters( 'fwAcl' ), '0.0.0.0/0' ), 'null', concat( '{\"id\": \"', resourceId( 'Microsoft.Network/networkSecurityGroups', concat( parameters( 'fwVmName' ), '-ACL' ) ), '\"}' ))]"
+          }
+        }
+      }
+    },
+
+    {
+      "name": "attachRouting",
+      "type": "Microsoft.Resources/deployments",
+      "resourceGroup": "[parameters( 'vnet' ).resourceGroup ]",
+      "apiVersion": "[variables( 'apiVersion' ).Resources ]",
+      "condition": "[equals( parameters( 'vnet' ).newOrExisting, 'existing' )]",
+      "dependsOn": [
+        "vNet"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "0.1",
+          "resources": [
+            {
+              "type": "Microsoft.Network/virtualNetworks/subnets",
+              "name": "[concat( parameters( 'vnet' ).name, '/', parameters( 'vnet' ).subnets.clientSubnet.name )]",
+              "apiVersion": "[variables( 'apiVersion' ).Network ]",
+              "properties": {
+                "addressPrefix": "[parameters( 'vnet' ).subnets.clientSubnet.addressPrefix ]",
+                "routeTable": {
+                  "id": "[reference( 'vNet', variables( 'apiVersion' ).Resources ).outputs.routeTableId.value ]"
+                },
+                "networkSecurityGroup": "[ reference( 'vNet', variables( 'apiVersion' ).Resources ).outputs.clientSubnetObj.value.networkSecurityGroup ]",
+                "serviceEndpoints": "[ reference( 'vNet', variables( 'apiVersion' ).Resources ).outputs.clientSubnetObj.value.serviceEndpoints ]"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "firewall",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables( 'apiVersion' ).Resources ]",
+      "condition": true,
+      "dependsOn": [
+        "firewallNic"
+      ],
+      "properties": {
+        "templateLink": {
+          "uri": "[concat( parameters( 'baseUrl'), '/fw.json' )]"
+        },
+        "mode": "[deployment().properties.mode]",
+        "parameters": {
+          "apiVersion": {
+            "value": "[variables( 'apiVersion' )]"
+          },
+          "location": {
+            "value": "[parameters( 'location' )]"
+          },
+          "fwVmName": {
+            "value": "[parameters( 'fwVmName' )]"
+          },
+          "fwVmVersion": {
+            "value": "[parameters( 'fwVmVersion' )]"
+          },
+          "fwVmSku": {
+            "value": "[parameters( 'fwVmSku' )]"
+          },
+          "fwVmSize": {
+            "value": "[parameters( 'fwVmSize' )]"
+          },
+          "fwPassword": {
+            "value": "[parameters( 'fwPassword' )]"
+          },
+          "fwBootDiagnosticsStorage": {
+            "value": ""
+          },
+          "fwBootDiagnosticsEnabled": {
+            "value": false
+          },
+          "fwSshEnable": {
+            "value": "[equals( parameters( 'fwSshEnable' ), '1' )]"
+          },
+          "fwSshKey": {
+            "value": "[parameters( 'fwSshKey' )]"
+          },
+          "fwStorageType": {
+            "value": "[parameters( 'fwStorageType' )]"
+          },
+          "fwMgmtType": {
+            "value": "[parameters( 'fwMgmtType' )]"
+          },
+          "fwCcData": {
+            "value": "[parameters( 'fwCcData' )]"
+          },
+          "fwCcAdminUser": {
+            "value": "[if( empty( parameters( 'fwCcData' ).ccAdminUser ), '', parameters( 'fwCcData' ).ccAdminUser )]"
+          },
+          "fwCcKey": {
+            "value": "[if( not( empty( parameters( 'fwCcData' ).ccSecret )), parameters( 'fwCcData' ).ccSecret, parameters( 'fwCcData' ).ccAdminPass )]"
+          },
+          "fwNicRef": {
+            "value": "[reference( 'firewallNic', variables( 'apiVersion' ).Resources ).outputs.selfLink.value]"
+          },
+          "fwParFileUrl": {
+            "value": "[parameters( 'fwParFileUrl' )]"
+          }
+        }
+      }
+    },
+    {
+      "name": "pid-7a9afd42-3127-440e-8a50-6be26b6fc95d",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "[variables( 'apiVersion' ).Resources ]",
+      "properties": {
+        "mode": "Incremental",
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "resources": []
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "publicIp": {
+      "type": "string",
+      "value": "[if( equals( parameters( 'publicIp' ).newOrExistingOrNone, 'none' ), 'none', concat( parameters( 'publicIp' ).domainNameLabel, '.', parameters( 'location' ), '.cloudapp.azure.com' ))]"
+    },
+    "managementTool": {
+      "type": "string",
+      "value": "[concat( 'Use ', if( equals( parameters( 'fwMgmtType' ), 'webui' ), 'a web browser', if( equals( parameters( 'fwMgmtType' ), 'ngadmin' ), 'NGAdmin/Firewall Admin tool', 'Control Center' )), ' to manage your firewall.', if( equals( parameters( 'fwSshEnable' ), '1' ), ' Additional SSH access is enabled.', '' ) )]"
+    }
+  }
+}
