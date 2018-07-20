@@ -1,0 +1,524 @@
+{
+   "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json",
+   "handler": "Microsoft.Compute.MultiVm",
+   "version": "0.1.2-preview",
+   "parameters": {
+      "basics": [
+        {
+          "name": "prefix",
+          "type": "Microsoft.Common.TextBox",
+          "label": "Deployment prefix",
+          "toolTip": "Please provide a prefix, which will be prepended to all created resources names.",
+          "defaultValue": "Barracuda",
+          "constraints": {
+            "required": true,
+            "regex": "^[A-Za-z0-9-_]{1,49}$",
+            "validationMessage": "Only alphanumeric characters are allowed, and the value must be 1 to 49 characters."
+          }
+        },
+        {
+          "name": "fwVmSku",
+          "type": "Microsoft.Common.OptionsGroup",
+          "label": "License scheme",
+          "toolTip": "Choose between hourly billing via Azure Marketplace (PAYG) and Bring-Your-Own-License (BYOL).",
+          "defaultValue": "PAYG",
+          "constraints": {
+            "required": true,
+            "allowedValues": [
+              {
+                "label": "PAYG",
+                "value": "hourly"
+              },
+              {
+                "label": "BYOL",
+                "value": "byol"
+              }
+            ]
+          }
+        },
+        {
+          "name": "fwVmVersion",
+          "type": "Microsoft.Common.DropDown",
+          "label": "Firmware version",
+          "toolTip": "Select your preferred firmware version. 'EA' stands for Early Availability - these releases passed QA tests, but are not recommended for critical deployments, 'LTS' stands for Long Term Support. Check [Barracuda EoS plan](https://campus.barracuda.com/doc/71860849/) and [Release Notes](https://campus.barracuda.com/doc/73723948/) for more details.",
+          "defaultValue": "7.2.1 (EA2)",
+          "constraints": {
+            "required": true,
+            "allowedValues": [
+              {
+                "label": "7.2.1 (EA2)",
+                "value": "7.2.112901"
+              },
+              {
+                "label": "7.1.2 (LTS)",
+                "value": "7.1.210401"
+              },
+              {
+                "label": "7.0.4",
+                "value": "7.0.407401"
+              }
+            ]
+          }
+        }
+       ],
+      "steps": [
+        {
+          "name": "sizeAndNetwork",
+          "label": "Size and Networking",
+          "subLabel": {
+            "preValidation": "",
+            "postValidation": "Done"
+          },
+          "bladeTitle": "Size and Networking",
+          "elements": [
+            {
+              "name": "storage",
+              "type": "Microsoft.Common.Section",
+              "label": "Size and Storage",
+              "elements": [
+                {
+                  "name": "fwVmCores",
+                  "type": "Microsoft.Common.DropDown",
+                  "label": "Choose a firewall VM size",
+                  "toolTip": "Choose the VM size to match your license. The recommended VM type is automatically selected, but can be overridden later in the Advanced configuration step.",
+                  "defaultValue": "Small - Level 1/Level 2 (1 core)",
+                  "constraints": {
+                    "required": true,
+                    "allowedValues": [
+                      {
+                        "label": "Small - Level 1/Level 2 (1 core)",
+                        "value": "1"
+                      },
+                      {
+                        "label": "Medium - Level 4 (2 cores)",
+                        "value": "2"
+                      },
+                      {
+                        "label": "Large - Level 6 (4 cores)",
+                        "value": "4"
+                      },
+                      {
+                        "label": "X-Large - Level 8 (8 cores)",
+                        "value": "8"
+                      }
+                    ]
+                  },
+                  "visible": true
+                },
+                {
+                  "name": "fwStorageType",
+                  "type": "Microsoft.Common.DropDown",
+                  "label": "VM disk type",
+                  "toolTip": "Use Premium SSD storage for better performance, use Standard HDD for low cost test setups. Only managed storage is supported at this time.",
+                  "defaultValue": "Premium SSD (P10)",
+                  "constraints": {
+                      "required": true,
+                      "allowedValues": [
+                        {
+                          "label": "Premium SSD (P10)",
+                          "value": "Premium_LRS"
+                        },
+                        {
+                          "label": "Standard HDD (S10)",
+                          "value": "Standard_LRS"
+                        }
+                      ]
+                  }
+                }
+              ]
+            },
+            {
+              "name": "netPrivate",
+              "type": "Microsoft.Common.Section",
+              "label": "Private networking",
+              "elements": [
+                {
+                  "name": "virtualNetwork",
+                  "type": "Microsoft.Network.VirtualNetworkCombo",
+                  "label": {
+                    "virtualNetwork": "Virtual network",
+                    "subnets": "Subnets"
+                  },
+                  "toolTip": {
+                    "virtualNetwork": "Select existing or create a new Virtual Network for your firewall deployment",
+                    "subnets": "'Firewall Subnet' will be used to host your firewall VM, 'Protected Subnet' will be (re-)routed via the firewall. Firewall must be placed in a separte subnet from protected instances. [More information on user-defined routes](https://docs.microsoft.com/en-us/azure/virtual-network/virtual-networks-udr-overview#user-defined)"
+                  },
+                  "defaultValue": {
+                    "name": "newVirtualNetwork",
+                    "addressPrefixSize": "/16"
+                  },
+                  "constraints": {
+                    "minAddressPrefixSize": "/24"
+                  },
+                  "options": {
+                    "hideExisting": false
+                  },
+                  "subnets": {
+                    "fwSubnet": {
+                      "label": "Firewall subnet",
+                      "defaultValue": {
+                        "name": "FirewallSubnet",
+                        "addressPrefixSize": "/24"
+                      },
+                      "constraints": {
+                        "minAddressPrefixSize": "/30",
+                        "minAddressCount": 2,
+                        "requireContiguousAddresses": false
+                      }
+                    },
+                    "clientSubnet": {
+                      "label": "Protected subnet",
+                      "defaultValue": {
+                        "name": "ProtectedSubnet",
+                        "addressPrefixSize": "/24"
+                      },
+                      "constraints": {
+                        "minAddressPrefixSize": "/24",
+                        "minAddressCount": 0,
+                        "requireContiguousAddresses": false
+                      }
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "name": "netPublic",
+              "type": "Microsoft.Common.Section",
+              "label": "Public networking",
+              "elements": [
+                {
+                  "name": "publicIp",
+                  "type": "Microsoft.Network.PublicIpAddressCombo",
+                  "label": {
+                    "publicIpAddress": "Public IP address name",
+                    "domainNameLabel": "Domain name label"
+                  },
+                  "toolTip": {
+                    "publicIpAddress": "Name for the public IP address resource.",
+                    "domainNameLabel": "Prefix to use for public IP address DNS name (e.g. [prefix].region.cloudapp.azure.com)"
+                  },
+                  "defaultValue": {
+                    "publicIpAddressName": "[concat( basics( 'fwVmName' ), '-pip' )]",
+                    "domainNameLabel": "[basics( 'fwVmName' )]"
+                  },
+                  "options": {
+                    "hideNone": true,
+                    "hideDomainNameLabel": false,
+                    "hideExisting": false
+                  },
+                  "constraints": {
+                    "required": {
+                      "domainNameLabel": true
+                    }
+                  },
+                  "visible": true
+                }
+              ]
+            }
+
+          ]
+        },
+        {
+          "name": "ngfManagement",
+          "label": "Firewall Management",
+          "subLabel": {
+            "preValidation": "Management tool & bootstrapping",
+            "postValidation": "Done"
+          },
+          "bladeTitle": "Firewall Management",
+          "elements": [
+            {
+              "name": "fwMgmtType",
+              "type": "Microsoft.Common.DropDown",
+              "label": "Firewall management interface",
+              "defaultValue": "Stand-alone cluster",
+              "toolTip": "Are you going to manage the firewalls centrally using Barracuda Firewall Control Center?",
+              "constraints": {
+                "allowedValues": [
+                  {
+                    "label": "Stand-alone cluster",
+                    "value": "ngadmin"
+                  },
+                  {
+                    "label": "Centrally managed via Control Center",
+                    "value": "ngcc"
+                  }
+                ]
+              },
+            "visible": true
+          },
+            {
+              "name": "fwAcl",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Management ACL",
+              "defaultValue": "0.0.0.0/0",
+              "toolTip": "Introduces a Network Security Group restricting access to management ports of the firewall. Enter 0.0.0.0/0 to allow access from any network and to skip creating a Network Security Group.",
+              "constraints": {
+                "required": true,
+                "regex": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])(\/([0-9]|[1-2][0-9]|3[0-2]))$",
+                "validationMessage": "Enter a subnet address in CIDR notation."
+              },
+              "visible": true
+            },
+          {
+            "name": "fwPassword",
+            "type": "Microsoft.Common.PasswordBox",
+            "label": {
+              "password": "Root password",
+              "confirmPassword": "Confirm password"
+            },
+            "toolTip": "",
+            "constraints": {
+              "required": "[not( equals( steps( 'ngfManagement' ).fwMgmtType, 'ngcc' ))]",
+              "regex": "^.{6,72}$",
+              "validationMessage": "Passwords must be 6 - 72 characters in length and meet 3 out of the following 4 complexity requirements: * Have lower characters * Have upper characters * Have a digit * Have a special character"
+            },
+            "options": {
+              "hideConfirmation": false
+            },
+            "visible": "[and(empty( steps( 'ngfManagement' ).fwParFile), not( equals( steps( 'ngfManagement' ).fwMgmtType, 'ngcc' )))]"
+          },
+          {
+            "name": "ngcc",
+            "type": "Microsoft.Common.Section",
+            "label": "Control Center binding",
+            "elements": [
+              {
+                "name": "ccIpAddress",
+                "type": "Microsoft.Common.TextBox",
+                "label": "IP Address of Control Center",
+                "toolTip": "Publicly reachable IP address for the NextGen Control Center. If the Control Center is behind another firewall open port TCP 806.",
+                "constraints": {
+                  "required": true,
+                  "regex": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$",
+                  "validationMessage": "Must be a valid IPv4 address of a Firewall Control Center."
+                }
+              },
+              {
+                "name": "ccRangeId",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Control Center Range ID",
+                "toolTip": "ID number of the Control Center range containing the CloudGen Firewall configuration.",
+                "constraints": {
+                  "required": true,
+                  "regex": "^[0-9]{1,2}$",
+                  "validationMessage": "Must be a range ID number."
+                }
+              },
+              {
+                "name": "ccClusterName",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Control Center Cluster name",
+                "toolTip": "Name of Control Center cluster containing the CloudGen Firewall configuration.",
+                "constraints": {
+                  "required": true,
+                  "regex": "^[a-zA-Z0-9-]{1,16}$",
+                  "validationMessage": "Must be a valid Control Center cluster name."
+                }
+              },
+              {
+                "name": "ccSecret",
+                "type": "Microsoft.Common.TextBox",
+                "label": "PAR file retrieval key",
+                "toolTip": "Shared secret configured on the Control Center to authenticate the firewall VM when retrieving the PAR file. Go to Box Properties > Operational settings page and switch to Advanced view to enter the passphrase.",
+                "constraints": {
+                  "required": "[or( equals( basics( 'fwVmSku' ), 'byol' ), equals( basics( 'fwVmVersion' ), '7.2.112901' ))]"
+                },
+                "defaultValue": "",
+                "options": {
+                  "hideConfirmation": true
+                },
+                "visible": "[or( equals( basics( 'fwVmSku' ), 'byol' ), equals( basics( 'fwVmVersion' ), '7.2.112901' ))]"
+              },
+              {
+                "name": "ccAdminUser",
+                "type": "Microsoft.Common.TextBox",
+                "label": "Control Center administrator username",
+                "toolTip": "Username of the Firewall Control Center administrator to retrieve the configuration",
+                "constraints": {
+                  "required": "[and( equals( basics( 'fwVmSku' ), 'hourly' ), not( equals( basics( 'fwVmVersion' ), '7.2.112901' )))]"
+                },
+                "defaultValue": "admin",
+                "options": {
+                  "hideConfirmation": true
+                },
+                "visible": "[and( equals( basics( 'fwVmSku' ), 'hourly' ), not( equals( basics( 'fwVmVersion' ), '7.2.112901' )))]"
+              },
+              {
+                "name": "ccAdminPass",
+                "type": "Microsoft.Common.PasswordBox",
+                "label": {
+                  "password": "Control Center administrator password"
+                },
+                "toolTip": "Password of the Firewall Control Center administrator",
+                "constraints": {
+                  "required": "[and( equals( basics( 'fwVmSku' ), 'hourly' ), not( equals( basics( 'fwVmVersion' ), '7.2.112901' )))]"
+                },
+                "options": {
+                  "hideConfirmation": true
+                },
+                "visible": "[and( equals( basics( 'fwVmSku' ), 'hourly' ), not( equals( basics( 'fwVmVersion' ), '7.2.112901' )))]"
+              }
+            ],
+            "visible": "[equals( 'ngcc', steps( 'ngfManagement' ).fwMgmtType )]"
+          }
+
+        ]
+        },
+        {
+          "name": "advanced",
+          "label": "Advanced",
+          "subLabel": {
+            "preValidation": "Additional settings",
+            "postValidation": "Done"
+          },
+          "bladeTitle": "Advanced Settings",
+          "elements": [
+            {
+              "name": "fwVmAddress",
+              "type": "Microsoft.Common.TextBox",
+              "label": "Barracuda CloudGen Firewall private IP address",
+              "toolTip": "Enter a static IP address from the subnet the firewall is deployed to. The first four and the last IP addresses in the subnet are reserved by Azure.",
+              "defaultValue": "[steps( 'sizeAndNetwork' ).netPrivate.virtualNetwork.subnets.fwSubnet.startAddress]",
+              "constraints": {
+                "required": false,
+                "regex": "^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$",
+                "validationMessage": "Must be a valid IPv4 address in the subnet the firewall is deployed to."
+              }
+            },
+            {
+              "name": "fwVmSize",
+              "type": "Microsoft.Compute.SizeSelector",
+              "label": "Custom firewall VM size",
+              "toolTip": "Override the recommended firewall VM size selected in the Size and Storage configuration step.",
+              "recommendedSizes": [
+                "[concat( 'Standard_F', steps( 'sizeAndNetwork' ).storage.fwVmCores, 's' )]",
+                "[concat( 'Standard_F', steps( 'sizeAndNetwork' ).storage.fwVmCores, 's_v2' )]",
+                "[concat( 'Standard_DS', steps( 'sizeAndNetwork' ).storage.fwVmCores, '_v3' )]"
+              ],
+              "constraints": {
+                "allowedSizes": [
+                  "Standard_F1s",
+                  "Standard_F2s",
+                  "Standard_F4s",
+                  "Standard_F8s",
+                  "Standard_F1s_v2",
+                  "Standard_F2s_v2",
+                  "Standard_F4s_v2",
+                  "Standard_F8s_v2",
+                  "Standard_DS2_v2_Promo",
+                  "Standard_DS3_v2_Promo",
+                  "Standard_DS4_v2_Promo",
+                  "Standard_DS2_v2",
+                  "Standard_DS3_v2",
+                  "Standard_DS4_v2",
+                  "Standard_DS2_v3",
+                  "Standard_DS4_v3",
+                  "Standard_DS8_v3",
+                  "Standard_B1ms",
+                  "Standard_B2s",
+                  "Standard_B2ms",
+                  "Standard_B4ms",
+                  "Standard_B8ms"
+                ],
+                "options": {
+                  "hideDiskTypeFilter": true
+                },
+                "required": true
+              },
+              "osPlatform": "Linux",
+              "imageReference": {
+                "publisher": "barracudanetworks",
+                "offer": "barracuda-ng-firewall",
+                "sku": "[basics( 'fwVmSku' )]"
+              },
+              "count": "1"
+            },
+            {
+              "name": "fwSshEnable",
+              "type": "Microsoft.Common.OptionsGroup",
+              "label": "SSH management access",
+              "defaultValue": "Disabled",
+              "toolTip": "Enables SSH based access uing key-based authentication for the root user. Note that Manamgement ACL settings are enforced for SSH connections.",
+              "constraints": {
+                "allowedValues": [
+                  {
+                    "label": "Disabled",
+                    "value": "0"
+                  },
+                  {
+                    "label": "Enabled",
+                    "value": "1"
+                  }
+                ]
+              },
+              "visible": "[and( empty( steps( 'ngfManagement' ).fwParFile ), equals( steps( 'ngfManagement' ).fwMgmtType, 'ngadmin' ))]"
+            },
+            {
+              "name": "fwSshKey",
+              "type": "Microsoft.Compute.CredentialsCombo",
+              "label": {
+                "authenticationType": "Authentication type",
+                "password": "Password",
+                "confirmPassword": "Confirm password",
+                "sshPublicKey": "SSH public key"
+              },
+              "toolTip": {
+                "authenticationType": "",
+                "password": "",
+                "sshPublicKey": ""
+              },
+              "constraints": {
+                "required": "[equals( steps('advanced').fwSshEnable, '1' )]",
+                "customPasswordRegex": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$",
+                "customValidationMessage": "The password must contain at least 8 characters, with at least 1 letter and 1 number."
+              },
+              "options": {
+                "hideConfirmation": true,
+                "hidePassword": true
+              },
+              "osPlatform": "Linux",
+              "visible": "[equals( steps('advanced').fwSshEnable, '1' )]"
+            }
+          ]
+        }
+      ],
+      "outputs": {
+        "adminPassword": "[steps( 'ngfManagement' ).fwPassword]",
+        "prefix": "[basics( 'prefix' )]",
+        "vNetAddressSpace": "",
+        "subnetNGF": "",
+        "subnetRed": "",
+        "subnetGreen": "",
+        "imageSKU": "[basics( 'fwVmSku' )]",
+        "version": "[basics( 'fwVmVersion' )]",
+        "vmSize": "",
+        "ccManaged": "[not(empty( steps( 'ngfManagement' ).ngcc.ccIpAddress ))]",
+        "ccIpAddress":"[steps( 'ngfManagement' ).ngcc.ccIpAddress ]",
+        "ccClusterName": "[steps( 'ngfManagement' ).ngcc.ccClusterName ]",
+        "ccRangeId": "[steps( 'ngfManagement' ).ngcc.ccRangeId ]",
+        "ccSecret": "[steps( 'ngfManagement' ).ngcc.ccSecret ]",
+        "ccAdmin": "[steps( 'ngfManagement' ).ngcc.ccAdminUser ]",
+        "ccAdminPasswd": "[steps( 'ngfManagement' ).ngcc.ccAdminPass ]",
+        "location": "[location()]"
+
+        "fwVmName": "[basics( 'fwVmName' )]",
+        "fwVmVersion": "",
+        "fwVmSku": "",
+        "fwVmSize": "[steps( 'advanced' ).fwVmSize ]",
+        "fwVmAddress": "[steps( 'advanced' ).fwVmAddress ]",
+        "publicIp": "[steps( 'sizeAndNetwork' ).netPublic.publicIp ]",
+        "vnet": "[steps( 'sizeAndNetwork' ).netPrivate.virtualNetwork ]",
+        "fwStorageType": "[steps( 'sizeAndNetwork' ).storage.fwStorageType ]",
+        "fwMgmtType": "[steps( 'ngfManagement' ).fwMgmtType ]",
+        "fwCcData": "[steps( 'ngfManagement' ).ngcc ]",
+        "fwParFileUrl": "[steps( 'ngfManagement' ).fwParFile ]",
+        "fwSshEnable": "[steps( 'advanced' ).fwSshEnable ]",
+        "fwSshKey": "[steps( 'advanced' ).fwSshKey ]",
+        "fwPassword": "[steps( 'ngfManagement' ).fwPassword ]",
+        "fwAcl": "[steps( 'ngfManagement' ).fwAcl ]",
+
+      }
+   }
+}
