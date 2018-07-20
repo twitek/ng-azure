@@ -503,21 +503,6 @@
         "ccAdminPasswd": "[steps( 'ngfManagement' ).ngcc.ccAdminPass ]",
         "location": "[location()]"
 
-        "fwVmName": "[basics( 'fwVmName' )]",
-        "fwVmVersion": "",
-        "fwVmSku": "",
-        "fwVmSize": "[steps( 'advanced' ).fwVmSize ]",
-        "fwVmAddress": "[steps( 'advanced' ).fwVmAddress ]",
-        "publicIp": "[steps( 'sizeAndNetwork' ).netPublic.publicIp ]",
-        "vnet": "[steps( 'sizeAndNetwork' ).netPrivate.virtualNetwork ]",
-        "fwStorageType": "[steps( 'sizeAndNetwork' ).storage.fwStorageType ]",
-        "fwMgmtType": "[steps( 'ngfManagement' ).fwMgmtType ]",
-        "fwCcData": "[steps( 'ngfManagement' ).ngcc ]",
-        "fwParFileUrl": "[steps( 'ngfManagement' ).fwParFile ]",
-        "fwSshEnable": "[steps( 'advanced' ).fwSshEnable ]",
-        "fwSshKey": "[steps( 'advanced' ).fwSshKey ]",
-        "fwPassword": "[steps( 'ngfManagement' ).fwPassword ]",
-        "fwAcl": "[steps( 'ngfManagement' ).fwAcl ]",
 
       }
    }
