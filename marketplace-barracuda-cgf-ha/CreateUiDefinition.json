@@ -59,6 +59,35 @@
               }
             ]
           }
+        },
+        {
+          "name": "fwVmCores",
+          "type": "Microsoft.Common.DropDown",
+          "label": "Choose a firewall VM size",
+          "toolTip": "Choose the VM size to match your license. The recommended VM type is automatically selected, but can be overridden later in the Advanced configuration step.",
+          "defaultValue": "Small - Level 1/Level 2 (1 core)",
+          "constraints": {
+            "required": true,
+            "allowedValues": [
+              {
+                "label": "Small - Level 1/Level 2 (1 core)",
+                "value": "1"
+              },
+              {
+                "label": "Medium - Level 4 (2 cores)",
+                "value": "2"
+              },
+              {
+                "label": "Large - Level 6 (4 cores)",
+                "value": "4"
+              },
+              {
+                "label": "X-Large - Level 8 (8 cores)",
+                "value": "8"
+              }
+            ]
+          },
+          "visible": true
         }
        ],
       "steps": [
@@ -76,35 +105,6 @@
               "type": "Microsoft.Common.Section",
               "label": "Size and Storage",
               "elements": [
-                {
-                  "name": "fwVmCores",
-                  "type": "Microsoft.Common.DropDown",
-                  "label": "Choose a firewall VM size",
-                  "toolTip": "Choose the VM size to match your license. The recommended VM type is automatically selected, but can be overridden later in the Advanced configuration step.",
-                  "defaultValue": "Small - Level 1/Level 2 (1 core)",
-                  "constraints": {
-                    "required": true,
-                    "allowedValues": [
-                      {
-                        "label": "Small - Level 1/Level 2 (1 core)",
-                        "value": "1"
-                      },
-                      {
-                        "label": "Medium - Level 4 (2 cores)",
-                        "value": "2"
-                      },
-                      {
-                        "label": "Large - Level 6 (4 cores)",
-                        "value": "4"
-                      },
-                      {
-                        "label": "X-Large - Level 8 (8 cores)",
-                        "value": "8"
-                      }
-                    ]
-                  },
-                  "visible": true
-                },
                 {
                   "name": "fwStorageType",
                   "type": "Microsoft.Common.DropDown",
@@ -151,7 +151,7 @@
                     "minAddressPrefixSize": "/24"
                   },
                   "options": {
-                    "hideExisting": false
+                    "hideExisting": true
                   },
                   "subnets": {
                     "fwSubnet": {
@@ -199,8 +199,8 @@
                     "domainNameLabel": "Prefix to use for public IP address DNS name (e.g. [prefix].region.cloudapp.azure.com)"
                   },
                   "defaultValue": {
-                    "publicIpAddressName": "[concat( basics( 'fwVmName' ), '-pip' )]",
-                    "domainNameLabel": "[basics( 'fwVmName' )]"
+                    "publicIpAddressName": "[concat( basics( 'prefix' ), '-pip' )]",
+                    "domainNameLabel": "[basics( 'prefix' )]"
                   },
                   "options": {
                     "hideNone": true,
@@ -502,8 +502,6 @@
         "ccAdmin": "[steps( 'ngfManagement' ).ngcc.ccAdminUser ]",
         "ccAdminPasswd": "[steps( 'ngfManagement' ).ngcc.ccAdminPass ]",
         "location": "[location()]"
-
-
       }
    }
 }
