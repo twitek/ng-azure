@@ -91,13 +91,11 @@
   "outputs": {
     "fwSubnetRef": {
       "type": "string",
-      "value": "[concat( resourceId( parameters( 'vnet' ).resourceGroup, 'Microsoft.Network/virtualNetworks', parameters( 'vnet' ).name ),
-      '/subnets/', parameters( 'vnet' ).subnets.fwSubnet.name )]"
+      "value": "[concat( resourceId( parameters( 'vnet' ).resourceGroup, 'Microsoft.Network/virtualNetworks', parameters( 'vnet' ).name ), '/subnets/', parameters( 'vnet' ).subnets.fwSubnet.name )]"
     },
     "clientSubnetObj": {
       "type": "object",
-      "value": "[reference( concat( resourceId( parameters( 'vnet' ).resourceGroup, 'Microsoft.Network/virtualNetworks', parameters( 'vnet' ).name ),
-      '/subnets/', parameters( 'vnet' ).subnets.clientSubnet.name ), parameters( 'apiVersion' ).Network )]"
+      "value": "[reference( concat( resourceId( parameters( 'vnet' ).resourceGroup, 'Microsoft.Network/virtualNetworks', parameters( 'vnet' ).name ), '/subnets/', parameters( 'vnet' ).subnets.clientSubnet.name ), parameters( 'apiVersion' ).Network )]"
     },
     "routeTableId": {
       "type": "string",

@@ -1,5 +1,5 @@
 {
-   "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json",
+   "$schema": "https://schema.management.azure.com/schemas/0.1.2-preview/CreateUIDefinition.MultiVm.json#",
    "handler": "Microsoft.Compute.MultiVm",
    "version": "0.1.2-preview",
    "parameters": {
@@ -344,7 +344,8 @@
                 "label": "PAR file retrieval key",
                 "toolTip": "Shared secret configured on the Control Center to authenticate the firewall VM when retrieving the PAR file. Go to Box Properties > Operational settings page and switch to Advanced view to enter the passphrase.",
                 "constraints": {
-                  "required": "[or( equals( basics( 'fwVmSku' ), 'byol' ), equals( basics( 'fwVmVersion' ), '7.2.112901' ))]"
+                  "required": "[or( equals( basics( 'fwVmSku' ), 'byol' ), equals( basics( 'fwVmVersion' ), '7.2.112901' ))]",
+                  "regex": ".*"
                 },
                 "defaultValue": "",
                 "options": {
@@ -358,7 +359,8 @@
                 "label": "Control Center administrator username",
                 "toolTip": "Username of the Firewall Control Center administrator to retrieve the configuration",
                 "constraints": {
-                  "required": "[and( equals( basics( 'fwVmSku' ), 'hourly' ), not( equals( basics( 'fwVmVersion' ), '7.2.112901' )))]"
+                  "required": "[and( equals( basics( 'fwVmSku' ), 'hourly' ), not( equals( basics( 'fwVmVersion' ), '7.2.112901' )))]",
+                  "regex": ".*"
                 },
                 "defaultValue": "admin",
                 "options": {

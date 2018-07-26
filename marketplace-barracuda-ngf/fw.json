@@ -88,8 +88,8 @@
     "fwStorageType": {
       "type": "string",
       "metadata": {
-        "description": "Storage type to use",
-      },
+        "description": "Storage type to use"
+    },
       "allowedValues": [
         "Premium_LRS",
         "Standard_LRS"
@@ -158,40 +158,12 @@
       }
     },
     "fwCcKeyEscaped": "[replace( replace( parameters( 'fwCcKey' ), '%', '\\%' ), '\"', '\\\"' )]",
-    "fwCustomDataSsh": "
-echo \"Enabling SSH access\" > /dev/ttyS0
-sed -i -- 's/PROOT\\s*=\\s*no/PROOT = without-password/g' /opt/phion/config/configroot/boxother/ssh.conf
-cp /opt/phion/config/configroot/boxother/ssh.conf /opt/phion/config/active/ssh.conf
-/opt/phion/modules/box/boxother/ssh/bin/activate
-",
-    "fwCustomDataWebUi": "
-echo \"Enabling web interface\" > /dev/ttyS0
-/opt/phion/bin/cloud-enable-webui
-",
+    "fwCustomDataSsh": "echo \"Enabling SSH access\" > /dev/ttyS0 \nsed -i -- 's/PROOT\\s*=\\s*no/PROOT = without-password/g' /opt/phion/config/configroot/boxother/ssh.conf \ncp /opt/phion/config/configroot/boxother/ssh.conf /opt/phion/config/active/ssh.conf \n/opt/phion/modules/box/boxother/ssh/bin/activate \n",
+    "fwCustomDataWebUi": "echo \"Enabling web interface\" > /dev/ttyS0 \n/opt/phion/bin/cloud-enable-webui \n",
     "fwCustomDataCCUser": "[if( empty( parameters( 'fwCcData' ).ccSecret ), concat( ' -u ', parameters( 'fwCcAdminUser' )), '' )]",
-    "fwCustomDataCC": "[concat( 'echo \"*/2 * * * * root echo \\\"', variables( 'fwCcKeyEscaped' ),
-      '\\\" | /opt/phion/bin/getpar -a ', parameters( 'fwCcData' ).ccIpAddress,
-      ' -r ', parameters( 'fwCcData' ).ccRangeId,
-      ' -c ', parameters( 'fwCcData' ).ccClusterName,
-      ' -b ', parameters( 'fwVmName' ),
-      variables( 'fwCustomDataCCUser' ),
-      ' -d /opt/phion/update/box.par -s --verbosity 10 >> /tmp/getpar.log && /etc/rc.d/init.d/phion stop && /etc/rc.d/init.d/phion start && rm /etc/cron.d/getpar\" > /etc/cron.d/getpar\n')]",
-    "fwCustomDataParRestore": "[concat( 'echo \"Restoring from PAR file\" > /dev/ttyS0
-wget -q -O /tmp/box.par \"', parameters( 'fwParFileUrl' ), '\" && cp /tmp/box.par /opt/phion/update/\n')]",
-    "fwCustomData": "[
-      if( not( empty( parameters( 'fwParFileUrl' ))),
-        concat( '#!/bin/bash\n', variables( 'fwCustomDataParRestore' )),
-        if ( equals( parameters( 'fwMgmtType' ), 'ngcc' ),
-          concat( '#!/bin/bash\n', variables( 'fwCustomDataCC' )),
-          if ( equals( parameters( 'fwMgmtType' ), 'webui' ),
-            concat( '#!/bin/bash\n', variables( 'fwCustomDataWebUi' )),
-            if ( parameters( 'fwSshEnable' ),
-              concat( '#!/bin/bash\n', variables( 'fwCustomDataSsh' )),
-              '#!/bin/bash'
-            )
-          )
-        )
-      )]"
+    "fwCustomDataCC": "[concat( 'echo \"*/2 * * * * root echo \\\"', variables( 'fwCcKeyEscaped' ), \n '\\\" | /opt/phion/bin/getpar -a ', parameters( 'fwCcData' ).ccIpAddress, ' -r ', parameters( 'fwCcData' ).ccRangeId, ' -c ', parameters( 'fwCcData' ).ccClusterName, ' -b ', parameters( 'fwVmName' ), variables( 'fwCustomDataCCUser' ), ' -d /opt/phion/update/box.par -s --verbosity 10 >> /tmp/getpar.log && /etc/rc.d/init.d/phion stop && /etc/rc.d/init.d/phion start && rm /etc/cron.d/getpar\" > /etc/cron.d/getpar\n')]",
+    "fwCustomDataParRestore": "[concat( 'echo \"Restoring from PAR file\" > /dev/ttyS0 \nwget -q -O /tmp/box.par \"', parameters( 'fwParFileUrl' ), '\" && cp /tmp/box.par /opt/phion/update/\n')]",
+    "fwCustomData": "[if( not( empty( parameters( 'fwParFileUrl' ))), concat( '#!/bin/bash\n', variables( 'fwCustomDataParRestore' )), if ( equals( parameters( 'fwMgmtType' ), 'ngcc' ), concat( '#!/bin/bash\n', variables( 'fwCustomDataCC' )), if ( equals( parameters( 'fwMgmtType' ), 'webui' ), concat( '#!/bin/bash\n', variables( 'fwCustomDataWebUi' )), if ( parameters( 'fwSshEnable' ), concat( '#!/bin/bash\n', variables( 'fwCustomDataSsh' )), '#!/bin/bash' ))))]"
   },
   "resources": [
     {
@@ -247,7 +219,7 @@ wget -q -O /tmp/box.par \"', parameters( 'fwParFileUrl' ), '\" && cp /tmp/box.pa
               "enabled": "[parameters( 'fwBootDiagnosticsEnabled' )]",
               "storageUri": "[parameters( 'fwBootDiagnosticsStorage' )]"
             }
-          },
+          }
         }
       }
   ],
