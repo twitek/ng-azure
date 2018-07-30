@@ -389,7 +389,7 @@
   "outputs": {
     "publicIp": {
       "type": "string",
-      "value": "[if( equals( parameters('publicIp').newOrExistingOrNone, 'none'), 'none', concat( parameters('publicIp').domainNameLabel, '.', parameters('location'), '.cloudapp.azure.com'))]"
+      "value": "[if( equals( parameters('publicIp').newOrExistingOrNone, 'none'), 'none', reference(parameters('publicIp')).dnsSettings.fqdn)]"
     },
     "managementTool": {
       "type": "string",

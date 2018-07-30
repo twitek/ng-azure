@@ -494,8 +494,8 @@
               },
               "constraints": {
                 "required": "[equals( steps('advanced').fwSshEnable, '1' )]",
-                "customPasswordRegex": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$",
-                "customValidationMessage": "The password must contain at least 8 characters, with at least 1 letter and 1 number."
+                "customPasswordRegex": "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{12,}$",
+                "customValidationMessage": "The password must contain at least 12 characters, with at least 1 letter and 1 number."
               },
               "options": {
                 "hideConfirmation": true,
