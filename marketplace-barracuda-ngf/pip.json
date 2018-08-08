@@ -54,6 +54,12 @@
     "selfLink": {
       "type": "string",
       "value": "[if( equals( parameters( 'pip' ).newOrExistingOrNone, 'none' ), '', resourceId( parameters( 'pip' ).resourceGroup, 'Microsoft.Network/publicIPAddresses', parameters( 'pip' ).name ))]"
+    },
+    "fqdn": {
+      "fqdn": {
+        "type": "string",
+        "value": "[if( equals( parameters( 'pip' ).newOrExistingOrNone, 'none' ), '', reference( concat( 'Microsoft.Network/publicIpAddresses/', parameters('pip').name ), parameters('apiVersion').Network).dnsSettings.fqdn)]"
+      }
     }
   }
 }
