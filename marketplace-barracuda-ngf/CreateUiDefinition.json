@@ -199,7 +199,7 @@
                     "domainNameLabel": "Prefix to use for public IP address DNS name (e.g. [prefix].region.cloudapp.azure.com)"
                   },
                   "defaultValue": {
-                    "publicIpAddressName": "[concat( basics( 'fwVmName' ), '-pip' )]",
+                    "publicIpAddressName": "[concat(toLower(basics( 'fwVmName' )), '-pip' )]",
                     "domainNameLabel": "[basics( 'fwVmName' )]"
                   },
                   "options": {
