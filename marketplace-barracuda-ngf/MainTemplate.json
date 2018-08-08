@@ -389,7 +389,7 @@
   "outputs": {
     "publicIp": {
       "type": "string",
-      "value": "[if( equals( parameters('publicIp').newOrExistingOrNone, 'none'), 'none', reference(parameters('publicIp')).dnsSettings.fqdn)]"
+      "value": "[if( equals( parameters('publicIp').newOrExistingOrNone, 'none'), 'none', reference(concat('Microsoft.Network/publicIPAddresses/', parameters('publicIp').name, variables('apiVersion').Network)).dnsSettings.fqdn)]"
     },
     "managementTool": {
       "type": "string",
