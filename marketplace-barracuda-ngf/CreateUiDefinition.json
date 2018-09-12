@@ -41,17 +41,17 @@
           "type": "Microsoft.Common.DropDown",
           "label": "Firmware version",
           "toolTip": "Select your preferred firmware version. 'EA' stands for Early Availability - these releases passed QA tests, but are not recommended for critical deployments, 'LTS' stands for Long Term Support. Check [Barracuda EoS plan](https://campus.barracuda.com/doc/71860849/) and [Release Notes](https://campus.barracuda.com/doc/73723948/) for more details.",
-          "defaultValue": "7.2.1 (EA2)",
+          "defaultValue": "7.2.2",
           "constraints": {
             "required": true,
             "allowedValues": [
               {
-                "label": "7.2.1 (EA2)",
-                "value": "7.2.112901"
+                "label": "7.2.2",
+                "value": "7.2.205701"
               },
               {
-                "label": "7.1.2 (LTS)",
-                "value": "7.1.210401"
+                "label": "7.1.3",
+                "value": "7.1.306101"
               },
               {
                 "label": "7.0.4",

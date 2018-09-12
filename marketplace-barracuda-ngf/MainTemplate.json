@@ -293,8 +293,8 @@
                 "routeTable": {
                   "id": "[reference('vNet', variables('apiVersion').Resources ).outputs.routeTableId.value]"
                 },
-                "networkSecurityGroup": "[ reference('vNet', variables('apiVersion').Resources ).outputs.clientSubnetObj.value.networkSecurityGroup]",
-                "serviceEndpoints": "[ reference('vNet', variables('apiVersion').Resources ).outputs.clientSubnetObj.value.serviceEndpoints]"
+                "networkSecurityGroup": "[if( contains( reference('vNet', variables('apiVersion').Resources ).outputs.clientSubnetObj.value, 'networkSecurityGroup'), reference('vNet', variables('apiVersion').Resources ).outputs.clientSubnetObj.value.networkSecurityGroup, json('null'))]",
+                "serviceEndpoints": "[if( contains( reference('vNet', variables('apiVersion').Resources ).outputs.clientSubnetObj.value, 'serviceEndpoints'), reference('vNet', variables('apiVersion').Resources ).outputs.clientSubnetObj.value.serviceEndpoints, json('null'))]"
               }
             }
           ]

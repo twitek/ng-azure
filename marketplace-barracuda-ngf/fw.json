@@ -198,7 +198,7 @@
             }
           },
           "osProfile": {
-            "computerName": "[parameters( 'fwVmName' )]",
+            "computerName": "[toLower(parameters( 'fwVmName' ))]",
             "adminUsername": "[variables('adminUsername')]",
             "adminPassword": "[if( not( empty( parameters( 'fwPassword' ))), parameters( 'fwPassword' ), variables( 'fwTempPassword' ))]",
             "customData": "[base64( variables( 'fwCustomData' ))]",
