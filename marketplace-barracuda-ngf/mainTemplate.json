@@ -134,7 +134,7 @@
         "description": "The base URL for dependent assets",
         "artifactsBaseUrl": ""
       },
-      "defaultValue": "https://raw.githubusercontent.com/bartekmo/ng-azure/ngf2-7.2.1/marketplace-barracuda-ngf"
+      "defaultValue": "https://raw.githubusercontent.com/bartekmo/ng-azure/ngf2-7.2.2/marketplace-barracuda-ngf"
     }
   },
   "variables": {
