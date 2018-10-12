@@ -345,7 +345,8 @@
                 "toolTip": "Shared secret configured on the Control Center to authenticate the firewall VM when retrieving the PAR file. Go to Box Properties > Operational settings page and switch to Advanced view to enter the passphrase.",
                 "constraints": {
                   "required": "[or( equals( basics( 'fwVmSku' ), 'byol' ), equals( basics( 'fwVmVersion' ), '7.2.112901' ))]",
-                  "regex": ".*"
+                  "regex": ".*",
+                  "validationMessage": "Only supported for BYOL or firmware version >= 7.2.1"
                 },
                 "defaultValue": "",
                 "options": {
@@ -360,7 +361,8 @@
                 "toolTip": "Username of the Firewall Control Center administrator to retrieve the configuration",
                 "constraints": {
                   "required": "[and( equals( basics( 'fwVmSku' ), 'hourly' ), not( equals( basics( 'fwVmVersion' ), '7.2.112901' )))]",
-                  "regex": ".*"
+                  "regex": ".*",
+                  "validationMessage": "Only supported for BYOL or firmware version >= 7.2.1"
                 },
                 "defaultValue": "admin",
                 "options": {
